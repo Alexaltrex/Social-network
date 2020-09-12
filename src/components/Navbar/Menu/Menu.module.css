@@ -1,0 +1,17 @@
+.menu {
+
+}
+
+.menu a {
+    color: #fff;
+    text-decoration: none;
+    }
+
+.item a.activeLink {
+    color: red;
+    font-weight: 700;
+}
+
+.item:last-child{
+    margin-top: 30px;
+}

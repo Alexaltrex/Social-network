@@ -1,0 +1,15 @@
+.error input,
+.error textarea {
+    border: 5px solid red;
+}
+
+.errorText{
+    background-color: #fff;
+    color: red;
+}
+
+.summaryError{
+    border: 5px solid red;
+    background-color: #fff;
+    color: red;
+}

@@ -1,0 +1,5 @@
+.nav {
+    grid-area: nav;
+    background-color: limegreen;
+    padding: 5px 10px;
+}

@@ -1,71 +1,88 @@
-import React, {Component, Suspense} from 'react';
-import './App.css';
-import Navbar from './components/Navbar/Navbar';
-import {Route, Switch} from "react-router-dom";
-import News from "./components/News/News";
-import Music from "./components/Music/Music";
-import UsersContainer from "./components/Users/UsersContainer";
-import HeaderContainer from "./components/Header/HeaderContainer";
-import LoginContainer from "./components/Login/Login";
-import Preloader from "./components/common/Preloader/Preloader";
-import {AppPropsType} from "./AppContainer";
+import React, {useEffect} from 'react';
+import {createStyles, makeStyles} from "@material-ui/core/styles";
+import Header from "./Components/Header/Header";
+import Sidebar from "./Components/Sidebar/Sidebar";
+import Main from "./Components/Main/Main";
+import {useDispatch, useSelector} from "react-redux";
+import {getMessageIsSending, getRecipientName} from "./redux/dialogs-selectors";
+import {Snackbar} from "@material-ui/core";
+import {Alert} from "@material-ui/lab";
+import {dialogsAC} from "./redux/dialogs-reducer";
+import Typography from "@material-ui/core/Typography";
+import {withRouter} from "react-router-dom";
+import {getIsInitialized} from "./redux/app-reducer";
 
-const DialogsContainer = React.lazy(() => import('./components/Dialogs/DialogsContainer'));
-const ProfileContainer = React.lazy(() => import('./components/Profile/ProfileContainer'));
+const App: React.FC = () => {
+    const classes = useStyles();
+    const messageIsSending = useSelector(getMessageIsSending);
+    const recipientName = useSelector(getRecipientName);
 
-class App extends React.Component<AppPropsType & OwnPropsType, LocalStateType> {
+    const [showAlert, setShowAlert] = React.useState(false);
+    const dispatch = useDispatch();
 
-    catchAllUnhandledErrors = (e: PromiseRejectionEvent) => {
+
+    const catchAllUnhandledErrors = (e: PromiseRejectionEvent) => {
         alert(e);
-    }
-
-    componentDidMount() {
-        this.props.initializeApp();
-        window.addEventListener('unhandledrejection', this.catchAllUnhandledErrors);
-    }
-
-    componentWillUnmount() {
-        window.removeEventListener('unhandledrejection', this.catchAllUnhandledErrors);
-    }
-
-    render() {
-        if (!this.props.initialized) {
-            return <Preloader/>
-        }
-
-        return (
-            <div className='app-wrapper'>
-                <HeaderContainer/>
-                <Navbar/>
-                <div className='app-wrapper-content'>
-                    <Suspense fallback={<div>Загрузка...</div>}>
-                        <Switch>
-                            <Route exact path='/' render={() => <ProfileContainer/>}/>
-                            <Route path='/news' render={() => <News/>}/>
-                            <Route path='/music' component={Music}/>
-                            <Route path='/dialogs' render={() => <DialogsContainer/>}/>
-                            <Route path='/profile/:userId?' render={() => <ProfileContainer/>}/>
-                            {/*<Route path='/users' render={() => <UsersContainer pageTitle={'Пользователи'}/>}/>*/}
-                            <Route path='/users' render={() => <UsersContainer/>}/>
-                            <Route path='/login' render={() => <LoginContainer/>}/>
-                            <Route path='*' render={() => <div>404 Page not found</div>}/>
-                        </Switch>
-                    </Suspense>
-                </div>
-            </div>
-        );
     };
+
+    useEffect(() => {
+        dispatch(getIsInitialized())
+        window.addEventListener('unhandledrejection', catchAllUnhandledErrors);
+        return () => {
+            window.removeEventListener('unhandledrejection', catchAllUnhandledErrors);
+        }
+    }, []);
+
+    useEffect(() => {
+        console.log(`messageIsSending - ${messageIsSending}`);
+        console.log(`recipientName - ${recipientName}`);
+        if (!messageIsSending && recipientName) {
+            setShowAlert(true);
+        }
+        return () => {
+            //dispatch(dialogsAC.setRecipientName(null))
+        }
+    }, [messageIsSending])
+
+    const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setShowAlert(false);
+    };
+
+    return (
+        <div className={classes.root}>
+            <Header/>
+            <Sidebar/>
+            <Main/>
+
+            <Snackbar open={showAlert}
+                      //anchorOrigin={{vertical: 'bottom', horizontal: 'left'}}
+                      autoHideDuration={6000}
+                      onClose={handleClose}>
+                <Alert onClose={handleClose} severity="success">
+                    <Typography component='span'>Message to </Typography>
+                    <Typography component='span' color='primary'>{recipientName}</Typography>
+                    <Typography component='span'> is sent!</Typography>
+                </Alert>
+            </Snackbar>
+
+        </div>
+    );
 };
 
-export default App;
+export default withRouter(App);
 
-type OwnPropsType = {
-    //pageTitle: string
-}
+//============================= STYLE ==========================
+const useStyles = makeStyles(() =>
+    createStyles({
+        root: {
+            display: 'flex',
+            // maxWidth: 800,
+            // width: '100%',
+            // margin: '0 auto'
+        }
+    }),
+);
 
-type PropsType = {
-    initializeApp: () => void
-    initialized: boolean
-}
-
-type LocalStateType = {}

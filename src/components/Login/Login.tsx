@@ -1,45 +1,91 @@
 import React from 'react';
-import {InjectedFormProps, reduxForm} from "redux-form";
-import {createField, GetStringKeysType, Input} from "../common/FormsControls/FormControls";
-import {required} from "../../utilities/validators/validators";
-import {connect} from "react-redux";
-import {login} from "../../redux/auth-reduser";
+import {Field, InjectedFormProps, reduxForm} from "redux-form";
+import {required, shouldNotBeEmpty} from "../../utilities/validators/validators";
+import {useDispatch, useSelector} from "react-redux";
+import {login} from "../../redux/auth-reducer";
 import {Redirect} from "react-router-dom";
-import style from './../common/FormsControls/FormControls.module.css';
-import styleLogin from './Login.module.css';
-import {StateType} from "../../redux/redux-store";
+import {getCaptchaSelector, getIsAuth} from "../../redux/auth-selectors";
+import {makeStyles} from "@material-ui/core/styles";
+import MailOutlineIcon from '@material-ui/icons/MailOutline';
+import RenderTextField from "../common/RenderTextField";
+import {Card} from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
+import RenderPasswordField from "../common/RenderPasswordField";
+import RenderCheckbox from "../common/RenderCheckbox";
+import Button from "@material-ui/core/Button";
 
+//=================================== Form =========================================
+const LoginForm: React.FC<LoginFormPropsType> = (props) => {
+    const {handleSubmit, submitting, pristine, error, captcha} = props;
+    const classes = useStyles();
 
-///////////////////////-LoginForm-//////////////////////
-export type LoginFormValuesType = {
-    email: string
-    password: string
-    rememberMe: boolean
-    captcha: string
-}
-//type LoginFormKeysType = 'email' | 'password' | 'rememberMe' | captcha
-//type LoginFormKeysType = Extract<keyof LoginFormValuesType, string>;
-type LoginFormKeysType = GetStringKeysType<LoginFormValuesType>;
-type LoginFormOwnProps = {
-    captcha: string | null
-}
-
-const LoginForm: React.FC<InjectedFormProps<LoginFormValuesType, LoginFormOwnProps> & LoginFormOwnProps> = (props) => {
-    const {handleSubmit, error, captcha} = props;
     return <form onSubmit={handleSubmit}>
-        {createField<LoginFormKeysType>('email', "email", [required], Input)}
-        {createField<LoginFormKeysType>('Password', 'password', [required], Input, {type: 'password'})}
-        {createField<LoginFormKeysType>(undefined, 'rememberMe', [], Input, {type: 'checkbox'}, 'remember me')}
-        {error && <div className={style.summaryError}>{error}</div>}
-        <div>
-            <button>Login</button>
+
+        <div className={classes.fieldWrapper}>
+            <Field name='email'
+                   component={RenderTextField}
+                   icon={<MailOutlineIcon/>}
+                   className={classes.textField}
+                   validate={[required, shouldNotBeEmpty]}
+                   label='email'
+                   size='small'
+            />
         </div>
-        {captcha && <div>
-            <img src={captcha} alt=""/>
-            <div>
-                {createField<LoginFormKeysType>('введите символы с картинки', 'captcha', [required], Input, {})}
-            </div>
-        </div>}
+
+        <div className={classes.fieldWrapper}>
+            <Field
+                name='password'
+                //disabled={isLoading}
+                className={classes.textField}
+                component={RenderPasswordField}
+                placeholder='Enter your password'
+                label='Password'
+                validate={[required, shouldNotBeEmpty]}
+            />
+        </div>
+
+        <div className={classes.fieldWrapper}>
+            <Field name="rememberMe" component={RenderCheckbox} label="Remember me"/>
+        </div>
+
+        {
+            captcha
+            && <>
+                <div className={classes.fieldWrapper}>
+                    <img src={captcha} alt=""/>
+                </div>
+                <div className={classes.fieldWrapper}>
+                    <Field
+                        name='captcha'
+                        //disabled={isLoading}
+                        className={classes.textField}
+                        component={RenderTextField}
+                        placeholder='Enter symbols from image'
+                        label='Captcha'
+                        validate={[required, shouldNotBeEmpty]}
+                        size='small'
+                    />
+                </div>
+            </>
+        }
+
+        {error && !pristine &&
+        <Typography color='error' variant='h6' className={classes.fieldWrapper}>
+            {error}
+        </Typography>}
+
+        <div className={classes.fieldWrapper}>
+            <Button type="submit"
+                    color="primary"
+                    variant="contained"
+                    fullWidth={true}
+                    size='large'
+                    className={classes.button}
+                    disabled={submitting || pristine}>
+                Enter
+            </Button>
+        </div>
+
     </form>
 };
 
@@ -49,40 +95,82 @@ const ReduxLoginForm = reduxForm<LoginFormValuesType, LoginFormOwnProps>({
 })(LoginForm);
 
 
+//========================= COMPONENT =============================================================
+const Login: React.FC = () => {
+    const classes = useStyles();
+    const isAuth = useSelector(getIsAuth);
+    const captcha = useSelector(getCaptchaSelector);
+    const dispatch = useDispatch();
 
-////////////////////////////-Login-//////////////////////////////////////////////////////////
-type LoginPropsType = MapStatePropsType & MapDispatchPropsType
-
-const Login: React.FC<LoginPropsType> = (props) => {
     const onSubmit = (values: LoginFormValuesType) => {
-        props.login(values.email, values.password, values.rememberMe, values.captcha)
+        dispatch(login(values.email, values.password, values.rememberMe, values.captcha));
     };
-    if (props.isAuth) {
+    if (isAuth) {
         return <Redirect to='/profile'/>
     }
-    return <div className={styleLogin.login}>
-        <h3>Login</h3>
-        <ReduxLoginForm onSubmit={onSubmit}
-                        captcha={props.captcha}/>
-    </div>
+    return (
+        <div className={classes.root}>
+            <Card className={classes.card} elevation={6}>
+                <Typography
+                    className={classes.title}
+                    align='center'
+                    color='primary'
+                    variant='h5'
+                >
+                    Enter in your profile
+                </Typography>
+
+                <ReduxLoginForm onSubmit={onSubmit}
+                                captcha={captcha}/>
+
+            </Card>
+        </div>
+    )
 };
 
-////////////////////////-LoginContainer-//////////////////////////////////////////////////////
+export default Login;
 
-type MapStatePropsType = {
-    isAuth: boolean
+//========================== TYPES ===============================
+export type LoginFormValuesType = {
+    email: string
+    password: string
+    rememberMe: boolean
+    captcha: string
+}
+type LoginFormOwnProps = {
     captcha: string | null
 }
-type MapDispatchPropsType = {
-    login: (email: string, password: string, rememberMe: boolean, captcha: string) => void
-}
+type LoginFormPropsType = InjectedFormProps<LoginFormValuesType, LoginFormOwnProps> & LoginFormOwnProps;
 
-const mapStateToProps = (state: StateType): MapStatePropsType => ({
-    isAuth: state.auth.isAuth,
-    captcha: state.auth.captcha
+//========================== STYLES ==============================
+const useStyles = makeStyles({
+    root: {
+        display: 'flex',
+        justifyContent: 'center'
+    },
+    card: {
+        width: 500,
+        padding: '15px 30px 15px 10px',
+        borderRadius: 10
+    },
+    error: {
+        width: 300,
+        marginBottom: 10,
+    },
+    textField: {
+
+        width: '100%',
+    },
+    fieldWrapper: {
+        marginLeft: 35,
+        marginBottom: 10
+    },
+    button: {
+        //marginBottom: 10,
+    },
+    title: {
+        marginBottom: 20
+    }
 });
 
-const LoginContainer = connect(mapStateToProps, {login})(Login);
-
-export default LoginContainer;
 

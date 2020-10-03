@@ -3,7 +3,7 @@ import profileReducer from "./profile-reducer";
 import dialogsReducer from "./dialogs-reducer";
 import sidebarReducer from "./sidebar-reducer";
 import usersReducer from "./users-reduser";
-import authReducer from "./auth-reduser";
+import authReducer from "./auth-reducer";
 import thunkMiddleware, {ThunkAction} from "redux-thunk";
 import { reducer as formReducer } from 'redux-form';
 import appReducer from "./app-reducer";
@@ -11,10 +11,10 @@ import {composeWithDevTools} from "redux-devtools-extension";
 
 // объединяем редьюсеры в объект
 let rootReducer = combineReducers({
-    profilePage: profileReducer,
-    dialogsPage: dialogsReducer,
-    SidebarFriends: sidebarReducer,
-    usersPage: usersReducer,
+    profile: profileReducer,
+    dialogs: dialogsReducer,
+    sidebar: sidebarReducer,
+    users: usersReducer,
     auth: authReducer,
     app: appReducer,
     form: formReducer

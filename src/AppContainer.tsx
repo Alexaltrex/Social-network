@@ -1,31 +1,13 @@
-import {connect, Provider} from "react-redux";
-import store, {StateType} from "./redux/redux-store";
-import {initializeApp} from "./redux/app-reducer";
-import App from "./App";
+import {Provider} from "react-redux";
+import store from "./redux/redux-store";
 import {HashRouter} from "react-router-dom";
 import React from "react";
-
-const mapStateToProps = (state: StateType) => ({
-    initialized: state.app.initialized
-});
-
-const AppContainer = connect<MapStatePropsType, MapDispatchPropsType, {}, StateType>
-(mapStateToProps, {initializeApp})(App)
-
-type MapStatePropsType = {
-    initialized: boolean
-};
-
-type MapDispatchPropsType = {
-    initializeApp: () => void
-};
-
-export type AppPropsType = MapStatePropsType & MapDispatchPropsType;
+import App from "./App";
 
 const AppGlobal = () => {
     return <HashRouter>
         <Provider store={store}>
-            <AppContainer/>
+            <App/>
         </Provider>
     </HashRouter>
 }

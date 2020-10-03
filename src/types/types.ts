@@ -2,6 +2,8 @@ export type PostType = {
     id: number
     message: string
     likeCount: number
+    likeMe: boolean
+    time: string
 }
 
 export type ContactsType = {
@@ -15,7 +17,7 @@ export type ContactsType = {
     mainLink: string
 }
 
-export type photosType = {
+export type PhotosType = {
     small: string | null
     large: string | null
 }
@@ -25,25 +27,26 @@ export type ProfileType = {
     lookingForAJob: boolean
     fullName: string
     contacts: ContactsType
-    photos: photosType
+    photos: PhotosType
     aboutMe: string
     lookingForAJobDescription: string
 }
 
-export type userType = {
+export type UserType = {
     id: number
     name: string
     status: string
-    photos: photosType
+    photos: PhotosType
     followed: boolean
 }
 
-export type DialogType = {
-    id: number
-    name: string
+export type FriendsValuesType = 'all' | 'true' | 'false';
+
+export type SearchUsersParamsType = {
+    term: string
+    friend: FriendsValuesType
 }
 
-export type MessageType = {
-    id: number
-    text: string
+export type SearchFriendsParamsType = {
+    term: string
 }

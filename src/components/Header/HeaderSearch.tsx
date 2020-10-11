@@ -1,14 +1,17 @@
 import React from "react";
-import {reduxForm, Field, InjectedFormProps} from "redux-form";
+import {reduxForm, Field, InjectedFormProps, reset} from "redux-form";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {shouldNotBeEmpty} from "../../utilities/validators/validators";
 import SearchIcon from '@material-ui/icons/Search';
 import RenderNakedTextAreaField from "../common/RenderNakedTextareaField";
 import indigo from "@material-ui/core/colors/indigo";
+import {useDispatch} from "react-redux";
+import { useHistory } from "react-router-dom";
+import {usersAC} from "../../redux/users-reduser";
 
 //===================== FORM ==================================
 const Form: React.FC<FormPropsType> = (props) => {
-    const {handleSubmit, submitting, pristine} = props;
+    const {handleSubmit} = props;
     const classes = useStyles();
     const classesField = useStylesField();
     return (
@@ -18,12 +21,9 @@ const Form: React.FC<FormPropsType> = (props) => {
                 <Field name='name'
                        component={RenderNakedTextAreaField}
                        validate={[shouldNotBeEmpty]}
-                    //autoFocus={true}
                        multiline={false}
-                    //rows={1}
                        className={classes.field}
                        classes={classesField}
-                    //label='Enter your message'
                        placeholder='Search...'
                        size='small'
                 />
@@ -34,13 +34,24 @@ const Form: React.FC<FormPropsType> = (props) => {
 };
 
 //============================= REDUX-FORM ========================================
+const afterSubmit = (result: any, dispatch: any) => {
+    dispatch(reset('header-search'));
+};
+
 const ReduxForm = reduxForm<FormValuesType, OwnPropsType>({
     form: 'header-search',
+    onSubmitSuccess: afterSubmit,
 })(Form);
 
-const HeaderSearch: React.FC = () => {
+
+//============================ COMPONENT ============================================
+const HeaderSearch: React.FC<ComponentPropsType> = ({}) => {
+    const dispatch = useDispatch();
+    let history = useHistory();
+
     const onSubmit = (formValue: FormValuesType) => {
-        console.log(formValue);
+        dispatch(usersAC.setValueFromHeaderSearch(formValue.name))
+        history.push('/users');
     };
 
     return (
@@ -59,14 +70,7 @@ export type FormValuesType = {
 }
 type FormPropsType = InjectedFormProps<FormValuesType, OwnPropsType> & OwnPropsType
 
-type ComponentPropsType = {
-    // open: boolean
-    // onClose: (openForm: boolean) => void
-    // id: number
-    // name: string
-    // src: string | undefined
-    // dialogs: Array<DialogType> | null
-}
+type ComponentPropsType = {}
 //========================== STYLES ======================
 const useStyles = makeStyles({
     field: {
@@ -85,7 +89,8 @@ const useStyles = makeStyles({
         marginRight: 15
     },
     icon: {
-        padding: '0 10px'
+        padding: '0 10px',
+        color: 'white'
     }
 });
 
@@ -93,6 +98,7 @@ const useStylesField = makeStyles((theme: Theme) =>
     createStyles({
         input: {
             transition: theme.transitions.create('width'),
+            backgroundColor: 'none',
             width: 200,
             '&:focus': {
                 width: 300

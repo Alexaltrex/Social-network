@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
-import {UserType} from "../../../types/types";
+import {SidebarItemEnum, UserType} from "../../../types/types";
 import {ListItem} from "@material-ui/core";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import Avatar from "@material-ui/core/Avatar";
@@ -31,7 +31,7 @@ const FriendsListItem: React.FC<PropsTypes> = ({friend, dialogs}) => {
     const isFollowing = useSelector(getIsFollowing);
 
     const onListItemClick = () => {
-        dispatch(sidebarAC.setCurrentSidebarItem(3));
+        dispatch(sidebarAC.setCurrentSidebarItem(SidebarItemEnum.users));
     };
 
     const onOpenSendMessageFormHandle = (event: React.SyntheticEvent) => {
@@ -72,10 +72,7 @@ const FriendsListItem: React.FC<PropsTypes> = ({friend, dialogs}) => {
         dispatch(usersAC.setNeedToChangeListOfFriends(true, friend.id))
     };
     const somethingElseHandle = () => {};
-    // const getDialogsHandle = () => {
-    //     //dispatch(getDialogs())
-    //     dispatch(sendMessage(friend.id, 'test'))
-    // };
+
     const labels = ['Remove from friends', 'Something else', 'Something else'];
     const callbacks = [removeHandle, somethingElseHandle, somethingElseHandle]
     const menuItemsElements = labels.map((el, i) => {
@@ -166,7 +163,7 @@ const FriendsListItem: React.FC<PropsTypes> = ({friend, dialogs}) => {
                 </div>
                 {
                     isFollowing && followingInProgress.some(item => item === friend.id)
-                    && <CircularPreloader size={80} style={'absolute'}/>
+                    && <CircularPreloader size={80} styleType={'absolute'}/>
                 }
             </ListItem>
         </>
@@ -220,12 +217,12 @@ const useStyles = makeStyles({
 
 });
 
-const useStylesPopper = makeStyles({
-    iconButton: {
-        marginRight: 0,
-        //zIndex: 1
-    },
-    popper: {
-        //zIndex: 1000
-    },
-})
+// const useStylesPopper = makeStyles({
+//     iconButton: {
+//         marginRight: 0,
+//         //zIndex: 1
+//     },
+//     popper: {
+//         //zIndex: 1000
+//     },
+// });

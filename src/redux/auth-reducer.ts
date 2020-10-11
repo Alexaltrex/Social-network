@@ -5,6 +5,7 @@ import {securityAPI} from "../DAL/security-api";
 import {BaseThunkType, GetActionsType} from "./redux-store";
 import {appAC, AppActionsType} from "./app-reducer";
 import {sidebarAC, SidebarActionsType} from "./sidebar-reducer";
+import {SidebarItemEnum} from "../types/types";
 
 let initialState = {
     id: null as number | null,
@@ -63,7 +64,7 @@ export const login = (email: string, password: string, rememberMe: boolean, capt
         // если залогинены
         if (data.resultCode === ResultCodesEnum.Success) {
             dispatch(getAuthUserData());
-            dispatch(sidebarAC.setCurrentSidebarItem(1))
+            dispatch(sidebarAC.setCurrentSidebarItem(SidebarItemEnum.myProfile))
         } else { // неправильный логин и(или) пароль
             if (data.resultCode === ResultCodeForCaptchaEnum.CaptchaIsRequired) { // необходима каптча
                 dispatch(getCaptchaUrl());

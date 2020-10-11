@@ -7,14 +7,10 @@ import Typography from "@material-ui/core/Typography";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import Avatar from "@material-ui/core/Avatar";
-import {useDispatch, useSelector} from "react-redux";
-import {getCurrentDialogsListItem, getCurrentFriendsId} from "../../../redux/dialogs-selectors";
-import {dialogsAC} from "../../../redux/dialogs-reducer";
 import {DATE} from "../../../utilities/date";
 
 const ListItemLink: React.FC<ListItemLinkPropsType> = ({primary, secondary, to, src, dialog}) => {
     const classes = useStyles();
-    const dispatch = useDispatch();
     let {userId} = useParams();
     const selected = +userId === dialog.id;
 
@@ -25,26 +21,32 @@ const ListItemLink: React.FC<ListItemLinkPropsType> = ({primary, secondary, to, 
             )),
         [to],
     );
-    const onClickHandle = () => {
-        dispatch(dialogsAC.setCurrentFriendsId(dialog.id))
-    };
 
     const secondaryTransformed = DATE.dateTranslateFromAPI(secondary)
 
     return (
         <li className={classes.item}>
-            <ListItem button component={renderLink} selected={selected} onClick={onClickHandle}>
+            <ListItem button
+                      className={classes.listItem}
+                      component={renderLink}
+                      selected={selected}
+            >
                 <ListItemAvatar>
                     <Avatar src={src} className={classes.avatar}/>
                 </ListItemAvatar>
                 <Typography color='primary' variant='h6'>
-                    <ListItemText primary={primary} secondary={secondaryTransformed}/>
+                    <ListItemText primary={primary}
+                                  secondary={secondaryTransformed}
+                                  classes={{
+                                      primary: classes.primary,
+                                      secondary: classes.secondary
+                                  }}
+                    />
                 </Typography>
             </ListItem>
         </li>
     );
-}
-
+};
 
 const DialogsListItem: React.FC<PropsType> = ({dialog}) => {
 
@@ -86,5 +88,15 @@ const useStyles = makeStyles({
         width: 50,
         height: 50,
         marginRight: 10
+    },
+    listItem: {
+        padding: '5px 10px'
+    },
+    secondary: {
+        fontSize: '0.75rem',
+        fontStyle: 'italic'
+    },
+    primary: {
+        fontSize: '0.9rem',
     }
 });

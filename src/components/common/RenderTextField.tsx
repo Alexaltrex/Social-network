@@ -16,7 +16,6 @@ const RenderTextField: React.FC<PropsType> = (props) => {
                 InputProps={classes ? {classes} as Partial<OutlinedInputProps> : null}
                 variant="outlined"
                 label={label}
-
                 placeholder={label}
                 error={touched && invalid}
                 helperText={touched && error}

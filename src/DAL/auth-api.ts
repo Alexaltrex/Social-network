@@ -1,14 +1,5 @@
 import {instance, ResponseTypeAPI, ResultCodeForCaptchaEnum, ResultCodesEnum} from "./api";
 
-// type AuthResponseType = {
-//     data: {
-//         id: number
-//         email: string
-//         login: string
-//     }
-//     resultCode: ResultCodesEnum
-//     messages: Array<string>
-// }
 type AuthResponseDataType = {
     id: number
     email: string
@@ -16,13 +7,6 @@ type AuthResponseDataType = {
 }
 type AuthResponseType = ResponseTypeAPI<AuthResponseDataType>
 
-// type LoginResponseType = {
-//     data: {
-//         userId: number
-//     }
-//     resultCode: ResultCodesEnum | ResultCodeForCaptchaEnum
-//     messages: Array<string>
-// }
 type LoginResponseDataType = {
     userId: number
 }

@@ -9,8 +9,6 @@ import {sidebarAC} from "../../../redux/sidebar-reducer";
 import {useDispatch} from "react-redux";
 import {Typography} from "@material-ui/core";
 
-
-
 const ProfileFriendsItem: React.FC<PropsType> = ({friend}) => {
     const classes = useStyles();
     const dispatch = useDispatch();
@@ -21,7 +19,6 @@ const ProfileFriendsItem: React.FC<PropsType> = ({friend}) => {
     if (shortName.length > 10 ) {
         shortName = shortName.slice(0,9) + '...';
     }
-
 
     const onListItemClick = () => {
         dispatch(sidebarAC.setCurrentSidebarItem(3));

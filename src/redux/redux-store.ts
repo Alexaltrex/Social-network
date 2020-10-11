@@ -8,6 +8,7 @@ import thunkMiddleware, {ThunkAction} from "redux-thunk";
 import { reducer as formReducer } from 'redux-form';
 import appReducer from "./app-reducer";
 import {composeWithDevTools} from "redux-devtools-extension";
+import settingsReducer from "./settings-reducer";
 
 // объединяем редьюсеры в объект
 let rootReducer = combineReducers({
@@ -17,6 +18,7 @@ let rootReducer = combineReducers({
     users: usersReducer,
     auth: authReducer,
     app: appReducer,
+    settings: settingsReducer,
     form: formReducer
 });
 

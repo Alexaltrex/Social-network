@@ -3,11 +3,14 @@ import store from "./redux/redux-store";
 import {HashRouter} from "react-router-dom";
 import React from "react";
 import App from "./App";
+import ErrorBoundary from "./Components/common/ErrorBoundary";
 
 const AppGlobal = () => {
     return <HashRouter>
         <Provider store={store}>
-            <App/>
+            <ErrorBoundary>
+                <App/>
+            </ErrorBoundary>
         </Provider>
     </HashRouter>
 }

@@ -11,7 +11,7 @@ import {getStatusSelector} from "../../../redux/profile-selectors";
 
 //=================================== FORM ==========================================================================================
 const Form: React.FC<InjectedFormProps<StatusFormValuesType, StatusFormOwnPropsType> & StatusFormOwnPropsType> = (props) => {
-    const {handleSubmit, submitting, pristine, reset, error, onClose} = props
+    const {handleSubmit, onClose} = props
     const classes = useStyles();
     const classesField = useStylesField();
 
@@ -62,7 +62,6 @@ const ProfileStatusForm = (props: PropsType) => {
     const dispatch = useDispatch();
 
     const onSubmit = (formValue: StatusFormValuesType) => {
-        console.log(formValue);
         dispatch(updateStatus(formValue.status));
     };
 
@@ -132,7 +131,6 @@ const useStyles = makeStyles({
     },
     form: {
         padding: 5,
-        //backgroundColor: indigo[50],
     },
     field: {
         width: '100%',

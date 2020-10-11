@@ -1,16 +1,12 @@
-import React, {useEffect} from 'react';
-import {drawerWidth} from "../../const/const";
-import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
-import {AppBar} from "@material-ui/core";
-import clsx from "clsx";
-import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from '@material-ui/icons/Menu';
+import React, {useEffect, useState} from 'react';
+import {makeStyles} from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Toolbar from "@material-ui/core/Toolbar";
 import Button from "@material-ui/core/Button";
 import {Link as RouterLink} from 'react-router-dom';
 import Avatar from "@material-ui/core/Avatar";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import Grow from "@material-ui/core/Grow";
 import Paper from "@material-ui/core/Paper";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
@@ -23,21 +19,20 @@ import ListItemText from "@material-ui/core/ListItemText";
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import {useDispatch, useSelector} from "react-redux";
 import {getId, getIsAuth, getLogin} from "../../redux/auth-selectors";
-import {getSidebarIsOpen} from "../../redux/sidebar-selectors";
 import {getProfileSelector} from "../../redux/profile-selectors";
 import {logout} from "../../redux/auth-reducer";
-import {sidebarAC} from "../../redux/sidebar-reducer";
 import {getProfile} from "../../redux/profile-reducer";
 import HeaderSearch from "./HeaderSearch";
+import {getTheme} from "../../redux/settings-selectors";
 
 const Header: React.FC = () => {
     const classes = useStyles();
-    const classes2 = useStyles2();
+
     const isAuth = useSelector(getIsAuth);
-    const sidebarIsOpen = useSelector(getSidebarIsOpen);
     const login = useSelector(getLogin);
     const profile = useSelector(getProfileSelector);
     const id = useSelector(getId);
+
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -46,12 +41,9 @@ const Header: React.FC = () => {
         }
     }, [id]);
 
-    const handleDrawerOpen = () => {
-        dispatch(sidebarAC.setSidebarIsOpen(true));
-    };
-
     //===================================================================================
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
+    const icon = open ? <ExpandLessIcon className={classes.icon}/> : <ExpandMoreIcon className={classes.icon}/>
     const anchorRef = React.useRef<HTMLButtonElement>(null);
     const handleToggle = () => {
         setOpen((prevOpen) => !prevOpen);
@@ -87,29 +79,22 @@ const Header: React.FC = () => {
         dispatch(logout());
     }
     //==================================================================================
-
+    const theme = useSelector(getTheme);
+    const useStylesSettings = makeStyles({
+        wrapper: {
+            backgroundColor: theme.menuBackgroundColor,
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            zIndex: 10
+        }
+    });
+    const classesSettings = useStylesSettings();
 
     return (
-        <AppBar
-            position="fixed"
-            classes={{
-                root: classes2.paper
-            }}
-            className={clsx(classes.appBar, {
-                [classes.appBarShift]: sidebarIsOpen,
-            })}
-
-        >
-            <Toolbar>
-                <IconButton
-                    color="inherit"
-                    aria-label="open drawer"
-                    onClick={handleDrawerOpen}
-                    edge="start"
-                    className={clsx(classes.menuButton, sidebarIsOpen && classes.hide)}
-                >
-                    <MenuIcon/>
-                </IconButton>
+        <div className={classesSettings.wrapper}>
+            <Toolbar className={classes.toolBar}>
                 <Typography variant="h6" noWrap className={classes.logo}>
                     Social Network
                 </Typography>
@@ -135,9 +120,14 @@ const Header: React.FC = () => {
                                 {profile && profile.photos.small
                                     ? <Avatar src={profile.photos.small} className={classes.avatar}/>
                                     : <Avatar className={classes.avatar}/>}
-                                <ExpandMoreIcon/>
+                                {icon}
                             </Button>
-                            <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
+                            <Popper open={open}
+                                    className={classes.popper}
+                                    anchorEl={anchorRef.current}
+                                    role={undefined}
+                                    transition
+                                    disablePortal>
                                 {({TransitionProps, placement}) => (
                                     <Grow
                                         {...TransitionProps}
@@ -148,17 +138,20 @@ const Header: React.FC = () => {
 
                                                 <MenuList autoFocusItem={open} id="menu-list-grow"
                                                           onKeyDown={handleListKeyDown}>
-                                                    <MenuItem onClick={onSettingsClick}>
-                                                        <ListItemIcon>
-                                                            <SettingsIcon/>
-                                                        </ListItemIcon>
-                                                        <ListItemText primary="Settings"/>
-                                                    </MenuItem>
                                                     <MenuItem onClick={onLogoutClick}>
                                                         <ListItemIcon>
                                                             <ExitToAppIcon/>
                                                         </ListItemIcon>
                                                         <ListItemText primary="Logout"/>
+                                                    </MenuItem>
+                                                    <MenuItem onClick={onSettingsClick}
+                                                              component={RouterLink}
+                                                              to='/settings'
+                                                    >
+                                                        <ListItemIcon>
+                                                            <SettingsIcon/>
+                                                        </ListItemIcon>
+                                                        <ListItemText primary="Settings"/>
                                                     </MenuItem>
                                                 </MenuList>
                                             </ClickAwayListener>
@@ -167,73 +160,63 @@ const Header: React.FC = () => {
                                 )}
                             </Popper>
                         </>
-                        : <Button color="inherit" component={RouterLink} to='/login'>
-                            Войти
+                        : <Button color="inherit"
+                                  className={classes.login}
+                                  component={RouterLink}
+                                  to='/login'>
+                            Login
                         </Button>
                 }
 
             </Toolbar>
-        </AppBar>
+        </div>
+
     );
 };
 
 export default Header;
 
 //================================ STYLES =======================================
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        appBar: {
-            transition: theme.transitions.create(['margin', 'width'], {
-                easing: theme.transitions.easing.sharp,
-                duration: theme.transitions.duration.leavingScreen,
-            }),
-            //backgroundColor: 'darkRed'
-        },
-        appBarShift: {
-            width: `calc(100% - ${drawerWidth}px)`,
-            marginLeft: drawerWidth,
-            transition: theme.transitions.create(['margin', 'width'], {
-                easing: theme.transitions.easing.easeOut,
-                duration: theme.transitions.duration.enteringScreen,
-            }),
-        },
-        menuButton: {
-            marginRight: theme.spacing(2),
-        },
-        hide: {
-            display: 'none',
-        },
-        logo: {
-            flexGrow: 1
-        },
-        login: {
-            marginRight: 10
-        },
-        button: {
-            '&:hover': {
-                backgroundColor: 'rgba(0,0,0,0.3)',
-                borderRadius: 0,
-                minHeight: 64
-            },
-            textTransform: 'none',
-            paddingTop: 0,
-            paddingBottom: 0
-        },
-        label: {
+const useStyles = makeStyles({
+    wrapper: {},
+    toolBar: {
+        maxWidth: 1000,
+        width: '100%',
+        margin: '0 auto',
+        boxSizing: 'border-box',
+        padding: '0 0 0 10px',
+    },
+    logo: {
+        flexGrow: 1,
+        color: 'white'
+    },
+    login: {
+        color: 'white'
+    },
+    button: {
+        '&:hover': {
+            backgroundColor: 'rgba(0,0,0,0.3)',
+            borderRadius: 0,
             minHeight: 64
         },
-        avatar: {
-            width: 50,
-            height: 50,
-            marginRight: 10
-        },
-
-
-    }),
-);
-
-const useStyles2 = makeStyles({
-    paper: {
-        //backgroundColor: 'green'
+        textTransform: 'none',
+        paddingTop: 0,
+        paddingBottom: 0
+    },
+    label: {
+        minHeight: 64
+    },
+    avatar: {
+        width: 50,
+        height: 50,
+        margin: '0 10px'
+    },
+    icon: {
+        color: 'white'
+    },
+    popper: {
+        boxShadow: '0px 3px 5px -1px rgba(0,0,0,0.2),0px 6px 10px 0px rgba(0,0,0,0.14),0px 1px 18px 0px rgba(0,0,0,0.12)'
     }
 });
+
+

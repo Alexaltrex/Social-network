@@ -93,7 +93,6 @@ const IconButtonWithPopper: React.FC<PropsType> = (props) => {
 
 export default IconButtonWithPopper;
 
-
 //======================== TYPE ====================================
 type PropsType = {
     icon: React.ReactElement

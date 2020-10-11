@@ -1,10 +1,9 @@
-import {InputBaseProps, InputProps, OutlinedInputProps} from "@material-ui/core";
 import React from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import InputBase from "@material-ui/core/InputBase";
 
-const RenderNakedTextAreaField = (props: any) => {
-    const {icon, label, placeholder, input, meta: {touched, invalid, error}, rows = 4, multiline = true, classes, ...custom} = props;
+const RenderNakedTextAreaField: React.FC<PropsType> = (props) => {
+    const {icon, label, placeholder, input, meta: {touched, invalid}, rows = 4, multiline = true, classes, ...custom} = props;
     const styles = useStyles();
 
     return (
@@ -13,7 +12,6 @@ const RenderNakedTextAreaField = (props: any) => {
                 {icon}
             </div>}
             <InputBase
-                //InputProps={classes ? {classes} as Partial<InputProps> : null}
                 classes={classes ? classes : null}
                 multiline={multiline}
                 rows={rows}
@@ -21,7 +19,6 @@ const RenderNakedTextAreaField = (props: any) => {
                 label={label}
                 placeholder={placeholder}
                 error={touched && invalid}
-                //helperText={touched && error}
                 {...input}
                 {...custom}/>
         </div>
@@ -39,7 +36,6 @@ type PropsType = {
     meta: {
         touched: boolean
         invalid: boolean
-        error: string
     },
     rows?: number
     multiline?: boolean

@@ -4,10 +4,16 @@ import React from "react";
 import {DialogType} from "../../../DAL/dialogs-api";
 import List from "@material-ui/core/List";
 import DialogsListItem from "./DialogsListItem";
-import ListItem from "@material-ui/core/ListItem";
 import {Skeleton} from "@material-ui/lab";
 import {useSelector} from "react-redux";
-import {getDialogsIsLoading} from "../../../redux/dialogs-selectors";
+import {
+    getCurrentDialogsSidebarItem,
+    getDeletedMessages,
+    getDialogsIsLoading,
+    getSpamMessages
+} from "../../../redux/dialogs-selectors";
+import Typography from "@material-ui/core/Typography";
+import {DialogsSidebarItemEnum} from "../../../types/types";
 
 const SkeletonListItem = () => {
     const classes = useStyles();
@@ -17,30 +23,84 @@ const SkeletonListItem = () => {
             <Skeleton variant="rect" width={200} height={45}/>
         </div>
     )
-}
+};
 
 
 const DialogsList: React.FC<PropsType> = ({dialogs}) => {
     const classes = useStyles();
     const dialogsIsLoading = useSelector(getDialogsIsLoading);
+    const currentDialogsSidebarItem = useSelector(getCurrentDialogsSidebarItem);
+    const deletedMessages = useSelector(getDeletedMessages);
+    const spamMessages = useSelector(getSpamMessages);
 
     const dialogsElements = dialogs && dialogs
-        .map((item, i) => <DialogsListItem key={item.id}
+        .map(item => <DialogsListItem key={item.id}
                                            dialog={item}/>);
+
+    const dialogsDeletedElements = deletedMessages
+        .map(item => <DialogsListItem key={item.dialog.id}
+                                           dialog={item.dialog}/>);
+
+    const dialogsSpamElements = spamMessages
+        .map(item => <DialogsListItem key={item.dialog.id}
+                                      dialog={item.dialog}/>);
+
+    const skeletonElements = [] as Array<React.ReactElement>;
+    for (let i = 0; i < 9; i++) {
+        skeletonElements.push(<SkeletonListItem key={i}/>)
+    }
+
 
     return (
         <Card className={classes.card} elevation={6}>
-            { dialogsIsLoading
-                ? <div>
-                    <SkeletonListItem/>
-                    <SkeletonListItem/>
-                    <SkeletonListItem/>
-                    <SkeletonListItem/>
-                </div>
-                : <List disablePadding>
-                {dialogsElements}
-            </List>
+            {
+                currentDialogsSidebarItem === DialogsSidebarItemEnum.all &&
+                <>
+                    {dialogsIsLoading
+                        ? <div>
+                            {skeletonElements}
+                        </div>
+                        : <List disablePadding>
+                            {dialogsElements}
+                        </List>
+                    }
+                </>
             }
+
+            {
+                currentDialogsSidebarItem === DialogsSidebarItemEnum.deleted &&
+                <>
+                    {deletedMessages.length === 0
+                        ? <div className={classes.emptyDialogs}>
+                            <Typography variant='subtitle1' color='primary'>
+                                There are no deleted dialogs
+                            </Typography>
+
+                        </div>
+                        : <List disablePadding>
+                            {dialogsDeletedElements}
+                        </List>
+                    }
+                </>
+            }
+
+            {
+                currentDialogsSidebarItem === DialogsSidebarItemEnum.spam &&
+                <>
+                    {spamMessages.length === 0
+                        ? <div className={classes.emptyDialogs}>
+                            <Typography variant='subtitle1' color='primary'>
+                                There are no spam dialogs
+                            </Typography>
+
+                        </div>
+                        : <List disablePadding>
+                            {dialogsSpamElements}
+                        </List>
+                    }
+                </>
+            }
+
         </Card>
     )
 };
@@ -54,9 +114,7 @@ type PropsType = {
 
 //========================== STYLES ================================================
 const useStyles = makeStyles({
-    card: {
-
-    },
+    card: {},
     avatar: {
         marginRight: 10
     },
@@ -68,5 +126,8 @@ const useStyles = makeStyles({
         height: 72,
         display: 'flex',
         alignItems: 'center'
+    },
+    emptyDialogs: {
+        padding: '8px 16px'
     }
 });

@@ -3,7 +3,6 @@ import {makeStyles} from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Link from '@material-ui/core/Link';
 
-
 const BlockField: React.FC<PropsType> = (props) => {
     const {left, right, rightType} = props;
     const classes = useStyles();
@@ -33,7 +32,8 @@ const useStyles = makeStyles({
         paddingLeft: 11
     },
     left: {
-        flexBasis: 200
+        flexBasis: 200,
+        flexShrink: 0
     },
     right: {
         flexGrow: 1

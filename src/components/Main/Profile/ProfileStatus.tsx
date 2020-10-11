@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-
 import {getStatusIsLoading, getStatusSelector} from "../../../redux/profile-selectors";
 import ListItem from "@material-ui/core/ListItem";
 import {makeStyles} from "@material-ui/core/styles";
@@ -8,7 +7,6 @@ import ProfileStatusForm from "./ProfileStatusForm";
 import LinearPreloader from "../../common/LinearPreloader";
 import Typography from "@material-ui/core/Typography";
 import {getStatus} from "../../../redux/profile-reducer";
-
 
 const ProfileStatus: React.FC<PropsType> = ({isOwner, userId}) => {
     const classes = useStyles();

@@ -1,5 +1,3 @@
-// DAL - уровень доступа к данным
-// упрощенный (через коллбэки) доступ к данным на сервере
 import axios from "axios";
 import {UserType} from "../types/types";
 

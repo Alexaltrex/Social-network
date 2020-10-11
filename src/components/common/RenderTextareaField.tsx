@@ -14,7 +14,6 @@ const RenderTextAreaField: React.FC<PropsType> = (props) => {
             <TextField
                 InputProps={classes ? {classes} as Partial<OutlinedInputProps> : null}
                 multiline
-                //rows={4}
                 variant="outlined"
                 label={label}
                 placeholder={placeholder}

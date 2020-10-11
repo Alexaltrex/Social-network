@@ -1,5 +1,5 @@
-import {GetItemsType, instance, ResponseTypeAPI, ResultCodesEnum} from "./api";
-import {FriendsValuesType, PhotosType, ProfileType} from "../types/types";
+import {instance, ResultCodesEnum} from "./api";
+import {PhotosType} from "../types/types";
 
 export const dialogsAPI = {
     // получить массив пользователей с кем ведется диалог
@@ -35,12 +35,19 @@ export const dialogsAPI = {
     // отметить сообщение как спам
     async signMessageAsSpam(messageId: string) {
         let response = await instance.post<SendMessageType>(`dialogs/messages/${messageId}/spam`)
+        console.log(response)
         return response.data;
     },
 
     // удалить сообщение (только для меня, не для собеседника)
     async deleteMessage(messageId: string) {
         let response = await instance.delete<SendMessageType>(`dialogs/messages/${messageId}`)
+        return response.data;
+    },
+
+    // восстановить удаленное или помеченное как спам сообщение
+    async restoreMessage(messageId: string) {
+        let response = await instance.put<SendMessageType>(`dialogs/messages/${messageId}/restore`)
         return response.data;
     },
 
@@ -64,10 +71,10 @@ export type MessageType = {
     recipientId: number
     recipientName: string
     viewed: boolean
-    deletedBySender: boolean
-    deletedByRecipient: boolean
-    isSpam: boolean
-    distributionId: any
+    deletedBySender: boolean // только для post
+    deletedByRecipient: boolean  //только для post
+    isSpam: boolean  //только для post
+    distributionId: any  //только для post
 }
 
 type GetMessagesType = {

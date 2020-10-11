@@ -1,12 +1,11 @@
-import React, {useRef, useState} from "react";
+import React, {useRef} from "react";
 import {Button, Card} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import Avatar from "@material-ui/core/Avatar";
 import {ProfileType} from "../../../types/types";
-import {Field, InjectedFormProps, reduxForm, reset, submit} from "redux-form";
+import {Field, InjectedFormProps, reduxForm, reset} from "redux-form";
 import PostAddIcon from '@material-ui/icons/PostAdd';
 import {required, shouldNotBeEmpty} from "../../../utilities/validators/validators";
-
 import {useDispatch, useSelector} from "react-redux";
 import RenderNakedTextAreaField from "../../common/RenderNakedTextareaField";
 import Typography from "@material-ui/core/Typography";
@@ -61,7 +60,6 @@ const ReduxForm = reduxForm<FormValuesType, OwnPropsType>({
 
 
 //============================= COMPONENT =====================================================
-
 const MyPosts: React.FC<PropsType> = ({profile}) => {
     const classes = useStyles();
     const editingPost = useSelector(getEditingPost)
@@ -77,7 +75,7 @@ const MyPosts: React.FC<PropsType> = ({profile}) => {
 
     const onOutClickHandler = () => {
         dispatch(profileAC.setEditingPost(false))
-    }
+    };
 
     const wrapperRef = useRef(null);
     useOutsideAlerter(wrapperRef, onOutClickHandler);
@@ -126,7 +124,7 @@ type FormPropsType = InjectedFormProps<FormValuesType, OwnPropsType> & OwnPropsT
 const useStyles = makeStyles({
     card: {
         padding: 15,
-        marginTop: 15,
+        marginTop: 10,
     },
     avatar: {
         width: 28,

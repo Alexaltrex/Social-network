@@ -57,7 +57,6 @@ const LoginForm: React.FC<LoginFormPropsType> = (props) => {
                 <div className={classes.fieldWrapper}>
                     <Field
                         name='captcha'
-                        //disabled={isLoading}
                         className={classes.textField}
                         component={RenderTextField}
                         placeholder='Enter symbols from image'
@@ -80,7 +79,6 @@ const LoginForm: React.FC<LoginFormPropsType> = (props) => {
                     variant="contained"
                     fullWidth={true}
                     size='large'
-                    className={classes.button}
                     disabled={submitting || pristine}>
                 Enter
             </Button>
@@ -164,9 +162,6 @@ const useStyles = makeStyles({
     fieldWrapper: {
         marginLeft: 35,
         marginBottom: 10
-    },
-    button: {
-        //marginBottom: 10,
     },
     title: {
         marginBottom: 20

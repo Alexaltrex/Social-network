@@ -1,5 +1,5 @@
 import {FormAction, stopSubmit} from 'redux-form';
-import {PhotosType, PostType, ProfileType} from "../types/types";
+import {PhotosType, PostType, ProfileSidebarItemEnum, ProfileType} from "../types/types";
 import {profileAPI} from "../DAL/profile-api";
 import {BaseThunkType, GetActionsType, StateType} from "./redux-store";
 import {appAC, AppActionsType} from "./app-reducer";
@@ -8,16 +8,16 @@ import {DATE} from "../utilities/date";
 let initialState = {
     posts: [
         {id: 1, message: 'Hello, world', likeCount: 4, likeMe: false, time: '25 September in 10:10'},
-    ] as Array<PostType>,
-    profile: null as null | ProfileType,
-    currentUserProfile: null as null | ProfileType,
-    status: null as null | string,
-    avatarIsLoading: false,
-    statusIsLoading: false,
-    editMode: false,
-    currentInfoFormSidebarItem: 0,
-    followed: null as null | boolean,
-    editingPost: false
+    ] as Array<PostType>, // массив постов
+    profile: null as null | ProfileType, // прифиль инициализированного пользователя
+    currentUserProfile: null as null | ProfileType, // профиль текущего просматриваемого пользователя
+    status: null as null | string, // статус
+    avatarIsLoading: false, // аватар загружается?
+    statusIsLoading: false, //  статус загружается?
+    editMode: false, // вкл./выкл. режим редактирования статуса
+    currentInfoFormSidebarItem: 0 as ProfileSidebarItemEnum, // текущий элемент бокового меню (все, удаленные, спам)
+    followed: null as null | boolean, // пользователь - друг?
+    editingPost: false // режим ввода нового поста (false - надпись, true - форма ввода)
 };
 
 export type initialStateType = typeof initialState;
@@ -148,6 +148,7 @@ export const getCurrentUserProfile = (id: number): ThunkType => async (dispatch)
     }
 };
 
+// определение явдяется ли другом пользователь
 export const getFollowed = (userId: number): ThunkType => async (dispatch) => {
     try {
         dispatch(appAC.toggleLoading(true));

@@ -22,7 +22,7 @@ import YouTubeIcon from '@material-ui/icons/YouTube';
 import LanguageIcon from '@material-ui/icons/Language';
 import ContactsIcon from '@material-ui/icons/Contacts';
 import CircularPreloader from "../../common/CircularPreloader";
-import {ProfileType} from "../../../types/types";
+import {ProfileSidebarItemEnum, ProfileType} from "../../../types/types";
 import clsx from "clsx";
 import RenderTextAreaField from "../../common/RenderTextareaField";
 import {saveProfile} from "../../../redux/profile-reducer";
@@ -31,7 +31,7 @@ import {required, shouldNotBeEmpty} from "../../../utilities/validators/validato
 //========================== FORM ==============================================
 const Form: React.FC<InjectedFormProps<FormValuesType, FormOwnPropsType> & FormOwnPropsType> = (props) => {
     const classes = useStyles();
-    const classesField = useStylesField();
+    useStylesField();
     const {handleSubmit, submitting, pristine, reset, error, profile} = props
     const currentInfoFormSidebarItem = useSelector(getCurrentInfoFormSidebarItem);
 
@@ -47,9 +47,8 @@ const Form: React.FC<InjectedFormProps<FormValuesType, FormOwnPropsType> & FormO
     ];
 
     const FieldContactsElements = Object.keys(profile.contacts)
-        .map((el, i) => <div className={classes.fieldWrapper}>
+        .map((el, i) => <div key={i} className={classes.fieldWrapper}>
             <Field name={`contacts.${el}`}
-                   key={i}
                    icon={FieldContactsIconArray[i]}
                    component={RenderTextField}
                    validate={[shouldNotBeEmpty]}
@@ -59,13 +58,12 @@ const Form: React.FC<InjectedFormProps<FormValuesType, FormOwnPropsType> & FormO
             />
         </div>);
 
-    console.log(profile.fullName)
-
     return (
         <form onSubmit={handleSubmit}>
 
 
-            <div className={clsx(classes.fieldWrapper, (currentInfoFormSidebarItem) !== 0 && classes.hide)}>
+            <div
+                className={clsx(classes.fieldWrapper, (currentInfoFormSidebarItem) !== ProfileSidebarItemEnum.main && classes.hide)}>
                 <Field name='fullName'
                        icon={<AccountCircleIcon/>}
                        component={RenderTextField}
@@ -77,7 +75,7 @@ const Form: React.FC<InjectedFormProps<FormValuesType, FormOwnPropsType> & FormO
             </div>
 
 
-            <div className={clsx(currentInfoFormSidebarItem !== 1 && classes.hide)}>
+            <div className={clsx(currentInfoFormSidebarItem !== ProfileSidebarItemEnum.job && classes.hide)}>
                 <div className={classes.fieldWrapper}>
                     <Field name='lookingForAJob'
                            component={RenderCheckbox}
@@ -100,7 +98,7 @@ const Form: React.FC<InjectedFormProps<FormValuesType, FormOwnPropsType> & FormO
                 </div>
             </div>
 
-            <div className={clsx(currentInfoFormSidebarItem !== 2 && classes.hide)}>
+            <div className={clsx(currentInfoFormSidebarItem !== ProfileSidebarItemEnum.contacts && classes.hide)}>
                 {FieldContactsElements}
             </div>
 
@@ -149,9 +147,7 @@ const ProfileInfoForm = () => {
         }
     }
     let onSubmit = (values: FormValuesType) => {
-        console.log(values);
         dispatch(saveProfile(values));
-        //dispatch(profileAC.setEditMode(false));
     };
 
     const initialValues = profile ? profile : undefined;

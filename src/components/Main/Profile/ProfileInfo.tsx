@@ -1,8 +1,6 @@
 import React, {useState} from "react";
 import {Card} from "@material-ui/core";
 import CardContent from "@material-ui/core/CardContent";
-import {useDispatch, useSelector} from "react-redux";
-import {getProfileSelector} from "../../../redux/profile-selectors";
 import {makeStyles} from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import CircularPreloader from "../../common/CircularPreloader";
@@ -32,7 +30,10 @@ const ProfileInfo: React.FC<PropsType> = ({isOwner, userId, profile}) => {
         .keys(profile.contacts)
         .map(key => {
             if (profile.contacts[key as keyof ContactsType]) {
-                return <BlockField left={key} right={profile.contacts[key as keyof ContactsType]} rightType='link'/>
+                return <BlockField key={key}
+                                   left={key}
+                                   right={profile.contacts[key as keyof ContactsType]}
+                                   rightType='link'/>
             }
         });
 
@@ -58,10 +59,6 @@ const ProfileInfo: React.FC<PropsType> = ({isOwner, userId, profile}) => {
                 <ListItem button
                           className={classes.showDetailInfo}
                           onClick={onShowInfoClick}
-                          classes={{
-                              //root: classes.listItem,
-                              //gutters: classes.gutters
-                          }}
                 >
                     <Typography variant='body2' align='center' color='primary' display='block'>
                         {showDetailedInfoTitle}
@@ -100,19 +97,18 @@ const ProfileInfo: React.FC<PropsType> = ({isOwner, userId, profile}) => {
             </CardContent>
         </Card>
     );
-}
+};
 export default ProfileInfo;
 
 //========================== STYLES ================================================
 const useStyles = makeStyles({
-    card: {
-    },
+    card: {},
     cardContent: {
         paddingLeft: 5,
-        paddingTop: 15,
+        paddingTop: 10,
         paddingRight: 5,
         '&:last-child': {
-            paddingBottom: 15
+            paddingBottom: 10
         }
     },
     fullName: {
@@ -122,7 +118,7 @@ const useStyles = makeStyles({
     },
     divider: {
         marginTop: 5,
-        marginBottom: 16
+        marginBottom: 5
     },
     showDetailInfo: {
         justifyContent: 'center'

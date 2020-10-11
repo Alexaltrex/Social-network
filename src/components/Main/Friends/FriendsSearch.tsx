@@ -1,5 +1,3 @@
-//========================== FORM =======================================
-
 import React from "react";
 import {Field, InjectedFormProps, reduxForm, reset, submit} from "redux-form";
 import SearchIcon from '@material-ui/icons/Search';
@@ -13,10 +11,9 @@ import {getIsFriendsSearching, getSearchFriendsParams} from "../../../redux/user
 import CircularPreloader from "../../common/CircularPreloader";
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 
+//========================== FORM =======================================
 const Form: React.FC<FormPropsType> = (props) => {
-    const {handleSubmit, submitting, pristine, reset, error} = props;
-    const classes = useStyles();
-    //const classesField = useStylesField();
+    const {handleSubmit} = props;
 
     const onChangeHandler = () => {
         dispatch(submit('friends-search'));
@@ -26,11 +23,9 @@ const Form: React.FC<FormPropsType> = (props) => {
     const dispatch = useDispatch();
     return (
         <form onSubmit={handleSubmit}>
-            <div >
+            <div>
                 <Field name='term'
                        component={RenderTextField}
-                       //classes={classesField}
-                       //icon={<SearchIcon/>}
                        fullWidth
                        validate={[shouldNotBeEmpty]}
                        label='Friends name'
@@ -56,11 +51,10 @@ const FriendsSearch: React.FC = () => {
     const dispatch = useDispatch();
     const onSubmit = (formValue: FormParamsType) => {
         dispatch(usersAC.setSearchFriendsParams({term: formValue.term}))
-        console.log(formValue)
     };
     const icon = searchFriendsParams.term === ''
-    ? <SearchIcon/>
-    : <HighlightOffIcon/>
+        ? <SearchIcon/>
+        : <HighlightOffIcon/>
 
     const onClickHandler = () => {
         if (searchFriendsParams.term !== '') {
@@ -76,7 +70,7 @@ const FriendsSearch: React.FC = () => {
                 {
                     !isFriendsSearching
                         ? <IconButton onClick={onClickHandler}>{icon}</IconButton>
-                        : <CircularPreloader size={20} style='absolute' />
+                        : <CircularPreloader size={20} styleType='absolute'/>
                 }
             </div>
 
@@ -123,8 +117,3 @@ const useStyles = makeStyles({
     }
 
 });
-// const useStylesField = makeStyles({
-//     root: {
-//         width: '100%'
-//     },
-// });

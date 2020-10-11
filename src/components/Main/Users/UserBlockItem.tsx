@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {Grid} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import {Link as RouterLink} from "react-router-dom";
@@ -16,13 +16,11 @@ import {getFollowingInProgress, getIsFollowing} from "../../../redux/users-selec
 import {UserType} from "../../../types/types";
 import {getFollow, getUnfollow} from "../../../redux/users-reduser";
 import CircularPreloader from "../../common/CircularPreloader";
-import SendIcon from "@material-ui/core/SvgIcon/SvgIcon";
+import SendIcon from '@material-ui/icons/Send';
 import SendMessageForm from "../../common/SendMessageForm";
-import {getDialogs} from "../../../redux/dialogs-reducer";
-import {getDialogsSelector} from "../../../redux/dialogs-selectors";
 import {DialogType} from "../../../DAL/dialogs-api";
 
-const User: React.FC<PropType> = ({user, dialogs}) => {
+const UserBlockItem: React.FC<PropType> = ({user, dialogs}) => {
     const classes = useStyles();
     const [openSendMessageForm, setOpenSendMessageForm] = React.useState(false);
     const followingInProgress = useSelector(getFollowingInProgress);
@@ -48,7 +46,7 @@ const User: React.FC<PropType> = ({user, dialogs}) => {
 
     return (
         <Grid item>
-            <Card elevation={6} className={classes.root}>
+            <Card elevation={6} className={classes.card}>
                 <CardActionArea component={RouterLink}
                                 to={`/users/${user.id}`}>
                     <Avatar className={classes.avatar}
@@ -60,11 +58,6 @@ const User: React.FC<PropType> = ({user, dialogs}) => {
                                 variant='subtitle2'
                                 align='center'>
                         {user.name}
-                    </Typography>
-                    <Typography //color='primary'
-                        variant='body2'
-                        align='center'>
-                        {user.status}
                     </Typography>
                 </CardContent>
 
@@ -88,7 +81,7 @@ const User: React.FC<PropType> = ({user, dialogs}) => {
                                 isFollowing
                                 && followingInProgress.some(item => item === user.id)
                                 &&
-                                <CircularPreloader size={20} style={'absolute'}/>
+                                <CircularPreloader size={20} styleType={'absolute'}/>
                             }
 
                         </div>
@@ -123,7 +116,7 @@ const User: React.FC<PropType> = ({user, dialogs}) => {
     )
 };
 
-export default User;
+export default UserBlockItem;
 
 //=========================== TYPES =======================================================
 type PropType = {
@@ -133,7 +126,7 @@ type PropType = {
 
 //========================== STYLES =============================================================
 const useStyles = makeStyles({
-    root: {
+    card: {
         width: 150,
         padding: 10
     },

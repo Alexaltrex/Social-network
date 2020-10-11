@@ -6,7 +6,8 @@ import FirstPageIcon from '@material-ui/icons/FirstPage';
 import LastPageIcon from '@material-ui/icons/LastPage';
 import indigo from "@material-ui/core/colors/indigo";
 
-const Paginator: React.FC<PropsType> = ({totalItemsCount, pageSize, currentPage, onPageChanged, portionSize = 10}) => {
+const Paginator: React.FC<PropsType> = (props) => {
+    const {totalItemsCount, pageSize, currentPage, onPageChanged, portionSize = 10} = props;
     const classes = useStyles();
     let pagesCount = Math.ceil(totalItemsCount / pageSize);// число страниц
     let pages: Array<number> = [];
@@ -67,7 +68,7 @@ const Paginator: React.FC<PropsType> = ({totalItemsCount, pageSize, currentPage,
     const nextPortionLabel = `${nextPortionLabelStart}...${nextPortionLabelEnd}`;
 
     return (
-        <div className={classes.paginator}>
+        <div>
 
             {portionNumber > 1 &&
             <IconButton onClick={setFirstPortion}
@@ -121,9 +122,6 @@ type PropsType = {
 
 //========================== STYLES ================================================
 const useStyles = makeStyles({
-    paginator: {
-        //marginBottom: 10,
-    },
     buttonRoot: {
         marginRight: 5,
         paddingLeft: 3,

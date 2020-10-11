@@ -1,8 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import User from "./User";
-import CircularPreloader from '../../common/CircularPreloader';
 import Paginator from '../../common/Paginator';
-import {Grid} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import {useDispatch, useSelector} from "react-redux";
 import {
@@ -10,7 +7,7 @@ import {
     getPageSize,
     getSearchUsersParams, getShowUsersFrom,
     getTotalUsersCount,
-    getUsersSelector
+    getUsersSelector, getValueFromHeaderSearch
 } from "../../../redux/users-selectors";
 import {getIsLoading} from "../../../redux/app-selectors";
 import {getUsers, searchUsers, usersAC} from "../../../redux/users-reduser";
@@ -22,9 +19,12 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import Button from "@material-ui/core/Button";
 import Collapse from "@material-ui/core/Collapse";
-import SearchUsers from "./SearchUsers";
+import UsersSearch from "./UsersSearch";
 import {getDialogs} from "../../../redux/dialogs-reducer";
 import {getDialogsSelector} from "../../../redux/dialogs-selectors";
+import ViewSwitcher from "../../common/ViewSwitcher";
+import UsersList from "./UsersList";
+import {ViewType} from "../../../types/types";
 
 let Users: React.FC = () => {
     const classes = useStyles();
@@ -36,9 +36,12 @@ let Users: React.FC = () => {
     const searchUsersParams = useSelector(getSearchUsersParams);
     const showUsersFrom = useSelector(getShowUsersFrom);
     const dialogs = useSelector(getDialogsSelector);
+    const valueFromHeaderSearch = useSelector(getValueFromHeaderSearch);
+
     const dispatch = useDispatch();
 
     const [searchPanelIsOpen, setSearchPanelIsOpen] = useState(false);
+    const [view, setView] = useState<ViewType>('block')
 
     useEffect(() => {
         dispatch(getDialogs());
@@ -52,12 +55,6 @@ let Users: React.FC = () => {
         }
 
     }, [currentPage, pageSize, showUsersFrom, searchUsersParams.term, searchUsersParams.friend]);
-
-    let usersElements = users && users.map(user => <User
-        user={user}
-        key={user.id}
-        dialogs={dialogs}
-    />);
 
     const onPageChanged = (pageNumber: number) => {
         dispatch(usersAC.setCurrentPage(pageNumber));
@@ -74,14 +71,20 @@ let Users: React.FC = () => {
 
     const countTitle = showUsersFrom === 'all' ? 'Total all users count:' : 'Total users count from search:'
 
+    useEffect(() => {
+        if (valueFromHeaderSearch) {
+            setSearchPanelIsOpen(true)
+        }
+    }, [valueFromHeaderSearch])
+
     return (
         <div className={classes.root}>
 
             <Collapse in={searchPanelIsOpen} timeout="auto" unmountOnExit>
-                <SearchUsers/>
+                <UsersSearch/>
             </Collapse>
 
-            <div className={classes.count}>
+            <div className={classes.topPanel}>
                 <Button onClick={onSearchCharactersClick}
                         size='small'
                         className={classes.button}
@@ -113,23 +116,42 @@ let Users: React.FC = () => {
 
 
             {
-                totalUsersCount !==0 && totalUsersCount && pageSize && currentPage &&
-                <div className={classes.paginator}>
-                    <Paginator totalItemsCount={totalUsersCount}
-                               pageSize={pageSize}
-                               currentPage={currentPage}
-                               onPageChanged={onPageChanged}
+                totalUsersCount !== 0 && totalUsersCount && pageSize && currentPage &&
+                <div className={classes.paginatorTopWrapper}>
+                    <div className={classes.paginator}>
+                        <Paginator totalItemsCount={totalUsersCount}
+                                   pageSize={pageSize}
+                                   currentPage={currentPage}
+                                   onPageChanged={onPageChanged}
+                        />
+                    </div>
 
-                    />
+                    <ViewSwitcher view={view} setView={setView}/>
                 </div>
 
             }
 
-            {isLoading || !users
-                ? <CircularPreloader/>
-                : <Grid container alignContent='stretch' justify='flex-start' wrap='wrap' spacing={2}>
-                    {usersElements}
-                </Grid>}
+            <UsersList isLoading={isLoading}
+                       users={users}
+                       dialogs={dialogs}
+                       view={view}
+                       pageSize={pageSize}
+            />
+
+            {
+                totalUsersCount !== 0 && totalUsersCount && pageSize && currentPage &&
+                <div className={classes.paginatorBottomWrapper}>
+                    <div className={classes.paginator}>
+                        <Paginator totalItemsCount={totalUsersCount}
+                                   pageSize={pageSize}
+                                   currentPage={currentPage}
+                                   onPageChanged={onPageChanged}
+                        />
+                    </div>
+                    <ViewSwitcher view={view} setView={setView}/>
+                </div>
+            }
+
         </div>
     )
 };
@@ -142,7 +164,7 @@ const useStyles = makeStyles({
         //padding: 15,
         minHeight: '100vh'
     },
-    count: {
+    topPanel: {
         display: 'flex',
         alignItems: 'center',
         marginTop: 10,
@@ -155,8 +177,18 @@ const useStyles = makeStyles({
         marginRight: 10,
         textTransform: 'none'
     },
+    paginatorTopWrapper: {
+        marginBottom: 10,
+        display: 'flex',
+        alignItems: 'center'
+    },
+    paginatorBottomWrapper: {
+        marginTop: 10,
+        display: 'flex',
+        alignItems: 'center'
+    },
     paginator: {
-        marginBottom: 10
-    }
+        marginRight: 20
+    },
 });
 

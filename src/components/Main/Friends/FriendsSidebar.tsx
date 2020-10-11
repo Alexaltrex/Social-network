@@ -1,9 +1,8 @@
-import React, {useEffect} from "react";
+import React from "react";
 import {Card} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import Tabs from "@material-ui/core/Tabs";
 import indigo from "@material-ui/core/colors/indigo";
-import SearchIcon from '@material-ui/icons/Search';
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import Tab from "@material-ui/core/Tab";
 import GroupIcon from '@material-ui/icons/Group';
@@ -11,7 +10,6 @@ import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import {useDispatch, useSelector} from "react-redux";
 import {getCurrentFriendsSidebarItem} from "../../../redux/users-selectors";
 import {usersAC} from "../../../redux/users-reduser";
-
 
 const FriendsSidebar = () => {
     const classes = useStyles();
@@ -86,11 +84,13 @@ const useStyles = makeStyles({
     wrapper: {
         flexDirection: 'row',
         justifyContent: 'flex-start',
-        textTransform: 'none'
+        textTransform: 'none',
+        '& > *:first-child': {
+            marginBottom: '0!important'
+        }
     },
     icon: {
-        marginRight: 15,
-        marginLeft: 15
+        margin: '0 10px',
     },
     selected: {
         color: indigo[500],

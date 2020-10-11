@@ -14,7 +14,7 @@ import {shouldNotBeEmpty} from "../../utilities/validators/validators";
 import RenderTextAreaField from "./RenderTextareaField";
 import SendIcon from '@material-ui/icons/Send';
 import {useDispatch} from "react-redux";
-import {dialogsAC, sendMessage} from "../../redux/dialogs-reducer";
+import {sendMessage} from "../../redux/dialogs-reducer";
 import {DialogType} from "../../DAL/dialogs-api";
 
 //===================== FORM ==================================
@@ -70,10 +70,6 @@ const SendMessageForm: React.FC<ComponentPropsType> = ({open, onClose, id, name,
         onClose(false);
     };
 
-    const onListItemClick = () => {
-        dispatch(dialogsAC.setCurrentFriendsId(id))
-    };
-
     const dialogIsExist = dialogs && dialogs.some(el => el.id === id);
 
     return (
@@ -84,7 +80,6 @@ const SendMessageForm: React.FC<ComponentPropsType> = ({open, onClose, id, name,
                         classes={{
                             paper: classes.paper
                         }}
-                        className={classes.dialog}
                 >
                     <div className={classes.titleWrapper}>
                         <Typography className={classes.title}>
@@ -97,7 +92,6 @@ const SendMessageForm: React.FC<ComponentPropsType> = ({open, onClose, id, name,
                                   to={`/dialogs/${id}`}
                                   variant='body2'
                                   className={classes.titleLink}
-                                  onClick={onListItemClick}
                             >
                                 Go to dialog with {name}
                             </Link>
@@ -154,9 +148,6 @@ type ComponentPropsType = {
 }
 //========================== STYLES ======================
 const useStyles = makeStyles({
-    dialog: {
-        //width: 500
-    },
     paper: {
         width: 500
     },

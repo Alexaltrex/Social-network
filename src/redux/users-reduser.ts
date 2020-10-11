@@ -4,35 +4,38 @@ import {
     SearchUsersParamsType,
     UserType
 } from "../types/types";
-import {BaseThunkType, GetActionsType, StateType} from "./redux-store";
+import {BaseThunkType, GetActionsType} from "./redux-store";
 import {Dispatch} from "redux";
 import {usersAPI} from "../DAL/users-api";
 import {appAC, AppActionsType} from "./app-reducer";
 
 let initialState = {
-    users: null as null | Array<UserType>,
-    pageSize: 10,
-    pageFriendsSize: 10,
-    totalUsersCount: 0,
-    totalFriendsCount: 0,
-    currentPage: 1,
-    currentFriendsPage: 1,
-    isLoading: false,
-    isFollowing: false,
-    // массив пользователей, для которых послан запрос на подписку/отписку
-    followingInProgress: [] as Array<number>,
-    friends: null as null | Array<UserType>,
-    searchUsersParams: {term: '', friend: 'all'} as SearchUsersParamsType,
-    searchFriendsParams: {term: ''} as SearchFriendsParamsType,
-    isFriendsSearching: false,
-    showUsersFrom: 'all' as 'all' | 'search',
-    currentFriendsSidebarItem: 0,
-    needToChangeListOfFriends: false,
-    friendIdToRemove: null as null | number
+    users: null as null | Array<UserType>, // массив пользователей
+    pageSize: 10, // количество пользователей на одной странице
+    pageFriendsSize: 10, // количество друзей на одной странице
+    totalUsersCount: 0, // общее число пользователей
+    totalFriendsCount: 0, // общее число друзей
+    currentPage: 1, // номер текущей страницы пользователей
+    currentFriendsPage: 1, // номер текущей страницы друзей
+    isLoading: false, // загрузка происходит?
+    isFollowing: false, // отписка/подписка происходит?
+    followingInProgress: [] as Array<number>, // массив пользователей, для которых послан запрос на подписку/отписку
+    friends: null as null | Array<UserType>, // массив друзей
+    searchUsersParams: {term: '', friend: 'all'} as SearchUsersParamsType, // параметры поиска пользователей
+    searchFriendsParams: {term: ''} as SearchFriendsParamsType, // параметры поиска друзей
+    isFriendsSearching: false, // поиск друзей происходит?
+    showUsersFrom: 'all' as 'all' | 'search', // откуда показывать пользователей - всех или из поиска
+    currentFriendsSidebarItem: 0, // номер элемента бокового меню
+    needToChangeListOfFriends: false, // список друзей нужно изменить (используется для обновления после удаления)?
+    friendIdToRemove: null as null | number, // id друга, которого удаляем
+    valueFromHeaderSearch: null as null | string // страка поиска пользователя из header
 };
 
 const usersReducer = (state = initialState, action: UsersActionsType): initialStateType => {
     switch (action.type) {
+        case 'USERS/SET_VALUE_FROM_HEADER_SEARCH': {
+            return {...state, valueFromHeaderSearch: action.valueFromHeaderSearch}
+        }
         case 'USERS/TOGGLE_IS_FRIENDS_SEARCHING': {
             return {...state, isFriendsSearching: action.isFriendsSearching}
         }
@@ -106,6 +109,7 @@ const usersReducer = (state = initialState, action: UsersActionsType): initialSt
 };
 
 export const usersAC = {
+    setValueFromHeaderSearch: (valueFromHeaderSearch: string | null) => ({type: 'USERS/SET_VALUE_FROM_HEADER_SEARCH', valueFromHeaderSearch} as const),
     toggleIsFriendsSearching: (isFriendsSearching: boolean) => ({type: 'USERS/TOGGLE_IS_FRIENDS_SEARCHING', isFriendsSearching} as const),
     setNeedToChangeListOfFriends: (needToChangeListOfFriends: boolean, friendIdToRemove: number | null) => ({
         type: 'USERS/SET_NEED_TO_CHANG_LIST_OF_FRIENDS',
@@ -203,7 +207,6 @@ export const removeAndUpdateFriends = (currentPage: number, pageSize: number, id
         dispatch(usersAC.toggleFollowingProgress(false, id));
     }
 };
-
 
 type FollowUnfollwType = UsersActionsType;//followType | unfollowType
 

@@ -71,11 +71,11 @@ type PropsType = {
 //========================== STYLES ================================================
 const useStyles = makeStyles((theme: Theme) => ({
     cardContent: {
-        paddingLeft: 15,
-        paddingTop: 15,
-        paddingRight: 15,
+        paddingLeft: 5,
+        paddingTop: 5,
+        paddingRight: 5,
         '&:last-child': {
-            paddingBottom: 15
+            paddingBottom: 5
         }
     },
     tabs: {
@@ -89,20 +89,24 @@ const useStyles = makeStyles((theme: Theme) => ({
     wrapper: {
         flexDirection: 'row',
         justifyContent: 'flex-start',
-        textTransform: 'none'
+        textTransform: 'none',
+        '& > *:first-child': {
+            marginBottom: '0!important'
+        }
     },
     icon: {
-        marginRight: 15,
-        marginLeft: 15
+        margin: '0 10px 0',
+
     },
     selected: {
         color: indigo[500],
         backgroundColor: '#eee'
     },
     tabRoot: {
-        padding: 0
+        padding: 0,
+        marginLeft: 0
     },
     labelIcon: {
-        minHeight: 50
+        minHeight: 50,
     }
 }));

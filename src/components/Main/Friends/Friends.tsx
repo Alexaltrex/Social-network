@@ -1,13 +1,11 @@
-import React, {useEffect} from "react";
+import React from "react";
 import {withAuthRedirect} from "../../../hoc/withAuthRedirect";
 import {makeStyles} from "@material-ui/core/styles";
 import FriendsList from "./FriendsList";
 import FriendsSidebar from "./FriendsSidebar";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {getCurrentFriendsSidebarItem} from "../../../redux/users-selectors";
 import FriendsSomethingElse from "./FriendsSomethingElse";
-import {usersAC} from "../../../redux/users-reduser";
-
 
 const Friends = () => {
     const classes = useStyles();
@@ -44,6 +42,6 @@ const useStyles = makeStyles({
         marginRight: 15,
     },
     rightColumn: {
-        flexBasis: 240,
+        flexBasis: 220,
     }
 });

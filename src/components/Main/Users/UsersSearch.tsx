@@ -1,4 +1,4 @@
-import React, {useRef} from "react";
+import React, {useEffect} from "react";
 import {reduxForm, Field, InjectedFormProps, submit} from 'redux-form'
 import {makeStyles} from "@material-ui/core/styles";
 import RenderTextField from "../../common/RenderTextField";
@@ -8,24 +8,25 @@ import RenderRadioButton from "../../common/RenderRadioButton";
 import SearchIcon from '@material-ui/icons/Search';
 import Divider from "@material-ui/core/Divider";
 import {shouldNotBeEmpty} from "../../../utilities/validators/validators";
-import {useDispatch} from "react-redux";
-import {searchUsers, usersAC} from "../../../redux/users-reduser";
+import {useDispatch, useSelector} from "react-redux";
+import {usersAC} from "../../../redux/users-reduser";
 import {SearchUsersParamsType} from "../../../types/types";
+import {getValueFromHeaderSearch} from "../../../redux/users-selectors";
 
 //========================== FORM =======================================
 const SearchUsersForm: React.FC<SearchUsersFormPropsType> = (props) => {
-    const {handleSubmit, submitting, pristine, reset, error} = props;
+    const {handleSubmit, submitting, pristine, error} = props;
     const classes = useStyles();
     const classesRadioButton = useStylesRadioButton();
     const dispatch = useDispatch();
 
     return (
-
         <form onSubmit={handleSubmit}>
 
             <Field name='term'
                    component={RenderTextField}
                    fullWidth
+                   autoFocus={true}
                    validate={[shouldNotBeEmpty]}
                    label='User name'
                    size='small'
@@ -71,22 +72,32 @@ const SearchUsersForm: React.FC<SearchUsersFormPropsType> = (props) => {
 //================================== REDUX-FORM ======================================
 const SearchUsersReduxForm = reduxForm<SearchUsersParamsType, SearchUsersFormOwnPropsType>({
     form: 'searchUsers',
-    //validate
 })(SearchUsersForm);
 
 // =========================== COMPONENT ============================================================
-const SearchUsers: React.FC = () => {
+const UsersSearch: React.FC = () => {
     const classes = useStyles();
+    const valueFromHeaderSearch = useSelector(getValueFromHeaderSearch);
     const dispatch = useDispatch();
 
     const onSubmit = (formValue: SearchUsersParamsType) => {
-        console.log(formValue)
         dispatch(usersAC.setSearchUsersParams(formValue));
         dispatch(usersAC.setCurrentPage(1));
         dispatch(usersAC.setShowUsersFrom('search'));
     };
 
-    const initialValues = {term: '', friend: 'all'} as SearchUsersParamsType;
+    const term = valueFromHeaderSearch ? valueFromHeaderSearch : '';
+
+    const initialValues = {term: term, friend: 'all'} as SearchUsersParamsType;
+
+    useEffect(() => {
+        if (valueFromHeaderSearch) {
+            dispatch(submit('searchUsers'));
+            dispatch(usersAC.setSearchUsersParams({term: valueFromHeaderSearch, friend: 'all'}));
+            dispatch(usersAC.setCurrentPage(1));
+            dispatch(usersAC.setShowUsersFrom('search'));
+        }
+    }, [valueFromHeaderSearch])
 
     return (
         <Card className={classes.card} elevation={6}>
@@ -105,7 +116,7 @@ const SearchUsers: React.FC = () => {
     )
 };
 
-export default SearchUsers;
+export default UsersSearch;
 
 //===================================== TYPES====================================================
 type SearchUsersFormPropsType =

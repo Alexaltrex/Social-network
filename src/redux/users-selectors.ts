@@ -17,6 +17,7 @@ export const getCurrentFriendsSidebarItem = (state: StateType) => state.users.cu
 export const getNeedToChangeListOfFriends = (state: StateType) => state.users.needToChangeListOfFriends;
 export const getFriendIdToRemove = (state: StateType) => state.users.friendIdToRemove;
 export const getIsFriendsSearching = (state: StateType) => state.users.isFriendsSearching;
+export const getValueFromHeaderSearch = (state: StateType) => state.users.valueFromHeaderSearch;
 
 
 

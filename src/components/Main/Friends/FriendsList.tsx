@@ -17,6 +17,7 @@ import Typography from "@material-ui/core/Typography";
 import Paginator from "../../common/Paginator";
 import {getDialogs} from "../../../redux/dialogs-reducer";
 import {getDialogsSelector} from "../../../redux/dialogs-selectors";
+import Divider from "@material-ui/core/Divider";
 
 const FriendsList: React.FC = () => {
     const classes = useStyles();
@@ -58,7 +59,7 @@ const FriendsList: React.FC = () => {
     return (
         <Card className={classes.card} elevation={6}>
             <div className={classes.title}>
-                <Typography component='span' color='primary' className={classes.titleleft}>
+                <Typography component='span' color='primary' className={classes.titleLeft}>
                     Friends
                 </Typography>
                 <Typography component='span' color='textSecondary'>
@@ -67,7 +68,7 @@ const FriendsList: React.FC = () => {
             </div>
             <FriendsSearch/>
 
-            <div className={classes.paginator}>
+            <div className={classes.paginatorTop}>
                 <Paginator totalItemsCount={totalFriendsCount}
                            pageSize={pageSize}
                            currentPage={currentFriendsPage}
@@ -78,6 +79,16 @@ const FriendsList: React.FC = () => {
             <List>
                 {FriendsListElements}
             </List>
+
+            <Divider className={classes.divider}/>
+
+            <div className={classes.paginatorBottom}>
+                <Paginator totalItemsCount={totalFriendsCount}
+                           pageSize={pageSize}
+                           currentPage={currentFriendsPage}
+                           onPageChanged={onPageChanged}
+                />
+            </div>
 
         </Card>
     )
@@ -93,13 +104,19 @@ const useStyles = makeStyles({
     title: {
         padding: '5px 10px 5px 10px'
     },
-    titleleft: {
+    titleLeft: {
         marginRight: 5
     },
-    paginator: {
+    paginatorTop: {
         marginLeft: 10,
         marginTop: 5
-    }
-
-
+    },
+    paginatorBottom: {
+        marginLeft: 10,
+        marginBottom: 5,
+        marginTop: 10
+    },
+    divider: {
+        margin: '0 10px'
+    },
 });

@@ -1,9 +1,8 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {useParams} from "react-router";
 import {getId} from "../../../redux/auth-selectors";
 import {getIsLoading} from "../../../redux/app-selectors";
-import CircularPreloader from "../../common/CircularPreloader";
 import {getCurrentUserProfile, getFollowed, getProfile} from "../../../redux/profile-reducer";
 
 import {makeStyles} from "@material-ui/core/styles";
@@ -27,7 +26,7 @@ import {
 import {searchFriends} from "../../../redux/users-reduser";
 import MyPosts from "./MyPosts";
 import MyPost from "./MyPost";
-import useOutsideAlerter from "../../../hooks/hooks";
+import {Skeleton} from "@material-ui/lab";
 
 const Profile: React.FC = () => {
     const classes = useStyles();
@@ -41,7 +40,6 @@ const Profile: React.FC = () => {
     const followed = useSelector(getFollowedSelector);
     const posts = useSelector(getPosts);
     const dispatch = useDispatch();
-
 
     let {userId} = useParams();
     const isOwner = userId ? false : true;
@@ -65,29 +63,65 @@ const Profile: React.FC = () => {
     const MyPostsItemElements = posts
         .map(el => <MyPost key={el.id} post={el} profile={profile}/>);
 
-    if (isLoading || !profile) return <CircularPreloader/>
-
     return (
         <div className={classes.root}>
 
             <div className={classes.firstColumn}>
-                <ProfileAvatar isOwner={isOwner}
-                               userId={userId}
-                               profile={profile}
-                               followed={followed}
-                />
-                {isOwner && <ProfileFriends friends={friends} totalFriendsCount={totalFriendsCount}/>}
+
+                {
+                    !isLoading && profile
+
+                    ? <ProfileAvatar isOwner={isOwner}
+                                     userId={userId}
+                                     profile={profile}
+                                     followed={followed}
+                    />
+                    : <Skeleton variant="rect" width={230} height={266} className={classes.avatar}/>
+                }
+
+                {
+                    isOwner &&
+                    <>
+                        {
+                            !isLoading && friends
+                                ? <ProfileFriends friends={friends}
+                                                  totalFriendsCount={totalFriendsCount}
+                                />
+                                : <Skeleton variant="rect" width={230} height={282} className={classes.profileFriends} />
+                        }
+                    </>
+                }
+
             </div>
 
             <div className={classes.middleColumn}>
                 {!editMode
                     ? <>
-                        <ProfileInfo isOwner={isOwner} userId={userId} profile={profile}/>
+
+                        {
+                            !isLoading && profile
+                                ? <ProfileInfo isOwner={isOwner} userId={userId} profile={profile}/>
+                                : <Skeleton variant="rect" width='100%' height={151} className={classes.profileInfo}/>
+                        }
+
                         {
                             isOwner &&
                             <>
-                                <MyPosts profile={profile}/>
-                                {MyPostsItemElements}
+                                {
+                                    !isLoading && profile
+                                        ? <MyPosts profile={profile}/>
+                                        : <Skeleton variant="rect" width='100%' height={54} className={classes.myPosts}/>
+                                }
+
+                                {
+                                    !isLoading && profile
+
+                                        ? <>
+                                            {MyPostsItemElements}
+                                        </>
+                                        : <Skeleton variant="rect" width='100%' height={200} className={classes.myPost}/>
+                                }
+
                             </>
                         }
                     </>
@@ -116,13 +150,33 @@ const useStyles = makeStyles({
     },
     firstColumn: {
         flexBasis: 230,
-        marginRight: 15,
+        marginRight: 10,
     },
     middleColumn: {
         flexGrow: 1,
-        marginRight: 15
+
     },
     lastColumn: {
-        width: 160,
+        width: 130,
+        marginLeft: 10
+    },
+    avatar: {
+        marginBottom: 10,
+        borderRadius: 4
+    },
+    profileFriends: {
+        borderRadius: 4
+    },
+    profileInfo: {
+        marginBottom: 10,
+        borderRadius: 4
+    },
+    myPosts: {
+        marginBottom: 10,
+        borderRadius: 4
+    },
+    myPost: {
+        marginBottom: 10,
+        borderRadius: 4
     }
 });

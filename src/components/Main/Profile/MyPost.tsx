@@ -49,7 +49,6 @@ const MyPost: React.FC<PropsType> = ({post, profile}) => {
         if (prevOpen.current === true && open === false) {
             anchorRef.current!.focus();
         }
-
         prevOpen.current = open;
     }, [open]);
     //======================================
@@ -61,13 +60,11 @@ const MyPost: React.FC<PropsType> = ({post, profile}) => {
 
     const onLikeHandle = () => {
         dispatch(profileAC.toggleLikeMe(post.id))
-
     };
 
     const icon = post.likeMe
         ? <FavoriteIcon className={classes.like}/>
         : <FavoriteBorderIcon/>
-
 
     return (
         <div>
@@ -86,7 +83,6 @@ const MyPost: React.FC<PropsType> = ({post, profile}) => {
                                 {post.time}
                             </Typography>
                         </div>
-
 
                         <div>
                             <IconButton
@@ -158,16 +154,15 @@ const useStyles = makeStyles({
         display: 'flex',
     },
     paper: {
-        //marginRight: 10,
         border: '1px solid #ccc'
     },
     card: {
-        padding: 15,
-        marginTop: 15
+        padding: 10,
+        marginTop: 10
     },
     header: {
         display: 'flex',
-        marginBottom: 15
+        marginBottom: 10
     },
     headerInfo: {
         display: 'flex',

@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {createStyles, makeStyles} from "@material-ui/core/styles";
+import {makeStyles} from "@material-ui/core/styles";
 import Header from "./Components/Header/Header";
 import Sidebar from "./Components/Sidebar/Sidebar";
 import Main from "./Components/Main/Main";
@@ -7,10 +7,11 @@ import {useDispatch, useSelector} from "react-redux";
 import {getMessageIsSending, getRecipientName} from "./redux/dialogs-selectors";
 import {Snackbar} from "@material-ui/core";
 import {Alert} from "@material-ui/lab";
-import {dialogsAC} from "./redux/dialogs-reducer";
 import Typography from "@material-ui/core/Typography";
 import {withRouter} from "react-router-dom";
 import {getIsInitialized} from "./redux/app-reducer";
+import indigo from "@material-ui/core/colors/indigo";
+import {getTheme} from "./redux/settings-selectors";
 
 const App: React.FC = () => {
     const classes = useStyles();
@@ -34,8 +35,6 @@ const App: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        console.log(`messageIsSending - ${messageIsSending}`);
-        console.log(`recipientName - ${recipientName}`);
         if (!messageIsSending && recipientName) {
             setShowAlert(true);
         }
@@ -51,17 +50,30 @@ const App: React.FC = () => {
         setShowAlert(false);
     };
 
+    const theme = useSelector(getTheme);
+    const useStylesSettings = makeStyles({
+        root: {
+            backgroundColor: theme.displayBackgroundColor,
+            position: 'relative'
+        }
+    });
+    const classesSettings = useStylesSettings();
+
     return (
-        <div className={classes.root}>
+        <div className={classesSettings.root}>
             <Header/>
-            <Sidebar/>
-            <Main/>
+            <div className={classes.wrapper}>
+                <Sidebar/>
+                <Main/>
+            </div>
 
             <Snackbar open={showAlert}
-                      //anchorOrigin={{vertical: 'bottom', horizontal: 'left'}}
+                      anchorOrigin={{vertical: 'bottom', horizontal: 'left'}}
                       autoHideDuration={6000}
                       onClose={handleClose}>
-                <Alert onClose={handleClose} severity="success">
+                <Alert onClose={handleClose}
+                       variant='filled'
+                       severity="success">
                     <Typography component='span'>Message to </Typography>
                     <Typography component='span' color='primary'>{recipientName}</Typography>
                     <Typography component='span'> is sent!</Typography>
@@ -75,14 +87,21 @@ const App: React.FC = () => {
 export default withRouter(App);
 
 //============================= STYLE ==========================
-const useStyles = makeStyles(() =>
-    createStyles({
-        root: {
-            display: 'flex',
-            // maxWidth: 800,
-            // width: '100%',
-            // margin: '0 auto'
-        }
-    }),
-);
+const useStyles = makeStyles({
+    root: {
+        backgroundColor: indigo[50],
+        position: 'relative'
+    },
+    wrapper: {
+        maxWidth: 1000,
+        width: '100%',
+        margin: '0 auto',
+        display: 'flex',
+        boxSizing: 'border-box',
+        paddingTop: 64,
+        minHeight: '100vh',
+        //overflow: 'auto'
+    },
+
+});
 

@@ -19,14 +19,14 @@ const SidebarItem: React.FC<PropsTypes> = (props) => {
     const dispatch = useDispatch();
 
     const onClick = () => {
-        dispatch(sidebarAC.setCurrentSidebarItem(ownIndex));
-        dispatch(profileAC.setEditMode(false));
-        dispatch(usersAC.setShowUsersFrom('all'));
-        dispatch(usersAC.setCurrentPage(1));
-        dispatch(usersAC.setSearchFriendsParams({term: ''}));
-        dispatch(usersAC.setCurrentFriendsSidebarItem(0));
+        dispatch(sidebarAC.setCurrentSidebarItem(ownIndex));// установить номер текущего элемнта бокового меню
+        dispatch(profileAC.setEditMode(false)); // выключить режим редактирования профиля
+        dispatch(usersAC.setShowUsersFrom('all')); // показывать всех пользователей (обнуления поиска)
+        dispatch(usersAC.setCurrentPage(1)); // установить текущую страницу пользователей - первую
+        dispatch(usersAC.setSearchFriendsParams({term: ''})); // обнуления параметров поиска друзей
+        dispatch(usersAC.setCurrentFriendsSidebarItem(0)); // переключение на первый элмемент бокового меню
+        dispatch(usersAC.setValueFromHeaderSearch('')); // обнуление строки поиска пользователей из заголовка
     };
-
 
     return (
         <li>
@@ -38,7 +38,7 @@ const SidebarItem: React.FC<PropsTypes> = (props) => {
                 to={to}>
                 {
                     icon
-                        ? <ListItemIcon className={clsx(ownIndex === currentSidebarItem && classes.icon)}>
+                        ? <ListItemIcon className={clsx(ownIndex === currentSidebarItem && classes.iconSelected, classes.icon)}>
                             {icon}
                         </ListItemIcon>
                         : null
@@ -62,6 +62,10 @@ type PropsTypes = {
 //============================== STYLES ===================================
 const useStyles = makeStyles((theme: Theme) => ({
     icon: {
+       minWidth: 'inherit',
+        marginRight: 10
+    },
+    iconSelected: {
         color: indigo[500]
     },
     text: {

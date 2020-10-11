@@ -42,12 +42,6 @@ const ProfileAvatar: React.FC<PropsType> = (props) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (!isOwner) {
-            //dispatch(getFollowed(userId));
-        }
-    }, [userId]);
-
-    useEffect(() => {
         dispatch(getDialogs());
     }, []);
 
@@ -190,7 +184,7 @@ const ProfileAvatar: React.FC<PropsType> = (props) => {
                                     isFollowing
                                     && followingInProgress.some(item => item === userId)
                                     &&
-                                    <CircularPreloader size={20} style={'absolute'}/>
+                                    <CircularPreloader size={20} styleType={'absolute'}/>
                                 }
                             </div>
                             }
@@ -243,13 +237,13 @@ type PropsType = {
 //========================== STYLES ================================================
 const useStyles = makeStyles({
     avatar: {
-        width: 200,
-        height: 200,
+        width: 210,
+        height: 210,
     },
     card: {
-        padding: 15,
+        padding: 10,
         paddingBottom: 10,
-        marginBottom: 15
+        marginBottom: 10
     },
     avatarWrapper: {
         position: 'relative',

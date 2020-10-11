@@ -1,4 +1,4 @@
-import React, {ChangeEvent, SyntheticEvent, useState} from "react";
+import React, {ChangeEvent, useState} from "react";
 import FormControl from "@material-ui/core/FormControl";
 import {makeStyles} from "@material-ui/styles";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -39,7 +39,6 @@ const RenderPasswordField: React.FC<PropsType> = (props) => {
                 }}>{label}</InputLabel>
 
                 <OutlinedInput
-                    //className={classes.input}
                     classes={{
                         root: classes.outlinedInputRoot,
                         input: classes.outlinedInputInput

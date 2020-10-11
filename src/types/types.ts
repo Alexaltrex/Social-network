@@ -1,3 +1,5 @@
+import {DialogType, MessageType} from "../DAL/dialogs-api";
+
 export type PostType = {
     id: number
     message: string
@@ -49,4 +51,33 @@ export type SearchUsersParamsType = {
 
 export type SearchFriendsParamsType = {
     term: string
+}
+
+export type ViewType = 'list' | 'block'
+
+export type DeletedMessagesType = Array<DeletedMessagesItem>
+
+export type DeletedMessagesItem = {
+    dialog: DialogType
+    messages: Array<MessageType>
+}
+
+export enum DialogsSidebarItemEnum {
+    all = 0,
+    deleted = 1,
+    spam = 2
+}
+
+export enum ProfileSidebarItemEnum {
+    main = 0,
+    job = 1,
+    contacts = 2
+}
+
+export enum SidebarItemEnum {
+    myProfile = 1,
+    dialogs = 2,
+    users = 3,
+    friends = 4,
+    settings = 5
 }

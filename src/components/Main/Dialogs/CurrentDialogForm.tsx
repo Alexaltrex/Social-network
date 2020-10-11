@@ -7,13 +7,19 @@ import {shouldNotBeEmpty} from "../../../utilities/validators/validators";
 import {reduxForm, Field, InjectedFormProps, reset} from "redux-form";
 import grey from "@material-ui/core/colors/grey";
 import {sendMessage} from "../../../redux/dialogs-reducer";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import {
+    getLoading,
+    getMessageIsSending,
+} from "../../../redux/dialogs-selectors";
 
 //===================== FORM ==================================
 const Form: React.FC<FormPropsType> = (props) => {
-    const {handleSubmit, submitting, pristine} = props;
+    const {handleSubmit, submitting, pristine, loading, messageIsSending} = props;
     const classes = useStyles();
     const classesField = useStylesField();
+    const label = messageIsSending ? 'message is sent...' : 'Enter your message'
+
     return (
         <form onSubmit={handleSubmit} className={classes.form}>
             <div className={classes.fieldWrapper}>
@@ -24,7 +30,7 @@ const Form: React.FC<FormPropsType> = (props) => {
                        rows={1}
                        className={classes.textArea}
                        classes={classesField}
-                       label='Enter your message'
+                       label={label}
                        placeholder='Enter your message'
                        size='small'
                 />
@@ -33,7 +39,7 @@ const Form: React.FC<FormPropsType> = (props) => {
             <IconButton
                 type="submit"
                 color='primary'
-                disabled={submitting || pristine}
+                disabled={submitting || pristine || loading}
             >
                 <SendIcon/>
             </IconButton>
@@ -55,6 +61,8 @@ const ReduxForm = reduxForm<FormValuesType, OwnPropsType>({
 //============================= COMPONENT =========================================
 const CurrentDialogForm: React.FC<ComponentPropsType> = ({id}) => {
     const classes = useStyles();
+    const messageIsSending = useSelector(getMessageIsSending);
+    const loading = useSelector(getLoading);
     const dispatch = useDispatch();
 
     const onSubmit = (formValue: FormValuesType) => {
@@ -65,7 +73,9 @@ const CurrentDialogForm: React.FC<ComponentPropsType> = ({id}) => {
 
     return (
         <div className={classes.formWrapper}>
-            <ReduxForm onSubmit={onSubmit}/>
+            <ReduxForm onSubmit={onSubmit}
+                       messageIsSending={messageIsSending}
+                       loading={loading}/>
         </div>
     )
 };
@@ -73,7 +83,10 @@ const CurrentDialogForm: React.FC<ComponentPropsType> = ({id}) => {
 export default CurrentDialogForm;
 
 //=============================== TYPES ================================================
-type OwnPropsType = {}
+type OwnPropsType = {
+    loading: boolean
+    messageIsSending: boolean
+}
 export type FormValuesType = {
     message: string,
 }
@@ -94,7 +107,7 @@ const useStylesField = makeStyles({
 const useStyles = makeStyles({
     formWrapper: {
         backgroundColor: grey[100],
-        padding: 10
+        padding: 10,
     },
     form: {
         display: 'flex',
@@ -102,9 +115,10 @@ const useStyles = makeStyles({
     },
     fieldWrapper: {
         flexGrow: 1,
-        //width: '100%'
+        marginRight: 5
     },
     textArea: {
-        width: '100%'
+        width: '100%',
+
     }
 })

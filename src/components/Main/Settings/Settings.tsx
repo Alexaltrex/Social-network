@@ -59,7 +59,7 @@ const Settings: React.FC = () => {
     )
 };
 
-export default withAuthRedirect(Settings);
+export default Settings;
 
 //================== STYLE =========================
 const useStyles = makeStyles({

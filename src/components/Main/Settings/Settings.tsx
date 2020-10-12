@@ -4,7 +4,6 @@ import {Card} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import {useDispatch, useSelector} from "react-redux";
 import {settingsAC} from "../../../redux/settings-reducer";
-import {withAuthRedirect} from "../../../hoc/withAuthRedirect";
 import {getTheme} from "../../../redux/settings-selectors";
 import SettingsRow from "./SettingsRow";
 import {defaultTheme} from "../../../const/const";

@@ -133,6 +133,10 @@
 
 <img src="src/assets/img/friends-menu.jpg" width="800">
 
+При активации кнопки "отправить сообщение" появляется модельное окно с формой отправки сообщения:
+
+<img src="src/assets/img/friends-send.jpg" width="800">
+
 
 
 

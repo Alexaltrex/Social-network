@@ -1,68 +1,74 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Social-network
+Ссылка: https://alexaltrex.github.io/Social-network
 
-## Available Scripts
+## Описание
+Социальная сеть.
 
-In the project directory, you can run:
+## Запуск проекта:
+Для установки и запуска необходимы установленные программы: Node.js, npm, Git;
+1. Клонирование и запуск: git clone https://github.com/Alexaltrex/Social-network.git;
+2. Переход в директорию с проектом: cd Social-network;
+3. Установка зависимостей: npm install;
+4. Запуск проекта в режиме разработки: npm start;
+5. Перейти в браузер и открыть страницу: http://localhost:3000.
 
-### `npm start`
+## Цель проекта
+* Изучение основных паттернов разработки социальных сетей (авторизация, пагинация, обработка сообщений);
+* Переход от классовых компонент на функциональные с применением хуков;
+* Изучение основных паттернов типизации React-приложения
+* Изучение библиотеки Material-UI
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Разработка
+* Приложение разработано на базе библиотеки React v.16.13.1 с использованием Create React App (https://github.com/facebook/create-react-app)
+* Приложение разработано на базе API: 'https://social-network.samuraijs.com/api/1.0/'
+* Глобальное состояние: управление - Redux v.4.0.5, доступ - хуки useSelector и useDispatch
+* Локальное состояние: хуки "useState"
+* Побочные эффекты: хуки "useEffect"
+* Роутинг: React-router-dom v.5.2.0
+* Асинхронный код: Redux-thunk v.2.3.0
+* Сетевые запросы: Axios v.0.19.2
+* Работа с формами: Redux-form v.8.3.6
+* Дизайн: Material-UI v.4.11.0
+* Типизация - Typescript v.3.7.2
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+## Структура проекта
 
-### `npm test`
+### 1. Заголовок:
+#### 1.1. Логотип;
+#### 1.2. Поле поиска пользователей;
+#### 1.3. Кнопка авторизации. 
+Для авторизованного пользователя содежит имя пользователя и аватар, активирует всплывающее меню с пунктами: выйти, настройки; для неавторизованного пользователя - переход на форму авторизации.
+### 2. Главная боковая панель навигации. 
+Содержит ссылка на страницы: Мой профиль, Диалоги, Пользователи, Друзья, Настройки.
+### 3. Главный контент. 
+Для неавторизованного пользователя показывает форму авторизации: поля ввода почты, пароля (есть опция сделать пароль видимым), запомнит меня и кнопка подтверждения. Локальная валидация на необходимость заполнения, отсутствия строк, состоящих из пробельных символов и серверная на правильность авторизационных данных. При 10 неудачных попытках авторизации показывается каптча и поле для ввода числа. 
+Для авторизованного пользователя показывает содержимое соответствующей пункту бокового меню страницы.
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+<img src="src/assets/img/characters.jpg" width="800">
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+#### 3.1. Мой профиль.
+Содержит блоки:
+##### 3.1.1. Аватар и кнопка редактирования профиля. 
+Для аватара реализованы появляющиеся при наведении кнопки смены изображения и удаления (удаление реализовано локально, т.к. api не поддерживает удаление).
+##### 3.1.2. Блок с информацией о друзьях.
+Ссылка на страницу 'Друзья', количество друзей, блок с аватарами-ссылками (и именами) на страницы профилей друзей. Блок содежит первые 9 или меньше (если по факту их всего меньше 9) друзей.
+##### 3.1.3. Блок основной информации об авторизированном пользователе.
+Имя, статус (при клике появляется всплывающее окно с формой ввода нового статуса), кнопка скрыть/показать подробную информацию, блок с подробной информацией.
+##### 3.1.4. Блок с формой ввода нового поста.
+Посты хранятся локально, т.к. api не поддерживает работу с постами.
+##### 3.1.5. Блоки с текстами постов. 
+Аватор авторизованного пользователя - автора поста, имя - ссылка на профиль, дата размещения поста, текст поста, кнопка с вслывающим контекстым меню с опцией - удалить пост, кнопка 'поставить лайк', количество лайков.
+##### 3.1.6. В режиме редактирования профиля появляются два блока: 
+форма ввода (локальная валидация на строки состоящие из пробельных символов) и допольнительная боковая панель с выбором раздела дополнительной информации.
+#### 3.2. Диалоги.
+Содержит блоки:
+##### 3.2.1. Вспомогательное боковое меню
+Содержит список режимов просмотра диалогов - 'все' или 'удаленные'.
+##### 3.2.2. Блок диалогов. 
+В режиме 'все' - список пользователей, с кем ведется диалог, в режиме 'удаленные' - список пользователей, из диалогов с которыми удалялись сообщения. Каждый элемент списка является кнопкой, активирующей список сообщений из данного диалога, содержит аватар пользователя, имя - ссылку на его профиль и дату последнего сообщения. При отсутствии диалогов сообщение - диалогов нет (или удаленных диалогов нет).
+##### 3.2.3. Блок сообщений.
+Состоит из заголовка, списка сообщений и формы ввода сообщений (отсутствует в режиме 'удаленные'). Заголовок содержит аватар собеседника, имя - ссылку на его профиль, сообщение о количестве выделенных сообщений (опционально), кнопку снять выделение (опционально), кнопку 'удалить сообщения' - для режима 'все' или восстановить сообщения - для режима 'удаленные' (удаленные сообщения хранятся локально, т.к. api не поддерживает их хранение). Каждый элемент списка сообщений содержит: иконку 'выделено' (в случае его выделения), аватар отправителя, имя - ссылку на его профиль, дату отправления, текст сообщения, иконку, обозначающую, куда отправлено сообщение - вам или от вас. Форма ввода сообщений содержит поле ввода (локальная валидация на текст состоящий из пробельных символов) и кнопку 'отправить сообщение'.
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify

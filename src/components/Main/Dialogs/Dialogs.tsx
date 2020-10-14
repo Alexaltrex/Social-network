@@ -6,10 +6,11 @@ import {useDispatch, useSelector} from "react-redux";
 import {getIsLoading} from "../../../redux/app-selectors";
 import {getDialogsSelector} from "../../../redux/dialogs-selectors";
 import {dialogsAC, getDialogs, getMessages} from "../../../redux/dialogs-reducer";
-import {useParams} from "react-router";
 import {DialogType} from "../../../DAL/dialogs-api";
 import {withAuthRedirect} from "../../../hoc/withAuthRedirect";
 import DialogsSidebar from "./DialogsSidebar";
+import { useParams } from "react-router-dom";
+import {UseParamsType} from "../../../types/types";
 
 const Dialogs: React.FC = () => {
     const classes = useStyles();
@@ -17,22 +18,24 @@ const Dialogs: React.FC = () => {
     const isLoading = useSelector(getIsLoading);
     const dialogs = useSelector(getDialogsSelector);
 
-    let {userId} = useParams();
+    // если userId === undefined, значит диалог не выбран
+    let {userId} = useParams<UseParamsType>();
+    const userIdNumber: number | undefined = userId ? +userId : undefined;
 
     useEffect(() => {
         dispatch(getDialogs())
     }, []);
 
     useEffect(() => {
-        if (userId) {
-            dispatch(getMessages(userId));
+        if (userIdNumber) {
+            dispatch(getMessages(userIdNumber));
         }
         return () => {
             dispatch(dialogsAC.setMessages(null))
         }
-    }, [userId]);
+    }, [userIdNumber]);
 
-    const currentDialog = (dialogs && userId) ? dialogs.find(el => el.id === +userId) as DialogType : null;
+    const currentDialog = (dialogs && userIdNumber) ? dialogs.find(el => el.id === userIdNumber) as DialogType : null;
 
     return (
         <>
@@ -46,7 +49,7 @@ const Dialogs: React.FC = () => {
 
                     <div className={classes.secondColumn}>
                         <CurrentDialog currentDialog={currentDialog}
-                                       userId={userId}
+                                       userId={userIdNumber}
                         />
                     </div>
 
@@ -58,7 +61,6 @@ const Dialogs: React.FC = () => {
         </>
     );
 };
-
 
 export default withAuthRedirect(Dialogs);
 
@@ -77,7 +79,7 @@ const useStyles = makeStyles({
         marginRight: 10,
     },
     lastColumn: {
-        flexBasis: 120,
+        flexBasis: 140,
         flexShrink: 0,
     },
 });

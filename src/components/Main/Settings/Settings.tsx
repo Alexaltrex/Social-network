@@ -7,10 +7,13 @@ import {settingsAC} from "../../../redux/settings-reducer";
 import {getTheme} from "../../../redux/settings-selectors";
 import SettingsRow from "./SettingsRow";
 import {defaultTheme} from "../../../const/const";
+import {getLang} from "../../../redux/app-selectors";
+import {translate} from "../../../const/lang";
 
 const Settings: React.FC = () => {
     const classes = useStyles();
     const theme = useSelector(getTheme);
+    const lang = useSelector(getLang);
     const dispatch = useDispatch();
 
     const onMenuBCChangeHandler = (color: string) => {
@@ -37,17 +40,17 @@ const Settings: React.FC = () => {
         <Card className={classes.card} elevation={6}>
 
             <Typography variant='h6' color='primary' align='center' className={classes.title}>
-                Settings
+                {translate(lang, 'Settings')}
             </Typography>
 
-            <SettingsRow title='Menu background color'
+            <SettingsRow title={translate(lang, 'Menu background color')}
                          onChangeHandler={onMenuBCChangeHandler}
                          probeBackgroundColor={theme.menuBackgroundColor}
                          defaultColor={defaultTheme.menuBackgroundColor}
                          resetToDefaultHandle={resetMenuBCToDefaultHandle}
             />
 
-            <SettingsRow title='Display background color'
+            <SettingsRow title={translate(lang, 'Display background color')}
                          onChangeHandler={onDisplayBCChangeHandler}
                          probeBackgroundColor={theme.displayBackgroundColor}
                          defaultColor={defaultTheme.displayBackgroundColor}

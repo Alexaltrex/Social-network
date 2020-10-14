@@ -8,9 +8,11 @@ import Link from "@material-ui/core/Link";
 import {Link as RouterLink} from "react-router-dom";
 import Badge from "@material-ui/core/Badge";
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {sidebarAC} from "../../../redux/sidebar-reducer";
 import Typography from "@material-ui/core/Typography";
+import {getLang} from "../../../redux/app-selectors";
+import {Lang, translate} from "../../../const/lang";
 
 const ProfileFriends: React.FC<PropsType> = ({friends, totalFriendsCount}) => {
     const classes = useStyles();
@@ -25,13 +27,16 @@ const ProfileFriends: React.FC<PropsType> = ({friends, totalFriendsCount}) => {
         dispatch(sidebarAC.setCurrentSidebarItem(SidebarItemEnum.friends))
     };
 
+    const lang = useSelector(getLang);
+    const title = translate(lang, 'Friends');
+
     return (
         <Card className={classes.card} elevation={6}>
             { friends && friends.length
                 ? <>
                 <div className={classes.title}>
                     <Link component={RouterLink} to={'/friends'} className={classes.link} onClick={onClickHandler}>
-                        Friends
+                        {title}
                     </Link>
                     <Badge badgeContent={totalFriendsCount} color="primary" max={99999} showZero>
                         <AccountCircleIcon/>

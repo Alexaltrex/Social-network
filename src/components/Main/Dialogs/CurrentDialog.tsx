@@ -9,12 +9,15 @@ import {DialogType} from "../../../DAL/dialogs-api";
 import CurrentDialogMessages from "./CurrentDialogMessages";
 import CurrentDialogForm from "./CurrentDialogForm";
 import {DialogsSidebarItemEnum} from "../../../types/types";
+import {getLang} from "../../../redux/app-selectors";
+import {translate} from "../../../const/lang";
 
 const CurrentDialog: React.FC<PropsType> = ({currentDialog, userId}) => {
     const classes = useStyles();
     const messages = useSelector(getMessagesSelector);
     const currentDialogsSidebarItem = useSelector(getCurrentDialogsSidebarItem);
     const deletedMessages = useSelector(getDeletedMessages);
+    const lang = useSelector(getLang);
 
     const src = (currentDialog !== null ? currentDialog.photos.small : undefined) as string | undefined;
 
@@ -33,7 +36,7 @@ const CurrentDialog: React.FC<PropsType> = ({currentDialog, userId}) => {
                 </List>
                 : <div className={classes.emptyMessages}>
                     <Typography variant='subtitle1' color='primary'>
-                        There ara no deleted messages
+                        {translate(lang, 'There ara no deleted messages')}
                     </Typography>
 
                 </div>

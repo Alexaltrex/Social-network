@@ -22,6 +22,7 @@ import {
 } from "../../../redux/dialogs-selectors";
 import CircularPreloader from "../../common/CircularPreloader";
 import {DialogsSidebarItemEnum} from "../../../types/types";
+import {getLang} from "../../../redux/app-selectors";
 
 const CurrentDialogMessageItem: React.FC<PropsType> = ({message, src}) => {
     const classes = useStyles();
@@ -32,6 +33,7 @@ const CurrentDialogMessageItem: React.FC<PropsType> = ({message, src}) => {
     const selectedDeletedMessages = useSelector(getSelectedDeletedMessages);
     const messagesIsDeleting = useSelector(getMessagesIsDeleting);
     const currentDialogsSidebarItem = useSelector(getCurrentDialogsSidebarItem);
+    const lang = useSelector(getLang);
 
     const dispatch = useDispatch();
     let selected: boolean;
@@ -101,7 +103,7 @@ const CurrentDialogMessageItem: React.FC<PropsType> = ({message, src}) => {
                         <Typography variant='subtitle2'
                                     color='textSecondary'
                         >
-                            {DATE.dateTranslateFromAPI(message.addedAt)}
+                            {DATE.dateTranslateFromAPI(message.addedAt, lang)}
                         </Typography>
                     </div>
                     <div>{message.body}</div>

@@ -9,7 +9,7 @@ import {
     getTotalUsersCount,
     getUsersSelector, getValueFromHeaderSearch
 } from "../../../redux/users-selectors";
-import {getIsLoading} from "../../../redux/app-selectors";
+import {getIsLoading, getLang} from "../../../redux/app-selectors";
 import {getUsers, searchUsers, usersAC} from "../../../redux/users-reduser";
 import {withAuthRedirect} from "../../../hoc/withAuthRedirect";
 import Badge from "@material-ui/core/Badge";
@@ -25,6 +25,7 @@ import {getDialogsSelector} from "../../../redux/dialogs-selectors";
 import ViewSwitcher from "../../common/ViewSwitcher";
 import UsersList from "./UsersList";
 import {ViewType} from "../../../types/types";
+import {translate} from "../../../const/lang";
 
 let Users: React.FC = () => {
     const classes = useStyles();
@@ -37,6 +38,7 @@ let Users: React.FC = () => {
     const showUsersFrom = useSelector(getShowUsersFrom);
     const dialogs = useSelector(getDialogsSelector);
     const valueFromHeaderSearch = useSelector(getValueFromHeaderSearch);
+    const lang = useSelector(getLang);
 
     const dispatch = useDispatch();
 
@@ -69,7 +71,9 @@ let Users: React.FC = () => {
         dispatch(usersAC.setCurrentPage(1));
     };
 
-    const countTitle = showUsersFrom === 'all' ? 'Total all users count:' : 'Total users count from search:'
+    const countTitle = showUsersFrom === 'all'
+        ? translate(lang, 'Total all users count:') :
+        translate(lang, 'Total users count from search:')
 
     useEffect(() => {
         if (valueFromHeaderSearch) {
@@ -91,7 +95,11 @@ let Users: React.FC = () => {
                         color='primary'
                         startIcon={searchPanelIsOpen ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}
                         variant='contained'>
-                    {searchPanelIsOpen ? 'Close search' : 'Open search'}
+                    {
+                        searchPanelIsOpen
+                            ? translate(lang, 'Close search')
+                            : translate(lang, 'Open search')
+                    }
                 </Button>
                 <Button onClick={onShowAllClick}
                         size='small'
@@ -99,7 +107,7 @@ let Users: React.FC = () => {
                         disabled={showUsersFrom === 'all'}
                         className={classes.button}
                         variant='contained'>
-                    Show all
+                    {translate(lang, 'Show all')}
                 </Button>
 
                 <Typography color='primary'

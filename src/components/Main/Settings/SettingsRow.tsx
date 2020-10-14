@@ -3,10 +3,14 @@ import ColorPicker from "material-ui-color-picker";
 import Button from "@material-ui/core/Button";
 import React from "react";
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import {getLang} from "../../../redux/app-selectors";
+import {useSelector} from "react-redux";
+import {translate} from "../../../const/lang";
 
 const SettingsRow: React.FC<PropsType> = (props) => {
     const {title, onChangeHandler, resetToDefaultHandle, probeBackgroundColor, defaultColor} = props;
     const classes = useStyles();
+    const lang = useSelector(getLang);
 
     const useStylesSettings = makeStyles({
         probe: {
@@ -35,7 +39,7 @@ const SettingsRow: React.FC<PropsType> = (props) => {
                          name='color'
                          variant='outlined'
                          size='small'
-                         defaultValue='choose color'
+                         defaultValue={translate(lang, 'Choose color')}
                          onChange={onChangeHandler}
             />
 
@@ -44,7 +48,7 @@ const SettingsRow: React.FC<PropsType> = (props) => {
             <Button variant='contained'
                     onClick={resetToDefaultHandle}
                     className={classes.button}>
-                Reset to default
+                {translate(lang, 'Reset to default')}
             </Button>
 
             <div className={classesSettings.default}/>

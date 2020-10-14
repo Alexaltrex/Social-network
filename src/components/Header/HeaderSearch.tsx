@@ -5,15 +5,19 @@ import {shouldNotBeEmpty} from "../../utilities/validators/validators";
 import SearchIcon from '@material-ui/icons/Search';
 import RenderNakedTextAreaField from "../common/RenderNakedTextareaField";
 import indigo from "@material-ui/core/colors/indigo";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import { useHistory } from "react-router-dom";
 import {usersAC} from "../../redux/users-reduser";
+import {getLang} from "../../redux/app-selectors";
+import {Lang} from "../../const/lang";
 
 //===================== FORM ==================================
 const Form: React.FC<FormPropsType> = (props) => {
     const {handleSubmit} = props;
     const classes = useStyles();
     const classesField = useStylesField();
+    const lang = useSelector(getLang);
+    const placeholder = lang === 'rus' ? Lang['Search...'].rus : Lang['Search...'].eng;
     return (
         <form onSubmit={handleSubmit}>
             <div className={classes.fieldWrapper}>
@@ -24,7 +28,7 @@ const Form: React.FC<FormPropsType> = (props) => {
                        multiline={false}
                        className={classes.field}
                        classes={classesField}
-                       placeholder='Search...'
+                       placeholder={placeholder}
                        size='small'
                 />
             </div>

@@ -1,5 +1,5 @@
 import {FormAction, stopSubmit} from 'redux-form';
-import {PhotosType, PostType, ProfileSidebarItemEnum, ProfileType} from "../types/types";
+import {LangType, PhotosType, PostType, ProfileSidebarItemEnum, ProfileType} from "../types/types";
 import {profileAPI} from "../DAL/profile-api";
 import {BaseThunkType, GetActionsType, StateType} from "./redux-store";
 import {appAC, AppActionsType} from "./app-reducer";
@@ -7,7 +7,7 @@ import {DATE} from "../utilities/date";
 
 let initialState = {
     posts: [
-        {id: 1, message: 'Hello, world', likeCount: 4, likeMe: false, time: '25 September in 10:10'},
+        {id: 1, message: 'Hello, world', likeCount: 4, likeMe: false, time: '2020-09-25T10:19'},
     ] as Array<PostType>, // массив постов
     profile: null as null | ProfileType, // прифиль инициализированного пользователя
     currentUserProfile: null as null | ProfileType, // профиль текущего просматриваемого пользователя
@@ -109,10 +109,10 @@ export const profileAC = {
         type: 'profile/SET_CURRENT_INFO_FORM_SIDEBAR_ITEM',
         currentInfoFormSidebarItem
     } as const),
-    addPost: (post: string) => ({
+    addPost: (post: string, lang: LangType) => ({
         type: 'profile/ADD_POST',
         post,
-        time: DATE.dateTranslateFromJS(DATE.getCurrentDate())
+        time: DATE.dateTranslateFromJS(DATE.getCurrentDate(), lang)
     } as const),
     deletePost: (id: number) => ({type: 'profile/DELETE_POST', id} as const),
     setUserProfile: (profile: ProfileType) => ({type: 'profile/SET_USER_PROFILE', profile} as const),

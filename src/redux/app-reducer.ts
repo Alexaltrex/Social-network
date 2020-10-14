@@ -1,5 +1,6 @@
 import {getAuthUserData} from "./auth-reducer";
 import {BaseThunkType, GetActionsType} from "./redux-store";
+import {LangType} from "../types/types";
 
 export type InitialStateType = typeof initialState;
 export type AppActionsType = GetActionsType<typeof appAC>;
@@ -10,10 +11,14 @@ let initialState = {
     globalError: null,
     isLoading: false, // загрузка происходит?
     lanError: false, // ошибка сети
+    lang: 'eng' as LangType // язык приложения
 };
 
 const appReducer = (state = initialState, action: AppActionsType): InitialStateType => {
     switch (action.type) {
+        case 'APP/SET_LANG':
+            console.log('APP/SET_LANG')
+            return {...state, lang: action.lang}
         case 'APP/SET_IS_INITIALIZED':
             return {...state, isInitialized: action.isInitialized}
         case 'APP/TOGGLE_LOADING': {
@@ -31,6 +36,7 @@ export const appAC = {
     setIsInitialized: (isInitialized: boolean) => ({type: 'APP/SET_IS_INITIALIZED', isInitialized} as const),
     toggleLoading: (isLoading: boolean) => ({type: 'APP/TOGGLE_LOADING', isLoading} as const),
     setLanError: (lanError: boolean) => ({type: 'APP/SET_LAN_ERROR', lanError} as const),
+    setLang: (lang: LangType) => ({type: 'APP/SET_LANG', lang} as const),
 };
 
 export const getIsInitialized = (): ThunkType => async (dispatch) => {

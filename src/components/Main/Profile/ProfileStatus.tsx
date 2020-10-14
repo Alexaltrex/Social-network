@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {getStatusIsLoading, getStatusSelector} from "../../../redux/profile-selectors";
 import ListItem from "@material-ui/core/ListItem";
@@ -7,37 +7,39 @@ import ProfileStatusForm from "./ProfileStatusForm";
 import LinearPreloader from "../../common/LinearPreloader";
 import Typography from "@material-ui/core/Typography";
 import {getStatus} from "../../../redux/profile-reducer";
+import Fade from '@material-ui/core/Fade';
+import useOutsideClick from "../../../hooks/hooks";
 
 const ProfileStatus: React.FC<PropsType> = ({isOwner, userId}) => {
     const classes = useStyles();
     const status = useSelector(getStatusSelector);
+    const statusIsLoading = useSelector(getStatusIsLoading);
     const dispatch = useDispatch();
+
+    const [showForm, setShowForm] = useState(false);
 
     useEffect(() => {
         dispatch(getStatus(userId));
     }, [userId]);
 
-    //=========================
-    const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-    const statusIsLoading = useSelector(getStatusIsLoading);
-    const handleClick = (event: any) => {
-        setAnchorEl(event.currentTarget);
+    const handleClick = () => {
+        setShowForm(true);
     };
+
     const handleClose = () => {
-        setAnchorEl(null);
+        setShowForm(false);
     };
-    const open = Boolean(anchorEl);
-    const id = open ? 'simple-popover' : undefined;
-    //==============================
+
+    const wrapperRef = useRef(null);
+    useOutsideClick(wrapperRef, handleClose);
 
     return (
         <div>
 
             {isOwner //если свой профиль - кнопка с текстом статуса и вплывающая форма замены статуса
                 ? !statusIsLoading && status !== null
-                    ? <div>
+                    ? <div className={classes.profileStatusFormWrapper}>
                         <ListItem button
-                                  aria-describedby={id}
                                   onClick={handleClick}
                                   classes={{
                                       root: classes.listItem,
@@ -49,12 +51,15 @@ const ProfileStatus: React.FC<PropsType> = ({isOwner, userId}) => {
                                 : <Typography variant='body2' color='textSecondary'>change status</Typography>
                             }
                         </ListItem>
-                        <ProfileStatusForm
-                            id={id}
-                            open={open}
-                            anchorEl={anchorEl}
-                            onClose={handleClose}
-                        />
+
+                        <Fade in={showForm}>
+                            <div className={classes.profileStatusForm}
+                                 ref={wrapperRef}
+                            >
+                                <ProfileStatusForm onClose={handleClose} />
+                            </div>
+                        </Fade>
+
                     </div>
 
                     : <LinearPreloader/>
@@ -64,7 +69,7 @@ const ProfileStatus: React.FC<PropsType> = ({isOwner, userId}) => {
                     {
                         !statusIsLoading
                             ? <>
-                                {status  && <ListItem classes={{
+                                {status && <ListItem classes={{
                                     gutters: classes.gutters
                                 }}
                                 >
@@ -94,6 +99,18 @@ const useStyles = makeStyles({
     listItem: {
         paddingTop: 9,
         paddingBottom: 9
+    },
+    profileStatusFormWrapper: {
+        position: 'relative'
+    },
+    profileStatusForm: {
+        position: 'absolute',
+        boxShadow: '0px 3px 5px -1px rgba(0,0,0,0.2), 0px 6px 10px 0px rgba(0,0,0,0.14), 0px 1px 18px 0px rgba(0,0,0,0.12)',
+        top: 0,
+        left: 0,
+        right: 0,
+        backgroundColor: '#e8eaf6',
+        zIndex: 10
     }
 });
 //========================== TYPES =================================================

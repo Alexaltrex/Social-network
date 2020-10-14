@@ -24,6 +24,9 @@ import {logout} from "../../redux/auth-reducer";
 import {getProfile} from "../../redux/profile-reducer";
 import HeaderSearch from "./HeaderSearch";
 import {getTheme} from "../../redux/settings-selectors";
+import HeaderLang from "./HeaderLang";
+import {getLang} from "../../redux/app-selectors";
+import {Lang, translate} from "../../const/lang";
 
 const Header: React.FC = () => {
     const classes = useStyles();
@@ -92,14 +95,18 @@ const Header: React.FC = () => {
     });
     const classesSettings = useStylesSettings();
 
+    const lang = useSelector(getLang);
+
     return (
         <div className={classesSettings.wrapper}>
             <Toolbar className={classes.toolBar}>
                 <Typography variant="h6" noWrap className={classes.logo}>
-                    Social Network
+                    {translate(lang, 'Social Network')}
                 </Typography>
 
                 <HeaderSearch/>
+
+                <HeaderLang/>
 
                 {
                     isAuth
@@ -142,7 +149,7 @@ const Header: React.FC = () => {
                                                         <ListItemIcon>
                                                             <ExitToAppIcon/>
                                                         </ListItemIcon>
-                                                        <ListItemText primary="Logout"/>
+                                                        <ListItemText primary={translate(lang, 'Logout')}/>
                                                     </MenuItem>
                                                     <MenuItem onClick={onSettingsClick}
                                                               component={RouterLink}
@@ -151,7 +158,7 @@ const Header: React.FC = () => {
                                                         <ListItemIcon>
                                                             <SettingsIcon/>
                                                         </ListItemIcon>
-                                                        <ListItemText primary="Settings"/>
+                                                        <ListItemText primary={translate(lang, 'Settings')}/>
                                                     </MenuItem>
                                                 </MenuList>
                                             </ClickAwayListener>
@@ -164,7 +171,7 @@ const Header: React.FC = () => {
                                   className={classes.login}
                                   component={RouterLink}
                                   to='/login'>
-                            Login
+                            {translate(lang, 'Login')}
                         </Button>
                 }
 

@@ -12,13 +12,18 @@ import {
     getLoading,
     getMessageIsSending,
 } from "../../../redux/dialogs-selectors";
+import {getLang} from "../../../redux/app-selectors";
+import {translate} from "../../../const/lang";
 
 //===================== FORM ==================================
 const Form: React.FC<FormPropsType> = (props) => {
     const {handleSubmit, submitting, pristine, loading, messageIsSending} = props;
     const classes = useStyles();
     const classesField = useStylesField();
-    const label = messageIsSending ? 'message is sent...' : 'Enter your message'
+    const lang = useSelector(getLang);
+    const label = messageIsSending
+        ? translate(lang, 'Message is sent...')
+        : translate(lang, 'Enter your message')
 
     return (
         <form onSubmit={handleSubmit} className={classes.form}>
@@ -31,7 +36,7 @@ const Form: React.FC<FormPropsType> = (props) => {
                        className={classes.textArea}
                        classes={classesField}
                        label={label}
-                       placeholder='Enter your message'
+                       placeholder={translate(lang, 'Enter your message')}
                        size='small'
                 />
             </div>

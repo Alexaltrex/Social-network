@@ -24,9 +24,10 @@ import {
     getTotalFriendsCount
 } from "../../../redux/users-selectors";
 import {searchFriends} from "../../../redux/users-reduser";
-import MyPosts from "./MyPosts";
-import MyPost from "./MyPost";
+import ProfilePostForm from "./ProfilePostForm";
+import ProfilePost from "./ProfilePost";
 import {Skeleton} from "@material-ui/lab";
+import {UseParamsType} from "../../../types/types";
 
 const Profile: React.FC = () => {
     const classes = useStyles();
@@ -41,27 +42,29 @@ const Profile: React.FC = () => {
     const posts = useSelector(getPosts);
     const dispatch = useDispatch();
 
-    let {userId} = useParams();
+    let {userId} = useParams<UseParamsType>();
     const isOwner = userId ? false : true;
-    if (!userId) {
-        userId = authorizedUserId;
-    }
+    // if (!userId) {
+    //     userId = authorizedUserId;
+    // }
+
+    const userIdFinal = (userId ? +userId : authorizedUserId) as number;
 
     const profileSelector = isOwner ? getProfileSelector : getCurrentUserProfileSelector;
     const profile = useSelector(profileSelector);
 
     useEffect(() => {
         if (isOwner) {
-            dispatch(getProfile(userId));
+            dispatch(getProfile(userIdFinal));
             dispatch(searchFriends(currentPage, pageSize, ''));
         } else {
-            dispatch(getCurrentUserProfile(userId));
-            dispatch(getFollowed(userId));
+            dispatch(getCurrentUserProfile(userIdFinal));
+            dispatch(getFollowed(userIdFinal));
         }
-    }, [userId]);
+    }, [userIdFinal]);
 
     const MyPostsItemElements = posts
-        .map(el => <MyPost key={el.id} post={el} profile={profile}/>);
+        .map(el => <ProfilePost key={el.id} post={el} profile={profile}/>);
 
     return (
         <div className={classes.root}>
@@ -71,12 +74,12 @@ const Profile: React.FC = () => {
                 {
                     !isLoading && profile
 
-                    ? <ProfileAvatar isOwner={isOwner}
-                                     userId={userId}
-                                     profile={profile}
-                                     followed={followed}
-                    />
-                    : <Skeleton variant="rect" width={230} height={266} className={classes.avatar}/>
+                        ? <ProfileAvatar isOwner={isOwner}
+                                         userId={userIdFinal}
+                                         profile={profile}
+                                         followed={followed}
+                        />
+                        : <Skeleton variant="rect" width={230} height={266} className={classes.avatar}/>
                 }
 
                 {
@@ -87,7 +90,7 @@ const Profile: React.FC = () => {
                                 ? <ProfileFriends friends={friends}
                                                   totalFriendsCount={totalFriendsCount}
                                 />
-                                : <Skeleton variant="rect" width={230} height={282} className={classes.profileFriends} />
+                                : <Skeleton variant="rect" width={230} height={282} className={classes.profileFriends}/>
                         }
                     </>
                 }
@@ -100,7 +103,7 @@ const Profile: React.FC = () => {
 
                         {
                             !isLoading && profile
-                                ? <ProfileInfo isOwner={isOwner} userId={userId} profile={profile}/>
+                                ? <ProfileInfo isOwner={isOwner} userId={userIdFinal} profile={profile}/>
                                 : <Skeleton variant="rect" width='100%' height={151} className={classes.profileInfo}/>
                         }
 
@@ -109,8 +112,9 @@ const Profile: React.FC = () => {
                             <>
                                 {
                                     !isLoading && profile
-                                        ? <MyPosts profile={profile}/>
-                                        : <Skeleton variant="rect" width='100%' height={54} className={classes.myPosts}/>
+                                        ? <ProfilePostForm profile={profile}/>
+                                        :
+                                        <Skeleton variant="rect" width='100%' height={54} className={classes.myPosts}/>
                                 }
 
                                 {
@@ -119,7 +123,8 @@ const Profile: React.FC = () => {
                                         ? <>
                                             {MyPostsItemElements}
                                         </>
-                                        : <Skeleton variant="rect" width='100%' height={200} className={classes.myPost}/>
+                                        :
+                                        <Skeleton variant="rect" width='100%' height={200} className={classes.myPost}/>
                                 }
 
                             </>

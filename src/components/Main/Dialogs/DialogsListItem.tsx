@@ -8,11 +8,16 @@ import ListItemText from "@material-ui/core/ListItemText";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import Avatar from "@material-ui/core/Avatar";
 import {DATE} from "../../../utilities/date";
+import {UseParamsType} from "../../../types/types";
+import {getLang} from "../../../redux/app-selectors";
+import {useSelector} from "react-redux";
 
 const ListItemLink: React.FC<ListItemLinkPropsType> = ({primary, secondary, to, src, dialog}) => {
     const classes = useStyles();
-    let {userId} = useParams();
-    const selected = +userId === dialog.id;
+    const lang = useSelector(getLang);
+    let {userId} = useParams<UseParamsType>();
+    const userIdNumber: number | undefined = userId ? +userId : undefined;
+    const selected = userIdNumber === dialog.id;
 
     const renderLink = React.useMemo(
         () =>
@@ -22,7 +27,7 @@ const ListItemLink: React.FC<ListItemLinkPropsType> = ({primary, secondary, to, 
         [to],
     );
 
-    const secondaryTransformed = DATE.dateTranslateFromAPI(secondary)
+    const secondaryTransformed = DATE.dateTranslateFromAPI(secondary, lang);
 
     return (
         <li className={classes.item}>

@@ -1,15 +1,22 @@
+import {LangType} from "../../types/types";
+import {translate} from "../../const/lang";
+
 export const required: FieldValidatorType = (value) =>
     value ? undefined : 'Field is required';
 
-export const maxLength = (max: number): FieldValidatorType => (value) =>
+export const maxLength = (max: number) => (value: string) =>
     value && value.length > max
         ? `Number of letters is more than ${max}`
         : undefined;
-export const maxLength10 = maxLength(10);
-export const maxLength30 = maxLength(30);
-export const maxLength100 = maxLength(100);
 
-export const empty: EmptyType = (str) => /^\s+$/.test(str);
+export const maxLength10 = (max: number): FieldValidatorType => (value: string) =>
+    value && value.length > max
+        ? `Number of letters is more than ${max}`
+        : undefined;
+
+export const maxLength30 = maxLength(30);
+
+export const empty: EmptyType = (str: string): boolean => /^\s+$/.test(str);
 
 export const shouldNotBeEmpty: FieldValidatorType = (value) =>
     empty(value) && value !== ''

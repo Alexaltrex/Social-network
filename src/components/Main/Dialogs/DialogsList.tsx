@@ -14,6 +14,8 @@ import {
 } from "../../../redux/dialogs-selectors";
 import Typography from "@material-ui/core/Typography";
 import {DialogsSidebarItemEnum} from "../../../types/types";
+import {translate} from "../../../const/lang";
+import {getLang} from "../../../redux/app-selectors";
 
 const SkeletonListItem = () => {
     const classes = useStyles();
@@ -25,13 +27,13 @@ const SkeletonListItem = () => {
     )
 };
 
-
 const DialogsList: React.FC<PropsType> = ({dialogs}) => {
     const classes = useStyles();
     const dialogsIsLoading = useSelector(getDialogsIsLoading);
     const currentDialogsSidebarItem = useSelector(getCurrentDialogsSidebarItem);
     const deletedMessages = useSelector(getDeletedMessages);
     const spamMessages = useSelector(getSpamMessages);
+    const lang = useSelector(getLang);
 
     const dialogsElements = dialogs && dialogs
         .map(item => <DialogsListItem key={item.id}
@@ -73,7 +75,7 @@ const DialogsList: React.FC<PropsType> = ({dialogs}) => {
                     {deletedMessages.length === 0
                         ? <div className={classes.emptyDialogs}>
                             <Typography variant='subtitle1' color='primary'>
-                                There are no deleted dialogs
+                                {translate(lang, 'There are no deleted dialogs')}
                             </Typography>
 
                         </div>

@@ -19,12 +19,15 @@ import CircularPreloader from "../../common/CircularPreloader";
 import SendIcon from '@material-ui/icons/Send';
 import SendMessageForm from "../../common/SendMessageForm";
 import {DialogType} from "../../../DAL/dialogs-api";
+import {getLang} from "../../../redux/app-selectors";
+import {translate} from "../../../const/lang";
 
 const UserBlockItem: React.FC<PropType> = ({user, dialogs}) => {
     const classes = useStyles();
     const [openSendMessageForm, setOpenSendMessageForm] = React.useState(false);
     const followingInProgress = useSelector(getFollowingInProgress);
     const isFollowing = useSelector(getIsFollowing);
+    const lang = useSelector(getLang);
 
     const dispatch = useDispatch();
 
@@ -40,7 +43,9 @@ const UserBlockItem: React.FC<PropType> = ({user, dialogs}) => {
         setOpenSendMessageForm(true)
     };
 
-    const buttonLabel = user.followed ? 'UnFollow' : 'Follow';
+    const buttonLabel = user.followed
+        ? translate(lang, 'Unfollow') :
+        translate(lang, 'Follow');
     const startIcon = user.followed ? <PersonAddDisabledIcon/> : <GroupAddIcon/>;
     const src = ((user && user.photos.small) ? user.photos.small : undefined) as string | undefined;
 
@@ -96,7 +101,7 @@ const UserBlockItem: React.FC<PropType> = ({user, dialogs}) => {
                                 onClick={onOpenSendMessageFormHandle}
                                 startIcon={<SendIcon/>}
                             >
-                                Send message
+                                {translate(lang, 'Send message')}
                             </Button>
                         </div>
 

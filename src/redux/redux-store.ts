@@ -22,14 +22,15 @@ let rootReducer = combineReducers({
     form: formReducer
 });
 
+let store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunkMiddleware)));
+
+// @ts-ignore
+window.store = store;
+export default store;
+
+//======================== TYPE ==========================
 export type StateType = ReturnType<typeof rootReducer>
 
 export type GetActionsType<T> = T extends {[key: string]: (...args: any[]) => infer U } ? U : never
 
 export type BaseThunkType<A extends Action, R = Promise<void>> = ThunkAction<R, StateType, unknown, A>
-
-let store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunkMiddleware)));
-// @ts-ignore
-window.store = store;
-
-export default store;

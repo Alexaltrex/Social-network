@@ -8,13 +8,15 @@ import {useDispatch, useSelector} from "react-redux";
 import RenderTextField from "../../common/RenderTextField";
 import {empty, maxLength30} from "../../../utilities/validators/validators";
 import {getStatusSelector} from "../../../redux/profile-selectors";
+import {translate} from "../../../const/lang";
+import {getLang} from "../../../redux/app-selectors";
 
 //=================================== FORM ==========================================================================================
 const Form: React.FC<InjectedFormProps<StatusFormValuesType, StatusFormOwnPropsType> & StatusFormOwnPropsType> = (props) => {
     const {handleSubmit, onClose} = props
     const classes = useStyles();
     const classesField = useStylesField();
-
+    const lang = useSelector(getLang);
     const normalize = (value: any) => {
         if (empty(value)) {
             return ''
@@ -43,7 +45,7 @@ const Form: React.FC<InjectedFormProps<StatusFormValuesType, StatusFormOwnPropsT
                         type="submit"
                         onClick={onClose}
                         variant="outlined">
-                    Save status
+                    {translate(lang, 'Save status')}
                 </Button>
             </div>
         </form>)
@@ -57,8 +59,8 @@ const ReduxStatusForm = reduxForm<StatusFormValuesType, StatusFormOwnPropsType>(
 
 //====================================== COMPONENT =====================================================================
 const ProfileStatusForm = (props: PropsType) => {
-    const {id, open, anchorEl, onClose} = props
-    const classes = useStyles();
+    const {onClose} = props
+
     const dispatch = useDispatch();
 
     const onSubmit = (formValue: StatusFormValuesType) => {
@@ -73,28 +75,9 @@ const ProfileStatusForm = (props: PropsType) => {
     };
 
     return (
-        <Popover
-            id={id}
-            open={open}
-            anchorEl={anchorEl}
-            onClose={onClose}
-
-            anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-            }}
-            transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-            }}
-            classes={{
-                paper: classes.paper,
-            }}
-        >
-            <ReduxStatusForm onSubmit={onSubmit}
-                             initialValues={initialValues}
-                             onClose={onClose}/>
-        </Popover>
+        <ReduxStatusForm onSubmit={onSubmit}
+                         initialValues={initialValues}
+                         onClose={onClose}/>
     )
 };
 
@@ -106,11 +89,7 @@ type initialValuesType = {
 }
 
 type PropsType = {
-    id: string | undefined
-    open: boolean
-    anchorEl: HTMLButtonElement | null
     onClose: () => void
-
 }
 type StatusFormValuesType = {
     status: string

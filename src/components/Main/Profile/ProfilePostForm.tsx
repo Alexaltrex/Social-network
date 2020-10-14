@@ -12,12 +12,15 @@ import Typography from "@material-ui/core/Typography";
 import {profileAC} from "../../../redux/profile-reducer";
 import {getEditingPost} from "../../../redux/profile-selectors";
 import BlockTitle from "../../common/BlockTitle";
-import useOutsideAlerter from "../../../hooks/hooks";
+import useOutsideClick from "../../../hooks/hooks";
+import {getLang} from "../../../redux/app-selectors";
+import {translate} from "../../../const/lang";
 
 //============================ FORM ===================================
 const Form: React.FC<FormPropsType> = (props) => {
     const {handleSubmit, submitting, pristine} = props;
     const classes = useStyles();
+    const lang = useSelector(getLang);
 
     return (
         <form onSubmit={handleSubmit}>
@@ -26,7 +29,7 @@ const Form: React.FC<FormPropsType> = (props) => {
                    validate={[shouldNotBeEmpty, required]}
                    autoFocus={true}
                    className={classes.textArea}
-                   placeholder='Enter your post'
+                   placeholder={translate(lang, 'Enter your post')}
                    size='small'
             />
 
@@ -41,7 +44,7 @@ const Form: React.FC<FormPropsType> = (props) => {
                         disabled={submitting || pristine}
                         className={classes.button}
                 >
-                    Add post
+                    {translate(lang, 'Add post')}
                 </Button>
             </div>
         </form>
@@ -49,7 +52,7 @@ const Form: React.FC<FormPropsType> = (props) => {
 };
 
 const afterSubmit = (result: any, dispatch: any) => {
-   dispatch(reset('post'))
+    dispatch(reset('post'))
 };
 
 //============================= REDUX-FORM ========================================
@@ -60,13 +63,14 @@ const ReduxForm = reduxForm<FormValuesType, OwnPropsType>({
 
 
 //============================= COMPONENT =====================================================
-const MyPosts: React.FC<PropsType> = ({profile}) => {
+const ProfilePostForm: React.FC<PropsType> = ({profile}) => {
     const classes = useStyles();
     const editingPost = useSelector(getEditingPost)
     const dispatch = useDispatch();
+    const lang = useSelector(getLang);
 
     const onSubmit = (formValue: FormValuesType) => {
-        dispatch(profileAC.addPost(formValue.newPostText));
+        dispatch(profileAC.addPost(formValue.newPostText, lang));
     };
 
     const onClickHandler = () => {
@@ -78,7 +82,7 @@ const MyPosts: React.FC<PropsType> = ({profile}) => {
     };
 
     const wrapperRef = useRef(null);
-    useOutsideAlerter(wrapperRef, onOutClickHandler);
+    useOutsideClick(wrapperRef, onOutClickHandler);
 
     return (
         <Card className={classes.card}
@@ -96,7 +100,7 @@ const MyPosts: React.FC<PropsType> = ({profile}) => {
                             : <Typography onClick={onClickHandler}
                                           color='textSecondary'
                                           className={classes.text}>
-                                Enter your post
+                                {translate(lang, 'Enter your post')}
                             </Typography>
                     }
 
@@ -108,7 +112,7 @@ const MyPosts: React.FC<PropsType> = ({profile}) => {
     )
 };
 
-export default MyPosts;
+export default ProfilePostForm;
 
 //========================== TYPES ==============================================
 type PropsType = {

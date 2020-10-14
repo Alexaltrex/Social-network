@@ -11,6 +11,9 @@ import ListItem from "@material-ui/core/ListItem";
 import Collapse from "@material-ui/core/Collapse";
 import BlockField from "../../common/BlockField";
 import {ContactsType, ProfileType} from "../../../types/types";
+import {getLang} from "../../../redux/app-selectors";
+import { useSelector } from "react-redux";
+import {translate} from "../../../const/lang";
 
 const ProfileInfo: React.FC<PropsType> = ({isOwner, userId, profile}) => {
     const classes = useStyles();
@@ -20,11 +23,14 @@ const ProfileInfo: React.FC<PropsType> = ({isOwner, userId, profile}) => {
         setShowDetailedInfo(!showDetailedInfo);
     };
 
+    const lang = useSelector(getLang);
     const showDetailedInfoTitle = showDetailedInfo
-        ? 'Hide detailed information'
-        : 'Show detailed information';
+        ? translate(lang, 'Hide detailed information')
+        : translate(lang, 'Show detailed information');
 
-    const lookingForAJob = profile && profile.lookingForAJob ? 'Да' : 'Нет';
+    const lookingForAJob = profile && profile.lookingForAJob
+        ? translate(lang, 'Yes')
+        : translate(lang, 'No');
 
     const contactsElements = profile && Object
         .keys(profile.contacts)
@@ -68,17 +74,17 @@ const ProfileInfo: React.FC<PropsType> = ({isOwner, userId, profile}) => {
                 <Collapse in={showDetailedInfo} timeout="auto" unmountOnExit>
 
                     <>
-                        <BlockTitle title='About job'/>
-                        <BlockField left='Looking for a job' right={lookingForAJob}/>
+                        <BlockTitle title={translate(lang, 'About job')}/>
+                        <BlockField left={translate(lang, 'Looking for a job')} right={lookingForAJob}/>
                         {
                             profile.lookingForAJobDescription
-                            && <BlockField left='My professional skills' right={profile.lookingForAJobDescription}/>
+                            && <BlockField left={translate(lang, 'My professional skills')} right={profile.lookingForAJobDescription}/>
                         }
                     </>
 
                     {Object.keys(profile.contacts).some(key => profile.contacts[key as keyof ContactsType])
                         ? <>
-                            <BlockTitle title='Contacts'/>
+                            <BlockTitle title={translate(lang, 'Contacts')}/>
                             {contactsElements}
                         </>
                         : <>
@@ -90,7 +96,6 @@ const ProfileInfo: React.FC<PropsType> = ({isOwner, userId, profile}) => {
                             }
                         </>
                     }
-
 
                 </Collapse>
 

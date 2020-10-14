@@ -11,12 +11,15 @@ import {dialogsAC} from "../../../redux/dialogs-reducer";
 import ChatIcon from '@material-ui/icons/Chat';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import {Link as RouterLink} from "react-router-dom";
+import {getLang} from "../../../redux/app-selectors";
+import {translate} from "../../../const/lang";
 
 
 const DialogsSidebar = () => {
     const classes = useStyles();
     const currentDialogsSidebarItem = useSelector(getCurrentDialogsSidebarItem);
     const loading = useSelector(getLoading);
+    const lang = useSelector(getLang);
     const dispatch = useDispatch();
 
     const onChangeHandle = (event: React.ChangeEvent<{}>, newValue: number) => {
@@ -35,7 +38,7 @@ const DialogsSidebar = () => {
                 className={classes.tabs}
             >
 
-                <Tab label="All"
+                <Tab label={translate(lang, "All")}
                      component={RouterLink}
                      to='/dialogs'
                      disabled={loading}
@@ -47,7 +50,7 @@ const DialogsSidebar = () => {
                          labelIcon: classes.labelIcon
                      }}/>
 
-                <Tab label="Deleted"
+                <Tab label={translate(lang, "Deleted")}
                      component={RouterLink}
                      to='/dialogs'
                      disabled={loading}

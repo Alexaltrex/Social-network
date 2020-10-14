@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
 
-export default function useOutsideAlerter(ref: React.MutableRefObject<any>, cb: () => void): void {
+export default function useOutsideClick(ref: React.MutableRefObject<any>, cb: () => void): void {
     useEffect(() => {
         // cb() if clicked outside of element
                 function handleClickOutside(event: MouseEvent): void {

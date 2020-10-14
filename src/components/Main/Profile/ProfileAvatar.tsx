@@ -27,6 +27,8 @@ import SendIcon from '@material-ui/icons/Send';
 import SendMessageForm from "../../common/SendMessageForm";
 import {getDialogsSelector} from "../../../redux/dialogs-selectors";
 import {getDialogs} from "../../../redux/dialogs-reducer";
+import {Lang, translate} from "../../../const/lang";
+import {getLang} from "../../../redux/app-selectors";
 
 const ProfileAvatar: React.FC<PropsType> = (props) => {
     const {isOwner, userId, profile, followed} = props;
@@ -83,9 +85,16 @@ const ProfileAvatar: React.FC<PropsType> = (props) => {
         setOpenSendMessageForm(true)
     };
 
-    const buttonLabel = followed ? 'unfollow' : 'follow';
+    const lang = useSelector(getLang);
+    const buttonLabel = followed
+        ? translate(lang, 'Unfollow')
+        : translate(lang, 'Follow');
     const startIcon = followed ? <PersonAddDisabledIcon/> : <GroupAddIcon/>;
     const src = ((profile && profile.photos.small) ? profile.photos.small : undefined) as string | undefined;
+
+    const deleteAvatarTitle = translate(lang, 'Delete avatar');
+    const сhangeAvatarTitle = translate(lang, 'Change avatar');
+    const editProfileLabel = translate(lang, 'Edit profile');
 
     return (
         <>
@@ -105,7 +114,7 @@ const ProfileAvatar: React.FC<PropsType> = (props) => {
                         }
                         {isOwner && profile.photos &&
                         <Fade in={onAvatarHover} timeout={100}>
-                            <Tooltip title="Delete avatar" placement="bottom-start">
+                            <Tooltip title={deleteAvatarTitle} placement="bottom-start">
                                 <div className={classes.avatarButtonUpperPanel}>
                                     <IconButton disableFocusRipple={true}
                                                 disableRipple={true}
@@ -139,7 +148,7 @@ const ProfileAvatar: React.FC<PropsType> = (props) => {
                                                 component="span">
                                         <PhotoCamera className={classes.buttonIconInner}/>
                                         <Typography variant='body2'>
-                                            Change photo
+                                            {сhangeAvatarTitle}
                                         </Typography>
                                     </IconButton>
                                 </label>
@@ -161,7 +170,7 @@ const ProfileAvatar: React.FC<PropsType> = (props) => {
                                     size='small'
                                     fullWidth={true}
                                     className={classes.button}>
-                                Edit profile
+                                {editProfileLabel}
                             </Button>
                         </div>
                         : <div className={classes.buttons}>

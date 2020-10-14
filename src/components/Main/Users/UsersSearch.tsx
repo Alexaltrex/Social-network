@@ -12,6 +12,8 @@ import {useDispatch, useSelector} from "react-redux";
 import {usersAC} from "../../../redux/users-reduser";
 import {SearchUsersParamsType} from "../../../types/types";
 import {getValueFromHeaderSearch} from "../../../redux/users-selectors";
+import {getLang} from "../../../redux/app-selectors";
+import {translate} from "../../../const/lang";
 
 //========================== FORM =======================================
 const SearchUsersForm: React.FC<SearchUsersFormPropsType> = (props) => {
@@ -19,6 +21,7 @@ const SearchUsersForm: React.FC<SearchUsersFormPropsType> = (props) => {
     const classes = useStyles();
     const classesRadioButton = useStylesRadioButton();
     const dispatch = useDispatch();
+    const lang = useSelector(getLang);
 
     return (
         <form onSubmit={handleSubmit}>
@@ -28,19 +31,19 @@ const SearchUsersForm: React.FC<SearchUsersFormPropsType> = (props) => {
                    fullWidth
                    autoFocus={true}
                    validate={[shouldNotBeEmpty]}
-                   label='User name'
+                   label={translate(lang, 'Name')}
                    size='small'
                    onChange={() => dispatch(submit('searchUsers'))}
             />
 
             <Field name='friend'
-                   label='User are friend or not'
+                   label={translate(lang, 'User are friend or not')}
                    component={RenderRadioButton}
                    classes={classesRadioButton}
                    labels={[
-                       {value: "all", label: 'All'},
-                       {value: "true", label: 'Friend'},
-                       {value: "false", label: 'Not friend'}
+                       {value: "all", label: translate(lang, 'All')},
+                       {value: "true", label: translate(lang, 'Friend')},
+                       {value: "false", label: translate(lang, 'Not friend')}
                    ]}
                    size='small'
             />
@@ -54,10 +57,9 @@ const SearchUsersForm: React.FC<SearchUsersFormPropsType> = (props) => {
                         disabled={submitting || pristine}
                         className={classes.button}
                 >
-                    Search
+                    {translate(lang, 'Search')}
                 </Button>
             </div>
-
 
             {error && !pristine &&
             <Typography color='error' variant='h6'>

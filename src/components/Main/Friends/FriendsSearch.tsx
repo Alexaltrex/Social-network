@@ -10,10 +10,13 @@ import {IconButton} from "@material-ui/core";
 import {getIsFriendsSearching, getSearchFriendsParams} from "../../../redux/users-selectors";
 import CircularPreloader from "../../common/CircularPreloader";
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+import {translate} from "../../../const/lang";
+import {getLang} from "../../../redux/app-selectors";
 
 //========================== FORM =======================================
 const Form: React.FC<FormPropsType> = (props) => {
     const {handleSubmit} = props;
+    const lang = useSelector(getLang);
 
     const onChangeHandler = () => {
         dispatch(submit('friends-search'));
@@ -28,7 +31,7 @@ const Form: React.FC<FormPropsType> = (props) => {
                        component={RenderTextField}
                        fullWidth
                        validate={[shouldNotBeEmpty]}
-                       label='Friends name'
+                       label={translate(lang, 'Name of the friend')}
                        size='small'
                        onChange={onChangeHandler}
                 />

@@ -32,6 +32,7 @@ const SidebarItem: React.FC<PropsTypes> = (props) => {
         <li>
             <ListItem
                 onClick={onClick}
+                className={classes.listItem}
                 selected={ownIndex === currentSidebarItem}
                 button
                 component={RouterLink}
@@ -71,5 +72,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     text: {
         color: indigo[600],
         fontWeight: 900
+    },
+    listItem: {
+        padding: '5px 5px 5px 10px'
     }
 }));

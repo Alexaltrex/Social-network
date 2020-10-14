@@ -15,16 +15,20 @@ import {Link as RouterLink} from "react-router-dom";
 import Typography from "@material-ui/core/Typography";
 import {PostType, ProfileType} from "../../../types/types";
 import BlockTitle from "../../common/BlockTitle";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {profileAC} from "../../../redux/profile-reducer";
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import {translate} from "../../../const/lang";
+import {getLang} from "../../../redux/app-selectors";
+import {DATE} from "../../../utilities/date";
 
-const MyPost: React.FC<PropsType> = ({post, profile}) => {
+const ProfilePost: React.FC<PropsType> = ({post, profile}) => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const [open, setOpen] = React.useState(false);
     const anchorRef = React.useRef<HTMLButtonElement>(null);
+    const lang = useSelector(getLang);
 
     const handleToggle = () => {
         setOpen((prevOpen) => !prevOpen);
@@ -80,7 +84,7 @@ const MyPost: React.FC<PropsType> = ({post, profile}) => {
                                 {profile.fullName}
                             </Link>
                             <Typography>
-                                {post.time}
+                                {DATE.dateTranslateFromAPI(post.time, lang)}
                             </Typography>
                         </div>
 
@@ -108,9 +112,9 @@ const MyPost: React.FC<PropsType> = ({post, profile}) => {
                                             <ClickAwayListener onClickAway={handleClose}>
                                                 <MenuList autoFocusItem={open} id="menu-list-grow"
                                                           onKeyDown={handleListKeyDown}>
-                                                    <MenuItem onClick={onDeletePostHandle}>Delete post</MenuItem>
-                                                    <MenuItem onClick={handleClose}>Something else</MenuItem>
-                                                    <MenuItem onClick={handleClose}>Something else</MenuItem>
+                                                    <MenuItem onClick={onDeletePostHandle}>{translate(lang, 'Delete post')}</MenuItem>
+                                                    <MenuItem onClick={handleClose}>{translate(lang, 'Something else')}</MenuItem>
+                                                    <MenuItem onClick={handleClose}>{translate(lang, 'Something else')}</MenuItem>
                                                 </MenuList>
                                             </ClickAwayListener>
                                         </Paper>
@@ -141,7 +145,7 @@ const MyPost: React.FC<PropsType> = ({post, profile}) => {
     );
 }
 
-export default MyPost
+export default ProfilePost
 
 //========================== TYPES ==============================================
 type PropsType = {

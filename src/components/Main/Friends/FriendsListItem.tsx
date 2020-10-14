@@ -22,6 +22,8 @@ import {getFollowingInProgress, getIsFollowing} from "../../../redux/users-selec
 import CircularPreloader from "../../common/CircularPreloader";
 import SendMessageForm from "../../common/SendMessageForm";
 import {DialogType} from "../../../DAL/dialogs-api";
+import {getLang} from "../../../redux/app-selectors";
+import {translate} from "../../../const/lang";
 
 const FriendsListItem: React.FC<PropsTypes> = ({friend, dialogs}) => {
     const classes = useStyles();
@@ -29,6 +31,7 @@ const FriendsListItem: React.FC<PropsTypes> = ({friend, dialogs}) => {
     const dispatch = useDispatch();
     const followingInProgress = useSelector(getFollowingInProgress);
     const isFollowing = useSelector(getIsFollowing);
+    const lang = useSelector(getLang);
 
     const onListItemClick = () => {
         dispatch(sidebarAC.setCurrentSidebarItem(SidebarItemEnum.users));
@@ -73,7 +76,11 @@ const FriendsListItem: React.FC<PropsTypes> = ({friend, dialogs}) => {
     };
     const somethingElseHandle = () => {};
 
-    const labels = ['Remove from friends', 'Something else', 'Something else'];
+    const labels = [
+        translate(lang, 'Remove from friends'),
+        translate(lang, 'Something else'),
+        translate(lang, 'Something else')
+    ];
     const callbacks = [removeHandle, somethingElseHandle, somethingElseHandle]
     const menuItemsElements = labels.map((el, i) => {
         const onClickHandle = (event: React.MouseEvent<EventTarget>) => {
@@ -107,7 +114,7 @@ const FriendsListItem: React.FC<PropsTypes> = ({friend, dialogs}) => {
                                 {friend.name}
                             </Link>
                             <Link component={RouterLink} to='#' variant='body2' onClick={onOpenSendMessageFormHandle}>
-                                Send message
+                                {translate(lang, 'Send message')}
                             </Link>
                         </div>
                         <SendMessageForm open={openSendMessageForm}

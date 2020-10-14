@@ -27,12 +27,14 @@ import clsx from "clsx";
 import RenderTextAreaField from "../../common/RenderTextareaField";
 import {saveProfile} from "../../../redux/profile-reducer";
 import {required, shouldNotBeEmpty} from "../../../utilities/validators/validators";
+import {getLang} from "../../../redux/app-selectors";
+import {translate} from "../../../const/lang";
 
 //========================== FORM ==============================================
 const Form: React.FC<InjectedFormProps<FormValuesType, FormOwnPropsType> & FormOwnPropsType> = (props) => {
     const classes = useStyles();
-    useStylesField();
-    const {handleSubmit, submitting, pristine, reset, error, profile} = props
+    const lang = useSelector(getLang);
+    const {handleSubmit, submitting, pristine, error, profile} = props
     const currentInfoFormSidebarItem = useSelector(getCurrentInfoFormSidebarItem);
 
     const FieldContactsIconArray = [
@@ -60,8 +62,6 @@ const Form: React.FC<InjectedFormProps<FormValuesType, FormOwnPropsType> & FormO
 
     return (
         <form onSubmit={handleSubmit}>
-
-
             <div
                 className={clsx(classes.fieldWrapper, (currentInfoFormSidebarItem) !== ProfileSidebarItemEnum.main && classes.hide)}>
                 <Field name='fullName'
@@ -69,18 +69,17 @@ const Form: React.FC<InjectedFormProps<FormValuesType, FormOwnPropsType> & FormO
                        component={RenderTextField}
                        validate={[required, shouldNotBeEmpty]}
                        className={classes.field}
-                       label='Full name'
+                       label={translate(lang, 'Name')}
                        size='small'
                 />
             </div>
-
 
             <div className={clsx(currentInfoFormSidebarItem !== ProfileSidebarItemEnum.job && classes.hide)}>
                 <div className={classes.fieldWrapper}>
                     <Field name='lookingForAJob'
                            component={RenderCheckbox}
                            className={classes.iconField}
-                           label='Looking for a job'
+                           label={translate(lang, 'Looking for a job')}
                            size='small'
                            variant='outlined'
                     />
@@ -91,8 +90,8 @@ const Form: React.FC<InjectedFormProps<FormValuesType, FormOwnPropsType> & FormO
                            component={RenderTextAreaField}
                            validate={[shouldNotBeEmpty]}
                            className={classes.field}
-                           label='My professional skills'
-                           placeholder='My professional skills'
+                           label = {translate(lang, 'My professional skills')}
+                           placeholder={translate(lang, 'My professional skills')}
                            size='small'
                     />
                 </div>
@@ -107,7 +106,7 @@ const Form: React.FC<InjectedFormProps<FormValuesType, FormOwnPropsType> & FormO
                     startIcon={<SaveIcon/>}
                     disabled={submitting || pristine}
                     className={classes.button}>
-                Save
+                {translate(lang, 'Save')}
             </Button>
 
             {error && !pristine &&
@@ -130,19 +129,20 @@ const ProfileInfoForm = () => {
     const classes = useStyles();
     const currentInfoFormSidebarItem = useSelector(getCurrentInfoFormSidebarItem);
     const profile = useSelector(getProfileSelector);
+    const lang = useSelector(getLang);
     const dispatch = useDispatch();
     let title;
     switch (currentInfoFormSidebarItem) {
         case 0: {
-            title = 'Main'
+            title = translate(lang, 'Main')
             break
         }
         case 1: {
-            title = 'Job'
+            title = translate(lang, 'Job')
             break
         }
         case 2: {
-            title = 'Contacts'
+            title = translate(lang, 'Contacts')
             break
         }
     }

@@ -17,6 +17,8 @@ import Link from "@material-ui/core/Link";
 import {sidebarAC} from "../../../redux/sidebar-reducer";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
+import {translate} from "../../../const/lang";
+import {getLang} from "../../../redux/app-selectors";
 
 
 const UserListItem: React.FC<PropType> = ({user, dialogs}) => {
@@ -24,6 +26,7 @@ const UserListItem: React.FC<PropType> = ({user, dialogs}) => {
     const [openSendMessageForm, setOpenSendMessageForm] = React.useState(false);
     const followingInProgress = useSelector(getFollowingInProgress);
     const isFollowing = useSelector(getIsFollowing);
+    const lang = useSelector(getLang);
 
     const dispatch = useDispatch();
 
@@ -43,7 +46,10 @@ const UserListItem: React.FC<PropType> = ({user, dialogs}) => {
         dispatch(sidebarAC.setCurrentSidebarItem(SidebarItemEnum.users));
     };
 
-    const followLabel = user.followed ? 'UnFollow' : 'Follow';
+    const followLabel = user.followed
+        ? translate(lang, 'Unfollow') :
+        translate(lang, 'Follow');
+
     const startIcon = user.followed ? <PersonAddDisabledIcon/> : <GroupAddIcon/>;
     const src = ((user && user.photos.small) ? user.photos.small : undefined) as string | undefined;
 
@@ -65,7 +71,7 @@ const UserListItem: React.FC<PropType> = ({user, dialogs}) => {
 
                 </Link>
                 <Link component={RouterLink} to='#' variant='body2' onClick={onOpenSendMessageFormHandle}>
-                    Send message
+                    {translate(lang, 'Send message')}
                 </Link>
                 <div className={classes.buttonWrapper}>
                     <Button className={classes.button}

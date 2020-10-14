@@ -11,10 +11,13 @@ import {useDispatch, useSelector} from "react-redux";
 import {getCurrentInfoFormSidebarItem} from "../../../redux/profile-selectors";
 import indigo from "@material-ui/core/colors/indigo";
 import {profileAC} from "../../../redux/profile-reducer";
+import {getLang} from "../../../redux/app-selectors";
+import {translate} from "../../../const/lang";
 
 const ProfileInfoFormSidebar = () => {
     const classes = useStyles();
     const currentInfoFormSidebarItem = useSelector(getCurrentInfoFormSidebarItem);
+    const lang = useSelector(getLang);
     const dispatch = useDispatch();
     const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
         dispatch(profileAC.setCurrentInfoFormSidebarItem(newValue));
@@ -34,19 +37,19 @@ const ProfileInfoFormSidebar = () => {
                     className={classes.tabs}
                 >
 
-                    <Tab label="Main" icon={<AccountCircleIcon className={classes.icon}/>} classes={{
+                    <Tab label={translate(lang, 'Main')} icon={<AccountCircleIcon className={classes.icon}/>} classes={{
                         wrapper: classes.wrapper,
                         selected: classes.selected,
                         root: classes.tabRoot,
                         labelIcon: classes.labelIcon
                     }}/>
-                    <Tab label="Job" icon={<WorkOutlineIcon className={classes.icon}/>} classes={{
+                    <Tab label={translate(lang, 'Job')} icon={<WorkOutlineIcon className={classes.icon}/>} classes={{
                         wrapper: classes.wrapper,
                         selected: classes.selected,
                         root: classes.tabRoot,
                         labelIcon: classes.labelIcon
                     }}/>
-                    <Tab label="Contacts" icon={<LanguageIcon className={classes.icon}/>} classes={{
+                    <Tab label={translate(lang, 'Contacts')} icon={<LanguageIcon className={classes.icon}/>} classes={{
                         wrapper: classes.wrapper,
                         selected: classes.selected,
                         root: classes.tabRoot,

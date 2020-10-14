@@ -13,11 +13,20 @@ import Typography from "@material-ui/core/Typography";
 import RenderPasswordField from "../common/RenderPasswordField";
 import RenderCheckbox from "../common/RenderCheckbox";
 import Button from "@material-ui/core/Button";
+import {getLang} from "../../redux/app-selectors";
+import {Lang} from "../../const/lang";
 
 //=================================== Form =========================================
 const LoginForm: React.FC<LoginFormPropsType> = (props) => {
     const {handleSubmit, submitting, pristine, error, captcha} = props;
     const classes = useStyles();
+    const lang = useSelector(getLang);
+    const emailLabel = lang === 'rus' ? Lang['email'].rus : Lang['email'].eng;
+    const passwordLabel = lang === 'rus' ? Lang['password'].rus : Lang['password'].eng;
+    const rememberMeLabel = lang === 'rus' ? Lang['Remember me'].rus : Lang['Remember me'].eng;
+    const сaptchaLabel = lang === 'rus' ? Lang['Captcha'].rus : Lang['Captcha'].eng;
+    const сaptchaText = lang === 'rus' ? Lang['Enter symbols from image'].rus : Lang['Enter symbols from image'].eng;
+    const buttonLabel = lang === 'rus' ? Lang['Login'].rus : Lang['Login'].eng;
 
     return <form onSubmit={handleSubmit}>
 
@@ -27,7 +36,7 @@ const LoginForm: React.FC<LoginFormPropsType> = (props) => {
                    icon={<MailOutlineIcon/>}
                    className={classes.textField}
                    validate={[required, shouldNotBeEmpty]}
-                   label='email'
+                   label={emailLabel}
                    size='small'
             />
         </div>
@@ -38,14 +47,14 @@ const LoginForm: React.FC<LoginFormPropsType> = (props) => {
                 //disabled={isLoading}
                 className={classes.textField}
                 component={RenderPasswordField}
-                placeholder='Enter your password'
-                label='Password'
+                placeholder={passwordLabel}
+                label={passwordLabel}
                 validate={[required, shouldNotBeEmpty]}
             />
         </div>
 
         <div className={classes.fieldWrapper}>
-            <Field name="rememberMe" component={RenderCheckbox} label="Remember me"/>
+            <Field name="rememberMe" component={RenderCheckbox} label={rememberMeLabel}/>
         </div>
 
         {
@@ -54,13 +63,16 @@ const LoginForm: React.FC<LoginFormPropsType> = (props) => {
                 <div className={classes.fieldWrapper}>
                     <img src={captcha} alt=""/>
                 </div>
+                <Typography className={classes.captcha}>
+                    {сaptchaText}
+                </Typography>
                 <div className={classes.fieldWrapper}>
                     <Field
                         name='captcha'
                         className={classes.textField}
                         component={RenderTextField}
-                        placeholder='Enter symbols from image'
-                        label='Captcha'
+                        placeholder={сaptchaLabel}
+                        label={сaptchaLabel}
                         validate={[required, shouldNotBeEmpty]}
                         size='small'
                     />
@@ -80,7 +92,7 @@ const LoginForm: React.FC<LoginFormPropsType> = (props) => {
                     fullWidth={true}
                     size='large'
                     disabled={submitting || pristine}>
-                Enter
+                {buttonLabel}
             </Button>
         </div>
 
@@ -98,11 +110,15 @@ const Login: React.FC = () => {
     const classes = useStyles();
     const isAuth = useSelector(getIsAuth);
     const captcha = useSelector(getCaptchaSelector);
+    const lang = useSelector(getLang);
     const dispatch = useDispatch();
 
     const onSubmit = (values: LoginFormValuesType) => {
         dispatch(login(values.email, values.password, values.rememberMe, values.captcha));
     };
+
+    const title = lang === 'rus' ? Lang['Enter in your profile'].rus : Lang['Enter in your profile'].eng;
+
     if (isAuth) {
         return <Redirect to='/profile'/>
     }
@@ -115,7 +131,7 @@ const Login: React.FC = () => {
                     color='primary'
                     variant='h5'
                 >
-                    Enter in your profile
+                    {title}
                 </Typography>
 
                 <ReduxLoginForm onSubmit={onSubmit}
@@ -165,6 +181,10 @@ const useStyles = makeStyles({
     },
     title: {
         marginBottom: 20
+    },
+    captcha: {
+        marginLeft: 35,
+        marginBottom: 10
     }
 });
 

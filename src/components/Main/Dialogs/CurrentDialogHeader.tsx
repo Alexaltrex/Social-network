@@ -22,6 +22,8 @@ import Tooltip from "@material-ui/core/Tooltip";
 import Zoom from "@material-ui/core/Zoom";
 //import WarningIcon from '@material-ui/icons/Warning';
 import {DialogsSidebarItemEnum} from "../../../types/types";
+import {getLang} from "../../../redux/app-selectors";
+import {translate} from "../../../const/lang";
 
 const CurrentDialogHeader: React.FC<PropsType> = ({currentDialog, userId}) => {
     const classes = useStyles();
@@ -31,6 +33,7 @@ const CurrentDialogHeader: React.FC<PropsType> = ({currentDialog, userId}) => {
     const loading = useSelector(getLoading);
     const deletedMessages = useSelector(getDeletedMessages);
     const currentDialogsSidebarItem = useSelector(getCurrentDialogsSidebarItem);
+    const lang = useSelector(getLang);
 
     const to = !loading && currentDialog ? `/users/${currentDialog.id}` : '#';
     const deletedMessagesItem = userId && deletedMessages
@@ -66,8 +69,6 @@ const CurrentDialogHeader: React.FC<PropsType> = ({currentDialog, userId}) => {
         }
     };
 
-
-
     const onRestoreHandler = () => {
         if (userId && currentDialog) {
             dispatch(restoreMessages(selectedDeletedMessages));
@@ -101,7 +102,7 @@ const CurrentDialogHeader: React.FC<PropsType> = ({currentDialog, userId}) => {
                                         <>
                                             <div className={classes.messagesCount}>
                                                 <Typography variant='body2' color='textPrimary'>
-                                                    {selectedMessages.length} messages
+                                                    {selectedMessages.length} {translate(lang, 'messages')}
                                                 </Typography>
                                                 <IconButton onClick={onCleanArrayHandler}
                                                             className={classes.iconClean}
@@ -112,7 +113,7 @@ const CurrentDialogHeader: React.FC<PropsType> = ({currentDialog, userId}) => {
                                             </div>
 
                                             <div className={classes.iconButtonWrapper}>
-                                                <Tooltip title="Delete" TransitionComponent={Zoom} arrow={true}>
+                                                <Tooltip title={translate(lang, "Delete")} TransitionComponent={Zoom} arrow={true}>
                                                     <IconButton onClick={onDeleteHandler}
                                                                 className={classes.iconClean}
                                                                 disabled={loading}
@@ -138,7 +139,7 @@ const CurrentDialogHeader: React.FC<PropsType> = ({currentDialog, userId}) => {
 
                                 </>
                                 : <Typography variant='subtitle1' color='primary'>
-                                    Select a dialog
+                                    {translate(lang, 'Select a dialog')}
                                 </Typography>
                             }
                         </ListSubheader>
@@ -167,7 +168,7 @@ const CurrentDialogHeader: React.FC<PropsType> = ({currentDialog, userId}) => {
                                     <>
                                         <div className={classes.messagesCount}>
                                             <Typography variant='body2' color='textPrimary'>
-                                                {selectedDeletedMessages.length} messages
+                                                {selectedDeletedMessages.length} {translate(lang, 'messages')}
                                             </Typography>
                                             <IconButton onClick={onCleanArrayHandler}
                                                         className={classes.iconClean}
@@ -178,7 +179,7 @@ const CurrentDialogHeader: React.FC<PropsType> = ({currentDialog, userId}) => {
                                         </div>
 
                                         <div className={classes.iconButtonWrapper}>
-                                            <Tooltip title="Restore" TransitionComponent={Zoom} arrow={true}>
+                                            <Tooltip title={translate(lang, "Restore")} TransitionComponent={Zoom} arrow={true}>
                                                 <IconButton onClick={onRestoreHandler}
                                                             className={classes.iconClean}
                                                             disabled={loading}
@@ -193,7 +194,7 @@ const CurrentDialogHeader: React.FC<PropsType> = ({currentDialog, userId}) => {
 
                             </>
                             : <Typography variant='subtitle1' color='primary'>
-                                Select deleted dialog
+                                {translate(lang, 'Select deleted dialog')}
                             </Typography>
                     }
                 </ListSubheader>

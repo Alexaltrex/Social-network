@@ -81,3 +81,9 @@ export enum SidebarItemEnum {
     friends = 4,
     settings = 5
 }
+
+export type LangType = 'eng' | 'rus'
+
+export type UseParamsType = {
+    userId: string | undefined
+}

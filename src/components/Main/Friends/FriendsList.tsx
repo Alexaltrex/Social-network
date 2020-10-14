@@ -18,6 +18,8 @@ import Paginator from "../../common/Paginator";
 import {getDialogs} from "../../../redux/dialogs-reducer";
 import {getDialogsSelector} from "../../../redux/dialogs-selectors";
 import Divider from "@material-ui/core/Divider";
+import {getLang} from "../../../redux/app-selectors";
+import {translate} from "../../../const/lang";
 
 const FriendsList: React.FC = () => {
     const classes = useStyles();
@@ -31,6 +33,7 @@ const FriendsList: React.FC = () => {
     const searchFriendsParams = useSelector(getSearchFriendsParams);
     const totalFriendsCount = useSelector(getTotalFriendsCount);
     const dialogs = useSelector(getDialogsSelector);
+    const lang = useSelector(getLang);
 
     const dispatch = useDispatch();
 
@@ -60,7 +63,7 @@ const FriendsList: React.FC = () => {
         <Card className={classes.card} elevation={6}>
             <div className={classes.title}>
                 <Typography component='span' color='primary' className={classes.titleLeft}>
-                    Friends
+                    {translate(lang, 'Friends')}
                 </Typography>
                 <Typography component='span' color='textSecondary'>
                     {totalFriendsCount}

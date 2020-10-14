@@ -285,6 +285,18 @@ export const Lang: LangObjectType = {
         'eng': 'Search',
         'rus': 'Поиск'
     },
+    'Page not found': {
+        'eng': 'Page not found',
+        'rus': 'Страницы не существует'
+    },
+    'New message': {
+        'eng': 'New message',
+        'rus': 'Новое сообщение'
+    },
+    'Go to dialog with': {
+        'eng': 'Go to dialog with',
+        'rus': 'Перейти к диалогу с'
+    },
 };
 
 // const lang = useSelector(getLang);

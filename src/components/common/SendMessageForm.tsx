@@ -13,14 +13,17 @@ import {reduxForm, Field, InjectedFormProps} from "redux-form";
 import {shouldNotBeEmpty} from "../../utilities/validators/validators";
 import RenderTextAreaField from "./RenderTextareaField";
 import SendIcon from '@material-ui/icons/Send';
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {sendMessage} from "../../redux/dialogs-reducer";
 import {DialogType} from "../../DAL/dialogs-api";
+import {getLang} from "../../redux/app-selectors";
+import {translate} from "../../const/lang";
 
 //===================== FORM ==================================
 const Form: React.FC<FormPropsType> = (props) => {
     const {handleSubmit, submitting, pristine} = props;
     const classes = useStyles();
+    const lang = useSelector(getLang);
     const classesField = useStylesField();
     return (
         <form onSubmit={handleSubmit}>
@@ -30,8 +33,8 @@ const Form: React.FC<FormPropsType> = (props) => {
                    autoFocus={true}
                    className={classes.textArea}
                    classes={classesField}
-                   label='Enter your message'
-                   placeholder='Enter your message'
+                   label={translate(lang, 'Enter your message')}
+                   placeholder={translate(lang, 'Enter your message')}
                    size='small'
             />
 
@@ -44,7 +47,7 @@ const Form: React.FC<FormPropsType> = (props) => {
                         disabled={submitting || pristine}
                         className={classes.button}
                 >
-                    Send message
+                    {translate(lang, 'Send message')}
                 </Button>
             </div>
         </form>
@@ -60,6 +63,7 @@ const ReduxForm = reduxForm<FormValuesType, OwnPropsType>({
 const SendMessageForm: React.FC<ComponentPropsType> = ({open, onClose, id, name, src, dialogs}) => {
     const classes = useStyles();
     const dispatch = useDispatch();
+    const lang = useSelector(getLang);
 
     const onFormCloseHandle = () => {
         onClose(false);
@@ -83,7 +87,7 @@ const SendMessageForm: React.FC<ComponentPropsType> = ({open, onClose, id, name,
                 >
                     <div className={classes.titleWrapper}>
                         <Typography className={classes.title}>
-                            New message
+                            {translate(lang, 'New message')}
                         </Typography>
 
                         {
@@ -93,7 +97,7 @@ const SendMessageForm: React.FC<ComponentPropsType> = ({open, onClose, id, name,
                                   variant='body2'
                                   className={classes.titleLink}
                             >
-                                Go to dialog with {name}
+                                {`${translate(lang, 'Go to dialog with')} ${name}`}
                             </Link>
                         }
 

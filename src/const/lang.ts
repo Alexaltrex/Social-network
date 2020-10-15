@@ -227,7 +227,7 @@ export const Lang: LangObjectType = {
     },
     "Reset to default": {
         'eng': "Reset to default",
-        'rus': 'Сброс к предустановкам'
+        'rus': 'Сброс'
     },
     "in": {
         'eng': "in",

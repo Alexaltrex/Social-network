@@ -10,7 +10,6 @@ import appReducer from "./app-reducer";
 import {composeWithDevTools} from "redux-devtools-extension";
 import settingsReducer from "./settings-reducer";
 
-// объединяем редьюсеры в объект
 let rootReducer = combineReducers({
     profile: profileReducer,
     dialogs: dialogsReducer,
@@ -30,7 +29,5 @@ export default store;
 
 //======================== TYPE ==========================
 export type StateType = ReturnType<typeof rootReducer>
-
 export type GetActionsType<T> = T extends {[key: string]: (...args: any[]) => infer U } ? U : never
-
 export type BaseThunkType<A extends Action, R = Promise<void>> = ThunkAction<R, StateType, unknown, A>

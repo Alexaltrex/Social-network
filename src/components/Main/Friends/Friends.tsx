@@ -29,6 +29,7 @@ const Friends = () => {
 
 export default withAuthRedirect(Friends);
 
+
 //========================== STYLES ================================================
 const useStyles = makeStyles({
     wrapper: {

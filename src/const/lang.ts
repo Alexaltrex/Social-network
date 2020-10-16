@@ -1,8 +1,4 @@
 import {LangType} from "../types/types";
-import Typography from "@material-ui/core/Typography";
-import React from "react";
-import Link from "@material-ui/core/Link";
-import Button from "@material-ui/core/Button";
 
 export const Lang: LangObjectType = {
     'English': {

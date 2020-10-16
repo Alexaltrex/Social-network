@@ -21,7 +21,8 @@ const Form: React.FC<FormPropsType> = (props) => {
     const onChangeHandler = () => {
         dispatch(submit('friends-search'));
         dispatch(usersAC.setCurrentFriendsPage(1))
-    }
+
+    };
 
     const dispatch = useDispatch();
     return (
@@ -43,7 +44,6 @@ const Form: React.FC<FormPropsType> = (props) => {
 //================================== REDUX-FORM ======================================
 const ReduxForm = reduxForm<FormParamsType, FormOwnPropsType>({
     form: 'friends-search',
-    //validate
 })(Form);
 
 // =========================== COMPONENT ============================================================
@@ -52,12 +52,15 @@ const FriendsSearch: React.FC = () => {
     const isFriendsSearching = useSelector(getIsFriendsSearching);
     const searchFriendsParams = useSelector(getSearchFriendsParams);
     const dispatch = useDispatch();
+
     const onSubmit = (formValue: FormParamsType) => {
+        //console.log(formValue);
         dispatch(usersAC.setSearchFriendsParams({term: formValue.term}))
     };
+
     const icon = searchFriendsParams.term === ''
         ? <SearchIcon/>
-        : <HighlightOffIcon/>
+        : <HighlightOffIcon/>;
 
     const onClickHandler = () => {
         if (searchFriendsParams.term !== '') {
@@ -65,7 +68,7 @@ const FriendsSearch: React.FC = () => {
             dispatch(usersAC.setCurrentFriendsPage(1));
             dispatch(reset('friends-search'));
         }
-    }
+    };
 
     return (
         <div className={classes.search}>

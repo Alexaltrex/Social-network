@@ -1,4 +1,4 @@
-import {Action, applyMiddleware, combineReducers, createStore} from "redux";
+import {Action, applyMiddleware, combineReducers, createStore, Middleware} from "redux";
 import profileReducer from "./profile-reducer";
 import dialogsReducer from "./dialogs-reducer";
 import sidebarReducer from "./sidebar-reducer";
@@ -20,8 +20,8 @@ let rootReducer = combineReducers({
     settings: settingsReducer,
     form: formReducer
 });
-
-let store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunkMiddleware)));
+const middleware: Array<Middleware> = [thunkMiddleware];
+let store = createStore(rootReducer, composeWithDevTools(applyMiddleware(...middleware)));
 
 // @ts-ignore
 window.store = store;

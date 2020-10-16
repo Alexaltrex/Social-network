@@ -19,7 +19,7 @@ const Form: React.FC<FormPropsType> = (props) => {
     const lang = useSelector(getLang);
 
     const onChangeHandler = () => {
-        dispatch(submit('friends-search'));
+        setTimeout(() => dispatch(submit('friends-search')));
         dispatch(usersAC.setCurrentFriendsPage(1))
 
     };
@@ -54,7 +54,6 @@ const FriendsSearch: React.FC = () => {
     const dispatch = useDispatch();
 
     const onSubmit = (formValue: FormParamsType) => {
-        //console.log(formValue);
         dispatch(usersAC.setSearchFriendsParams({term: formValue.term}))
     };
 

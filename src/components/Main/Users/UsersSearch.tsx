@@ -33,7 +33,6 @@ const SearchUsersForm: React.FC<SearchUsersFormPropsType> = (props) => {
                    validate={[shouldNotBeEmpty]}
                    label={translate(lang, 'Name')}
                    size='small'
-                   onChange={() => dispatch(submit('searchUsers'))}
             />
 
             <Field name='friend'

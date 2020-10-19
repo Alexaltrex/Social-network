@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {ReactElement, useEffect, useRef, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {getStatusIsLoading, getStatusSelector} from "../../../redux/profile-selectors";
 import ListItem from "@material-ui/core/ListItem";
@@ -8,29 +8,38 @@ import LinearPreloader from "../../common/LinearPreloader";
 import Typography from "@material-ui/core/Typography";
 import {getStatus} from "../../../redux/profile-reducer";
 import Fade from '@material-ui/core/Fade';
-import useOutsideClick from "../../../hooks/hooks";
+import useOutsideClick from "../../../hooks/useOutsideClick";
 
-const ProfileStatus: React.FC<PropsType> = ({isOwner, userId}) => {
+//======================== CUSTOM HOOK ===========================
+const useProfileStatus = (userId: number) => {
     const classes = useStyles();
     const status = useSelector(getStatusSelector);
     const statusIsLoading = useSelector(getStatusIsLoading);
     const dispatch = useDispatch();
-
     const [showForm, setShowForm] = useState(false);
-
     useEffect(() => {
         dispatch(getStatus(userId));
-    }, [userId]);
-
+    }, [userId, dispatch]);
     const handleClick = () => {
         setShowForm(true);
     };
-
     const handleClose = () => {
         setShowForm(false);
     };
-
     const wrapperRef = useRef(null);
+    return {
+        classes, status, statusIsLoading, showForm,
+        handleClick, handleClose, wrapperRef
+    }
+}
+
+
+//========================= COMPONENT ============================
+const ProfileStatus: React.FC<PropsType> = ({isOwner, userId}): ReactElement => {
+    const {
+        classes, status, statusIsLoading, showForm,
+        handleClick, handleClose, wrapperRef
+    } = useProfileStatus(userId);
     useOutsideClick(wrapperRef, handleClose);
 
     return (

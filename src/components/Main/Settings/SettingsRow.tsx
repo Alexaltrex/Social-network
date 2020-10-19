@@ -1,17 +1,16 @@
 import Typography from "@material-ui/core/Typography";
 import ColorPicker from "material-ui-color-picker";
 import Button from "@material-ui/core/Button";
-import React from "react";
+import React, {ReactElement} from "react";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import {getLang} from "../../../redux/app-selectors";
 import {useSelector} from "react-redux";
 import {translate} from "../../../const/lang";
 
-const SettingsRow: React.FC<PropsType> = (props) => {
-    const {title, onChangeHandler, resetToDefaultHandle, probeBackgroundColor, defaultColor} = props;
+//===================== CUSTOM HOOK ===========================
+const useSettingsRow = (probeBackgroundColor: string, defaultColor: string) => {
     const classes = useStyles();
     const lang = useSelector(getLang);
-
     const useStylesSettings = makeStyles({
         probe: {
             backgroundColor: probeBackgroundColor,
@@ -29,6 +28,20 @@ const SettingsRow: React.FC<PropsType> = (props) => {
         }
     });
     const classesSettings = useStylesSettings();
+    return {
+        classes, lang, classesSettings
+    }
+}
+
+//====================== COMPONENT ============================
+const SettingsRow: React.FC<PropsType> = (props): ReactElement => {
+    const {
+        title, onChangeHandler, resetToDefaultHandle,
+        probeBackgroundColor, defaultColor
+    } = props;
+    const {
+        classes, lang, classesSettings
+    } = useSettingsRow(probeBackgroundColor, defaultColor);
 
     return (
         <div className={classes.row}>

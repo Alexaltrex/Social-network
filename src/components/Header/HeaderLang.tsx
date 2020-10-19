@@ -11,7 +11,8 @@ import MenuItem from "@material-ui/core/MenuItem";
 import { appAC } from "../../redux/app-reducer";
 import {translate} from "../../const/lang";
 
-const HeaderLang: React.FC<PropsType> = () => {
+//================= CUSTOM HOOK =========================
+const useHeaderLang = () => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const lang = useSelector(getLang);
@@ -31,10 +32,22 @@ const HeaderLang: React.FC<PropsType> = () => {
         dispatch(appAC.setLang('eng'));
         setAnchorEl(null);
     };
+    const title = translate(lang, 'Change language');
+    const englishLabel = translate(lang, 'English')
+    return {classes, lang, anchorEl, title, englishLabel,
+        handleClick, handleClose, handleCloseRus,
+        handleCloseEng}
+}
+
+//======================= COMPONENT ===============================
+const HeaderLang: React.FC<PropsType> = () => {
+    const {classes, lang, anchorEl, title, englishLabel,
+        handleClick, handleClose, handleCloseRus,
+        handleCloseEng} = useHeaderLang();
 
     return (
         <>
-            <Tooltip title={translate(lang, 'Change language')} placement="bottom-start">
+            <Tooltip title={title} placement="bottom-start">
                 <Button
                     className={classes.button}
                     startIcon={<LanguageIcon/>}
@@ -43,7 +56,7 @@ const HeaderLang: React.FC<PropsType> = () => {
                     aria-haspopup="true"
                     onClick={handleClick}
                 >
-                    {translate(lang, 'English')}
+                    {englishLabel}
                 </Button>
             </Tooltip>
             <Menu

@@ -25,25 +25,22 @@ import {DialogType} from "../../../DAL/dialogs-api";
 import {getLang} from "../../../redux/app-selectors";
 import {translate} from "../../../const/lang";
 
-const FriendsListItem: React.FC<PropsTypes> = ({friend, dialogs}) => {
+//================= CUSTOM HOOK =========================
+const useFriendsListItem = ({friend}: UseFriendsListItemType) => {
     const classes = useStyles();
     const [openSendMessageForm, setOpenSendMessageForm] = React.useState(false);
     const dispatch = useDispatch();
     const followingInProgress = useSelector(getFollowingInProgress);
     const isFollowing = useSelector(getIsFollowing);
     const lang = useSelector(getLang);
-
     const onListItemClick = () => {
         dispatch(sidebarAC.setCurrentSidebarItem(SidebarItemEnum.users));
     };
-
     const onOpenSendMessageFormHandle = (event: React.SyntheticEvent) => {
         event.preventDefault();
         setOpenSendMessageForm(true)
     };
-
     const src = (friend ? friend.photos.small : undefined) as string | undefined;
-
     //========================= popper ========================================
     const [open, setOpen] = useState(false);
     const anchorRef = React.useRef<HTMLButtonElement>(null);
@@ -56,7 +53,7 @@ const FriendsListItem: React.FC<PropsTypes> = ({friend, dialogs}) => {
         }
         setOpen(false);
     };
-    function handleListKeyDown(event: React.KeyboardEvent) {
+    const handleListKeyDown = (event: React.KeyboardEvent) => {
         if (event.key === 'Tab') {
             event.preventDefault();
             setOpen(false);
@@ -69,13 +66,12 @@ const FriendsListItem: React.FC<PropsTypes> = ({friend, dialogs}) => {
         }
         prevOpen.current = open;
     }, [open]);
-
     //============================== IconButton ===================================================
     const removeHandle = () => {
         dispatch(usersAC.setNeedToChangeListOfFriends(true, friend.id))
     };
-    const somethingElseHandle = () => {};
-
+    const somethingElseHandle = () => {
+    };
     const labels = [
         translate(lang, 'Remove from friends'),
         translate(lang, 'Something else'),
@@ -95,8 +91,25 @@ const FriendsListItem: React.FC<PropsTypes> = ({friend, dialogs}) => {
             </MenuItem>
         )
     });
-    //===================================================================================
+    const sendMessageLabel = translate(lang, 'Send message')
+    return {
+        classes, openSendMessageForm, setOpenSendMessageForm,
+        followingInProgress, isFollowing, onListItemClick,
+        onOpenSendMessageFormHandle, src, open, anchorRef,
+        handleToggle, handleClose, handleListKeyDown,
+        menuItemsElements, sendMessageLabel
+    };
+}
 
+//======================= COMPONENT ===============================
+const FriendsListItem: React.FC<PropsTypes> = ({friend, dialogs}) => {
+    const {
+        classes, openSendMessageForm, setOpenSendMessageForm,
+        followingInProgress, isFollowing, onListItemClick,
+        onOpenSendMessageFormHandle, src, open, anchorRef,
+        handleToggle, handleClose, handleListKeyDown,
+        menuItemsElements, sendMessageLabel
+    } = useFriendsListItem({friend});
     return (
         <>
             <Divider className={classes.divider}/>
@@ -110,11 +123,12 @@ const FriendsListItem: React.FC<PropsTypes> = ({friend, dialogs}) => {
                             />
                         </ListItemAvatar>
                         <div className={classes.text}>
-                            <Link component={RouterLink} to={`/users/${friend.id}`} variant='subtitle2' onClick={onListItemClick}>
+                            <Link component={RouterLink} to={`/users/${friend.id}`} variant='subtitle2'
+                                  onClick={onListItemClick}>
                                 {friend.name}
                             </Link>
                             <Link component={RouterLink} to='#' variant='body2' onClick={onOpenSendMessageFormHandle}>
-                                {translate(lang, 'Send message')}
+                                {sendMessageLabel}
                             </Link>
                         </div>
                         <SendMessageForm open={openSendMessageForm}
@@ -184,6 +198,9 @@ type PropsTypes = {
     friend: UserType
     dialogs: Array<DialogType> | null
 }
+type UseFriendsListItemType = {
+    friend: UserType
+}
 
 //========================== STYLES ================================================
 const useStyles = makeStyles({
@@ -223,13 +240,3 @@ const useStyles = makeStyles({
     }
 
 });
-
-// const useStylesPopper = makeStyles({
-//     iconButton: {
-//         marginRight: 0,
-//         //zIndex: 1
-//     },
-//     popper: {
-//         //zIndex: 1000
-//     },
-// });

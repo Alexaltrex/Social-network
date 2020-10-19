@@ -10,13 +10,11 @@ import OutlinedInput from "@material-ui/core/OutlinedInput";
 import LockIcon from '@material-ui/icons/Lock';
 import Typography from "@material-ui/core/Typography";
 
-const RenderPasswordField: React.FC<PropsType> = (props) => {
-    const {label, input, placeholder, meta, disabled} = props;
+//======================== CUSTOM HOOK =========================
+const useRenderPasswordField = () => {
     const classes = useStyles();
-
     const [showPassword, setShowPassword] = useState(false)
     const [password, setPassword] = useState('')
-
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
         setPassword(event.target.value);
     };
@@ -26,6 +24,16 @@ const RenderPasswordField: React.FC<PropsType> = (props) => {
     const handleMouseDownPassword = (event: React.MouseEvent) => {
         event.preventDefault();
     };
+    return {classes, showPassword, password, handleChange,
+        handleClickShowPassword, handleMouseDownPassword}
+}
+
+
+//======================= COMPONENT ===============================
+const RenderPasswordField: React.FC<PropsType> = (props) => {
+    const {label, input, placeholder, meta, disabled} = props;
+    const {classes, showPassword, password, handleChange,
+        handleClickShowPassword, handleMouseDownPassword} = useRenderPasswordField();
 
     return (
         <div className={classes.root}>

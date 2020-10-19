@@ -1,10 +1,9 @@
-import React, {useEffect} from 'react';
+import React, {ReactElement, useEffect} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {useParams} from "react-router";
 import {getId} from "../../../redux/auth-selectors";
 import {getIsLoading} from "../../../redux/app-selectors";
 import {getCurrentUserProfile, getFollowed, getProfile} from "../../../redux/profile-reducer";
-
 import {makeStyles} from "@material-ui/core/styles";
 import ProfileAvatar from "./ProfileAvatar";
 import ProfileInfo from "./ProfileInfo";
@@ -15,7 +14,6 @@ import {
     getEditMode, getFollowedSelector, getPosts,
     getProfileSelector,
 } from "../../../redux/profile-selectors";
-import {withAuthRedirect} from "../../../hoc/withAuthRedirect";
 import ProfileFriends from "./ProfileFriends";
 import {
     getCurrentPage,
@@ -28,8 +26,10 @@ import ProfilePostForm from "./ProfilePostForm";
 import ProfilePost from "./ProfilePost";
 import {Skeleton} from "@material-ui/lab";
 import {UseParamsType} from "../../../types/types";
+import useAuthRedirect from "../../../hooks/useAuthRedirect";
 
-const Profile: React.FC = () => {
+//===================== CUSTOM HOOK ===========================
+const useProfile = () => {
     const classes = useStyles();
     const authorizedUserId = useSelector(getId);
     const isLoading = useSelector(getIsLoading);
@@ -41,18 +41,11 @@ const Profile: React.FC = () => {
     const followed = useSelector(getFollowedSelector);
     const posts = useSelector(getPosts);
     const dispatch = useDispatch();
-
     let {userId} = useParams<UseParamsType>();
     const isOwner = userId ? false : true;
-    // if (!userId) {
-    //     userId = authorizedUserId;
-    // }
-
     const userIdFinal = (userId ? +userId : authorizedUserId) as number;
-
     const profileSelector = isOwner ? getProfileSelector : getCurrentUserProfileSelector;
     const profile = useSelector(profileSelector);
-
     useEffect(() => {
         if (isOwner) {
             dispatch(getProfile(userIdFinal));
@@ -61,11 +54,27 @@ const Profile: React.FC = () => {
             dispatch(getCurrentUserProfile(userIdFinal));
             dispatch(getFollowed(userIdFinal));
         }
-    }, [userIdFinal]);
-
+    }, [userIdFinal, dispatch, currentPage, pageSize, isOwner]);
     const MyPostsItemElements = posts
         .map(el => <ProfilePost key={el.id} post={el} profile={profile}/>);
 
+    return {
+        classes, isLoading, editMode,
+        friends, totalFriendsCount,
+        followed, isOwner, userIdFinal,
+        profile, MyPostsItemElements
+    }
+};
+
+//====================== COMPONENT ============================
+const Profile: React.FC = (): ReactElement => {
+    useAuthRedirect();
+    const {
+        classes, isLoading, editMode,
+        friends, totalFriendsCount,
+        followed, isOwner, userIdFinal,
+        profile, MyPostsItemElements
+    } = useProfile();
     return (
         <div className={classes.root}>
 
@@ -146,7 +155,7 @@ const Profile: React.FC = () => {
     );
 };
 
-export default withAuthRedirect(Profile);
+export default Profile;
 
 //========================== STYLES ================================================
 const useStyles = makeStyles({

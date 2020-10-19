@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {ReactElement} from 'react';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import Grow from '@material-ui/core/Grow';
 import Paper from '@material-ui/core/Paper';
@@ -23,13 +23,13 @@ import {translate} from "../../../const/lang";
 import {getLang} from "../../../redux/app-selectors";
 import {DATE} from "../../../utilities/date";
 
-const ProfilePost: React.FC<PropsType> = ({post, profile}) => {
+//===================== CUSTOM HOOK ===========================
+const useProfilePost = (post: PostType) => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const [open, setOpen] = React.useState(false);
     const anchorRef = React.useRef<HTMLButtonElement>(null);
     const lang = useSelector(getLang);
-
     const handleToggle = () => {
         setOpen((prevOpen) => !prevOpen);
     };
@@ -39,14 +39,12 @@ const ProfilePost: React.FC<PropsType> = ({post, profile}) => {
         }
         setOpen(false);
     };
-
-    function handleListKeyDown(event: React.KeyboardEvent) {
+    const handleListKeyDown = (event: React.KeyboardEvent) => {
         if (event.key === 'Tab') {
             event.preventDefault();
             setOpen(false);
         }
-    }
-
+    };
     // return focus to the button when we transitioned from !open -> open
     const prevOpen = React.useRef(open);
     React.useEffect(() => {
@@ -56,19 +54,35 @@ const ProfilePost: React.FC<PropsType> = ({post, profile}) => {
         prevOpen.current = open;
     }, [open]);
     //======================================
-
     const onDeletePostHandle = (e: React.MouseEvent<EventTarget>) => {
         dispatch(profileAC.deletePost(post.id));
         handleClose(e)
     };
-
     const onLikeHandle = () => {
         dispatch(profileAC.toggleLikeMe(post.id))
     };
-
     const icon = post.likeMe
         ? <FavoriteIcon className={classes.like}/>
-        : <FavoriteBorderIcon/>
+        : <FavoriteBorderIcon/>;
+    const deletePostLabel = translate(lang, 'Delete post');
+    const somethingElseLabel = translate(lang, 'Something else');
+
+    return {
+        classes, open, anchorRef, lang,
+        handleToggle, handleClose, handleListKeyDown,
+        onDeletePostHandle, onLikeHandle, icon,
+        deletePostLabel, somethingElseLabel
+    }
+};
+
+//====================== COMPONENT ============================
+const ProfilePost: React.FC<PropsType> = ({post, profile}): ReactElement => {
+    const {
+        classes, open, anchorRef, lang,
+        handleToggle, handleClose, handleListKeyDown,
+        onDeletePostHandle, onLikeHandle, icon,
+        deletePostLabel, somethingElseLabel
+    } = useProfilePost(post);
 
     return (
         <div>
@@ -84,7 +98,7 @@ const ProfilePost: React.FC<PropsType> = ({post, profile}) => {
                                 {profile.fullName}
                             </Link>
                             <Typography>
-                                {DATE.dateTranslateFromAPI(post.time, lang)}
+                                {DATE.dateTranslateFromJS(post.time, lang)}
                             </Typography>
                         </div>
 
@@ -112,9 +126,12 @@ const ProfilePost: React.FC<PropsType> = ({post, profile}) => {
                                             <ClickAwayListener onClickAway={handleClose}>
                                                 <MenuList autoFocusItem={open} id="menu-list-grow"
                                                           onKeyDown={handleListKeyDown}>
-                                                    <MenuItem onClick={onDeletePostHandle}>{translate(lang, 'Delete post')}</MenuItem>
-                                                    <MenuItem onClick={handleClose}>{translate(lang, 'Something else')}</MenuItem>
-                                                    <MenuItem onClick={handleClose}>{translate(lang, 'Something else')}</MenuItem>
+                                                    <MenuItem
+                                                        onClick={onDeletePostHandle}>{deletePostLabel}</MenuItem>
+                                                    <MenuItem
+                                                        onClick={handleClose}>{somethingElseLabel}</MenuItem>
+                                                    <MenuItem
+                                                        onClick={handleClose}>{somethingElseLabel}</MenuItem>
                                                 </MenuList>
                                             </ClickAwayListener>
                                         </Paper>
@@ -143,7 +160,7 @@ const ProfilePost: React.FC<PropsType> = ({post, profile}) => {
             }
         </div>
     );
-}
+};
 
 export default ProfilePost
 

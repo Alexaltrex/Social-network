@@ -1,4 +1,4 @@
-import React, {useRef} from "react";
+import React, {ReactElement, useRef} from "react";
 import {Button, Card} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import Avatar from "@material-ui/core/Avatar";
@@ -12,15 +12,23 @@ import Typography from "@material-ui/core/Typography";
 import {profileAC} from "../../../redux/profile-reducer";
 import {getEditingPost} from "../../../redux/profile-selectors";
 import BlockTitle from "../../common/BlockTitle";
-import useOutsideClick from "../../../hooks/hooks";
 import {getLang} from "../../../redux/app-selectors";
 import {translate} from "../../../const/lang";
+import useOutsideClick from "../../../hooks/useOutsideClick";
 
-//============================ FORM ===================================
-const Form: React.FC<FormPropsType> = (props) => {
-    const {handleSubmit, submitting, pristine} = props;
+//===================== CUSTOM HOOK ===========================
+const useForm = () => {
     const classes = useStyles();
     const lang = useSelector(getLang);
+    const placeholder = translate(lang, 'Enter your post');
+    const buttonLabel = translate(lang, 'Add post')
+    return {classes, placeholder, buttonLabel}
+};
+
+//============================ FORM ===================================
+const Form: React.FC<FormPropsType> = (props): ReactElement => {
+    const {handleSubmit, submitting, pristine} = props;
+    const {classes, placeholder, buttonLabel} = useForm();
 
     return (
         <form onSubmit={handleSubmit}>
@@ -29,7 +37,7 @@ const Form: React.FC<FormPropsType> = (props) => {
                    validate={[shouldNotBeEmpty, required]}
                    autoFocus={true}
                    className={classes.textArea}
-                   placeholder={translate(lang, 'Enter your post')}
+                   placeholder={placeholder}
                    size='small'
             />
 
@@ -44,7 +52,7 @@ const Form: React.FC<FormPropsType> = (props) => {
                         disabled={submitting || pristine}
                         className={classes.button}
                 >
-                    {translate(lang, 'Add post')}
+                    {buttonLabel}
                 </Button>
             </div>
         </form>
@@ -61,27 +69,35 @@ const ReduxForm = reduxForm<FormValuesType, OwnPropsType>({
     onSubmitSuccess: afterSubmit,
 })(Form);
 
-
-//============================= COMPONENT =====================================================
-const ProfilePostForm: React.FC<PropsType> = ({profile}) => {
+//===================== CUSTOM HOOK ===========================
+const useProfilePostForm = () => {
     const classes = useStyles();
     const editingPost = useSelector(getEditingPost)
     const dispatch = useDispatch();
     const lang = useSelector(getLang);
-
     const onSubmit = (formValue: FormValuesType) => {
         dispatch(profileAC.addPost(formValue.newPostText, lang));
     };
-
     const onClickHandler = () => {
         dispatch(profileAC.setEditingPost(true))
     };
-
     const onOutClickHandler = () => {
         dispatch(profileAC.setEditingPost(false))
     };
-
     const wrapperRef = useRef(null);
+
+    return {
+        classes, editingPost, lang, onSubmit,
+        onClickHandler, onOutClickHandler, wrapperRef
+    }
+};
+
+//============================= COMPONENT =====================================================
+const ProfilePostForm: React.FC<PropsType> = ({profile}): ReactElement => {
+    const {
+        classes, editingPost, lang, onSubmit,
+        onClickHandler, onOutClickHandler, wrapperRef
+    } = useProfilePostForm();
     useOutsideClick(wrapperRef, onOutClickHandler);
 
     return (

@@ -8,6 +8,7 @@ export const DATE = {
         return new Date();
     },
 
+    // 2 -> February
     getMonthWord(month: number, lang: LangType): string {
         const monthArray = [
             {'eng': "January", 'rus': 'Января'},
@@ -26,6 +27,7 @@ export const DATE = {
         return lang === 'eng' ? monthArray[month].eng : monthArray[month].rus
     },
 
+    // JS Date -> '7 november in 10:10'
     dateTranslateFromJS(date: Date, lang: LangType): string {
         let month = date.getMonth() + 1;
         let day = date.getDate();
@@ -44,6 +46,7 @@ export const DATE = {
         return `${day} ${monthWord} in ${hours}:${minutes}`;
     },
 
+    // '2020-10-18T21:22:20.46' -> '18 October in 21:22'
     dateTranslateFromAPI(date: string, lang: LangType) {
         //const year = date.slice(0, 4);
         const month = date.slice(5, 7);

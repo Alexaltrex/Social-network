@@ -17,8 +17,15 @@ import {DialogsSidebarItemEnum} from "../../../types/types";
 import {translate} from "../../../const/lang";
 import {getLang} from "../../../redux/app-selectors";
 
-const SkeletonListItem = () => {
+//================= CUSTOM HOOK =========================
+const useSkeletonListItem = () => {
     const classes = useStyles();
+    return {classes}
+}
+
+//======================= COMPONENT ===============================
+const SkeletonListItem = () => {
+    const {classes} = useSkeletonListItem();
     return (
         <div className={classes.skeletonWrapper}>
             <Skeleton variant="circle" width={40} height={40} className={classes.avatar}/>
@@ -27,31 +34,43 @@ const SkeletonListItem = () => {
     )
 };
 
-const DialogsList: React.FC<PropsType> = ({dialogs}) => {
+//================= CUSTOM HOOK =========================
+const useDialogsList = ({dialogs}: PropsType) => {
     const classes = useStyles();
     const dialogsIsLoading = useSelector(getDialogsIsLoading);
     const currentDialogsSidebarItem = useSelector(getCurrentDialogsSidebarItem);
     const deletedMessages = useSelector(getDeletedMessages);
     const spamMessages = useSelector(getSpamMessages);
     const lang = useSelector(getLang);
-
     const dialogsElements = dialogs && dialogs
         .map(item => <DialogsListItem key={item.id}
-                                           dialog={item}/>);
-
+                                      dialog={item}/>);
     const dialogsDeletedElements = deletedMessages
         .map(item => <DialogsListItem key={item.dialog.id}
-                                           dialog={item.dialog}/>);
-
+                                      dialog={item.dialog}/>);
     const dialogsSpamElements = spamMessages
         .map(item => <DialogsListItem key={item.dialog.id}
                                       dialog={item.dialog}/>);
-
     const skeletonElements = [] as Array<React.ReactElement>;
     for (let i = 0; i < 9; i++) {
         skeletonElements.push(<SkeletonListItem key={i}/>)
     }
+    const thereAreNoDeletedDialogs = translate(lang, 'There are no deleted dialogs')
 
+    return {classes, dialogsIsLoading, currentDialogsSidebarItem,
+        deletedMessages, spamMessages, dialogsElements,
+        dialogsDeletedElements, dialogsSpamElements, skeletonElements,
+        thereAreNoDeletedDialogs
+    }
+};
+
+//======================= COMPONENT ===============================
+const DialogsList: React.FC<PropsType> = ({dialogs}) => {
+    const {classes, dialogsIsLoading, currentDialogsSidebarItem,
+        deletedMessages, spamMessages, dialogsElements,
+        dialogsDeletedElements, dialogsSpamElements, skeletonElements,
+        thereAreNoDeletedDialogs
+    } = useDialogsList({dialogs});
 
     return (
         <Card className={classes.card} elevation={6}>
@@ -75,7 +94,7 @@ const DialogsList: React.FC<PropsType> = ({dialogs}) => {
                     {deletedMessages.length === 0
                         ? <div className={classes.emptyDialogs}>
                             <Typography variant='subtitle1' color='primary'>
-                                {translate(lang, 'There are no deleted dialogs')}
+                                {thereAreNoDeletedDialogs}
                             </Typography>
 
                         </div>

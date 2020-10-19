@@ -1,4 +1,4 @@
-import React from "react";
+import React, {ReactElement} from "react";
 import {reduxForm, Field, InjectedFormProps, reset} from "redux-form";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {shouldNotBeEmpty} from "../../utilities/validators/validators";
@@ -11,13 +11,18 @@ import {usersAC} from "../../redux/users-reduser";
 import {getLang} from "../../redux/app-selectors";
 import {Lang} from "../../const/lang";
 
-//===================== FORM ==================================
-const Form: React.FC<FormPropsType> = (props) => {
-    const {handleSubmit} = props;
+//==================== CUSTOM HOOK =========================
+const useForm = () => {
     const classes = useStyles();
     const classesField = useStylesField();
     const lang = useSelector(getLang);
     const placeholder = lang === 'rus' ? Lang['Search...'].rus : Lang['Search...'].eng;
+    return {classes, classesField, placeholder}
+};
+
+//===================== FORM ==================================
+const Form: React.FC<FormPropsType> = ({handleSubmit}) => {
+    const {classes, classesField, placeholder} = useForm();
     return (
         <form onSubmit={handleSubmit}>
             <div className={classes.fieldWrapper}>
@@ -47,17 +52,20 @@ const ReduxForm = reduxForm<FormValuesType, OwnPropsType>({
     onSubmitSuccess: afterSubmit,
 })(Form);
 
-
-//============================ COMPONENT ============================================
-const HeaderSearch: React.FC<ComponentPropsType> = ({}) => {
+//==================== CUSTOM HOOK =========================
+const useHeaderSearch = () => {
     const dispatch = useDispatch();
     let history = useHistory();
-
     const onSubmit = (formValue: FormValuesType) => {
         dispatch(usersAC.setValueFromHeaderSearch(formValue.name))
         history.push('/users');
     };
+    return {onSubmit}
+};
 
+//============================ COMPONENT ============================================
+const HeaderSearch: React.FC<ComponentPropsType> = (): ReactElement => {
+    const {onSubmit} = useHeaderSearch();
     return (
         <div>
             <ReduxForm onSubmit={onSubmit}/>

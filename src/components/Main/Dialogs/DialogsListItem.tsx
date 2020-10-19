@@ -12,13 +12,13 @@ import {UseParamsType} from "../../../types/types";
 import {getLang} from "../../../redux/app-selectors";
 import {useSelector} from "react-redux";
 
-const ListItemLink: React.FC<ListItemLinkPropsType> = ({primary, secondary, to, src, dialog}) => {
+//================= CUSTOM HOOK =========================
+const useListItemLink = ({secondary, to, dialog}: UseListItemLinkPropsType) => {
     const classes = useStyles();
     const lang = useSelector(getLang);
     let {userId} = useParams<UseParamsType>();
     const userIdNumber: number | undefined = userId ? +userId : undefined;
     const selected = userIdNumber === dialog.id;
-
     const renderLink = React.useMemo(
         () =>
             React.forwardRef<any, Omit<RouterLinkProps, 'to'>>((itemProps, ref) => (
@@ -26,8 +26,14 @@ const ListItemLink: React.FC<ListItemLinkPropsType> = ({primary, secondary, to, 
             )),
         [to],
     );
-
     const secondaryTransformed = DATE.dateTranslateFromAPI(secondary, lang);
+    return {classes, selected, renderLink, secondaryTransformed}
+}
+
+
+//======================= COMPONENT ===============================
+const ListItemLink: React.FC<ListItemLinkPropsType> = ({primary, secondary, to, src, dialog}) => {
+    const {classes, selected, renderLink, secondaryTransformed} = useListItemLink({secondary, to, dialog});
 
     return (
         <li className={classes.item}>
@@ -78,6 +84,12 @@ type ListItemLinkPropsType = {
 }
 
 type PropsType = {
+    dialog: DialogType
+}
+
+type UseListItemLinkPropsType = {
+    secondary: string
+    to: string
     dialog: DialogType
 }
 

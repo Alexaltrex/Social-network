@@ -4,7 +4,7 @@ import {
     getCurrentPage, getFriendIdToRemove,
     getFriendsSelector,
     getNeedToChangeListOfFriends,
-    getPageSize, getSearchFriendsParams, getTotalFriendsCount
+    getPageSize, getPortionNumber, getSearchFriendsParams, getTotalFriendsCount
 } from "../../../redux/users-selectors";
 import FriendsListItem from "./FriendsListItem";
 import React, {useEffect} from "react";
@@ -21,9 +21,9 @@ import Divider from "@material-ui/core/Divider";
 import {getLang} from "../../../redux/app-selectors";
 import {translate} from "../../../const/lang";
 
-const FriendsList: React.FC = () => {
+//================= CUSTOM HOOK =========================
+const useFriendsList = () => {
     const classes = useStyles();
-
     const friends = useSelector(getFriendsSelector);
     const currentPage = useSelector(getCurrentPage);
     const currentFriendsPage = useSelector(getCurrentFriendsPage);
@@ -34,30 +34,41 @@ const FriendsList: React.FC = () => {
     const totalFriendsCount = useSelector(getTotalFriendsCount);
     const dialogs = useSelector(getDialogsSelector);
     const lang = useSelector(getLang);
-
     const dispatch = useDispatch();
-
     const FriendsListElements = friends
         && friends.map(el => <FriendsListItem key={el.id} friend={el} dialogs={dialogs}/>);
-
-
     useEffect(() => {
         dispatch(searchFriends(currentFriendsPage, pageSize, searchFriendsParams.term));
-    }, [searchFriendsParams.term, currentFriendsPage]);
-
+    }, [searchFriendsParams.term, currentFriendsPage, pageSize, dispatch]);
     useEffect(() => {
         if (needToChangeListOfFriends && friendIdToRemove) {
             dispatch(removeAndUpdateFriends(currentPage, pageSize, friendIdToRemove));
         }
-    }, [needToChangeListOfFriends]);
-
+    }, [needToChangeListOfFriends, dispatch]);
     useEffect(() => {
         dispatch(getDialogs());
-    }, []);
-
+    }, [dispatch]);
     const onPageChanged = (pageNumber: number) => {
         dispatch(usersAC.setCurrentFriendsPage(pageNumber));
     };
+    const portionNumber = useSelector(getPortionNumber);
+    const setPortionNumber = (portionNumber: number) => {
+        dispatch(usersAC.setPortionNumber(portionNumber))
+    };
+    return {
+        classes, currentFriendsPage, pageSize, totalFriendsCount,
+        lang, FriendsListElements, onPageChanged,
+        portionNumber, setPortionNumber
+    }
+};
+
+//======================= COMPONENT ===============================
+const FriendsList: React.FC = () => {
+    const {
+        classes, currentFriendsPage, pageSize, totalFriendsCount,
+        lang, FriendsListElements, onPageChanged,
+        portionNumber, setPortionNumber
+    } = useFriendsList();
 
     return (
         <Card className={classes.card} elevation={6}>
@@ -76,6 +87,8 @@ const FriendsList: React.FC = () => {
                            pageSize={pageSize}
                            currentPage={currentFriendsPage}
                            onPageChanged={onPageChanged}
+                           portionNumber={portionNumber}
+                           setPortionNumber={setPortionNumber}
                 />
             </div>
 
@@ -90,6 +103,8 @@ const FriendsList: React.FC = () => {
                            pageSize={pageSize}
                            currentPage={currentFriendsPage}
                            onPageChanged={onPageChanged}
+                           portionNumber={portionNumber}
+                           setPortionNumber={setPortionNumber}
                 />
             </div>
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {ReactElement} from 'react';
 import {Grid} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import {Link as RouterLink} from "react-router-dom";
@@ -22,15 +22,14 @@ import {DialogType} from "../../../DAL/dialogs-api";
 import {getLang} from "../../../redux/app-selectors";
 import {translate} from "../../../const/lang";
 
-const UserBlockItem: React.FC<PropType> = ({user, dialogs}) => {
+//======================== CUSTOM HOOK =========================
+const useUserBlockItem = (user: UserType) => {
     const classes = useStyles();
     const [openSendMessageForm, setOpenSendMessageForm] = React.useState(false);
     const followingInProgress = useSelector(getFollowingInProgress);
     const isFollowing = useSelector(getIsFollowing);
     const lang = useSelector(getLang);
-
     const dispatch = useDispatch();
-
     const onFollowUnfollowClick = () => {
         if (user.followed) {
             dispatch(getUnfollow(user.id));
@@ -38,16 +37,31 @@ const UserBlockItem: React.FC<PropType> = ({user, dialogs}) => {
             dispatch(getFollow(user.id));
         }
     };
-
     const onOpenSendMessageFormHandle = () => {
         setOpenSendMessageForm(true)
     };
-
     const buttonLabel = user.followed
         ? translate(lang, 'Unfollow') :
         translate(lang, 'Follow');
     const startIcon = user.followed ? <PersonAddDisabledIcon/> : <GroupAddIcon/>;
     const src = ((user && user.photos.small) ? user.photos.small : undefined) as string | undefined;
+    const sendMessageLabel = translate(lang, 'Send message')
+    return {
+        classes, openSendMessageForm, setOpenSendMessageForm,
+        followingInProgress, isFollowing, onFollowUnfollowClick,
+        onOpenSendMessageFormHandle, buttonLabel, startIcon, src,
+        sendMessageLabel
+    }
+};
+
+//======================= COMPONENT ===============================
+const UserBlockItem: React.FC<PropType> = ({user, dialogs}): ReactElement => {
+    const {
+        classes, openSendMessageForm, setOpenSendMessageForm,
+        followingInProgress, isFollowing, onFollowUnfollowClick,
+        onOpenSendMessageFormHandle, buttonLabel, startIcon, src,
+        sendMessageLabel
+    } = useUserBlockItem(user);
 
     return (
         <Grid item>
@@ -101,7 +115,7 @@ const UserBlockItem: React.FC<PropType> = ({user, dialogs}) => {
                                 onClick={onOpenSendMessageFormHandle}
                                 startIcon={<SendIcon/>}
                             >
-                                {translate(lang, 'Send message')}
+                                {sendMessageLabel}
                             </Button>
                         </div>
 

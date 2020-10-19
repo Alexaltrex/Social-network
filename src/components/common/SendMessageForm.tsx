@@ -19,12 +19,21 @@ import {DialogType} from "../../DAL/dialogs-api";
 import {getLang} from "../../redux/app-selectors";
 import {translate} from "../../const/lang";
 
-//===================== FORM ==================================
-const Form: React.FC<FormPropsType> = (props) => {
-    const {handleSubmit, submitting, pristine} = props;
+//======================== CUSTOM HOOK =========================
+const useForm = () => {
     const classes = useStyles();
     const lang = useSelector(getLang);
     const classesField = useStylesField();
+    const label = translate(lang, 'Enter your message');
+    const buttonLabel = translate(lang, 'Send message');
+    return {classes, classesField, label, buttonLabel}
+};
+
+//===================== FORM ==================================
+const Form: React.FC<FormPropsType> = (props) => {
+    const {handleSubmit, submitting, pristine} = props;
+    const {classes, classesField, label, buttonLabel} = useForm();
+
     return (
         <form onSubmit={handleSubmit}>
             <Field name='message'
@@ -33,8 +42,8 @@ const Form: React.FC<FormPropsType> = (props) => {
                    autoFocus={true}
                    className={classes.textArea}
                    classes={classesField}
-                   label={translate(lang, 'Enter your message')}
-                   placeholder={translate(lang, 'Enter your message')}
+                   label={label}
+                   placeholder={label}
                    size='small'
             />
 
@@ -47,7 +56,7 @@ const Form: React.FC<FormPropsType> = (props) => {
                         disabled={submitting || pristine}
                         className={classes.button}
                 >
-                    {translate(lang, 'Send message')}
+                    {buttonLabel}
                 </Button>
             </div>
         </form>
@@ -59,22 +68,33 @@ const ReduxForm = reduxForm<FormValuesType, OwnPropsType>({
     form: 'send-message',
 })(Form);
 
-//================ COMPONENT =========================================
-const SendMessageForm: React.FC<ComponentPropsType> = ({open, onClose, id, name, src, dialogs}) => {
+//======================== CUSTOM HOOK =========================
+const useSendMessageForm = ({onClose, id, dialogs}: UseSendMessageFormType) => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const lang = useSelector(getLang);
-
     const onFormCloseHandle = () => {
         onClose(false);
     };
-
     const onSubmit = (formValue: FormValuesType) => {
         dispatch(sendMessage(id, formValue.message));
         onClose(false);
     };
-
     const dialogIsExist = dialogs && dialogs.some(el => el.id === id);
+    const newMessageLabel = translate(lang, 'New message');
+    const goToDialogWithLabel = translate(lang, 'Go to dialog with');
+    return {
+        classes, onFormCloseHandle, onSubmit, dialogIsExist,
+        newMessageLabel, goToDialogWithLabel
+    }
+};
+
+//================ COMPONENT =========================================
+const SendMessageForm: React.FC<ComponentPropsType> = ({open, onClose, id, name, src, dialogs}) => {
+    const {
+        classes, onFormCloseHandle, onSubmit, dialogIsExist,
+        newMessageLabel, goToDialogWithLabel
+    } = useSendMessageForm({onClose, id, dialogs});
 
     return (
         <>
@@ -87,7 +107,7 @@ const SendMessageForm: React.FC<ComponentPropsType> = ({open, onClose, id, name,
                 >
                     <div className={classes.titleWrapper}>
                         <Typography className={classes.title}>
-                            {translate(lang, 'New message')}
+                            {newMessageLabel}
                         </Typography>
 
                         {
@@ -97,7 +117,7 @@ const SendMessageForm: React.FC<ComponentPropsType> = ({open, onClose, id, name,
                                   variant='body2'
                                   className={classes.titleLink}
                             >
-                                {`${translate(lang, 'Go to dialog with')} ${name}`}
+                                {`${goToDialogWithLabel} ${name}`}
                             </Link>
                         }
 
@@ -117,7 +137,6 @@ const SendMessageForm: React.FC<ComponentPropsType> = ({open, onClose, id, name,
                             <Link component={RouterLink}
                                   to={`/users/${id}`}
                                   variant='subtitle2'
-                                //onClick={onListItemClick}
                             >
                                 {name}
                             </Link>
@@ -141,13 +160,17 @@ export type FormValuesType = {
     message: string,
 }
 type FormPropsType = InjectedFormProps<FormValuesType, OwnPropsType> & OwnPropsType
-
 type ComponentPropsType = {
     open: boolean
     onClose: (openForm: boolean) => void
     id: number
     name: string
     src: string | undefined
+    dialogs: Array<DialogType> | null
+}
+type UseSendMessageFormType = {
+    onClose: (openForm: boolean) => void
+    id: number
     dialogs: Array<DialogType> | null
 }
 //========================== STYLES ======================
@@ -161,7 +184,6 @@ const useStyles = makeStyles({
         backgroundColor: indigo[500],
         color: 'white',
         padding: '5px 5px 5px 15px',
-
     },
     title: {
         flexGrow: 1

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {ReactElement} from "react";
 import Typography from "@material-ui/core/Typography";
 import {Card} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
@@ -10,31 +10,42 @@ import {defaultTheme} from "../../../const/const";
 import {getLang} from "../../../redux/app-selectors";
 import {translate} from "../../../const/lang";
 
-const Settings: React.FC = () => {
+//===================== CUSTOM HOOK ===========================
+const useSettings = () => {
     const classes = useStyles();
     const theme = useSelector(getTheme);
     const lang = useSelector(getLang);
     const dispatch = useDispatch();
-
     const onMenuBCChangeHandler = (color: string) => {
         if (color) {
             dispatch(settingsAC.setMenuBackgroundColor(color))
         }
     };
-
     const onDisplayBCChangeHandler = (color: string) => {
         if (color) {
             dispatch(settingsAC.setDisplayBackgroundColor(color))
         }
     };
-
     const resetMenuBCToDefaultHandle = () => {
         dispatch(settingsAC.setMenuBackgroundColor(defaultTheme.menuBackgroundColor))
     };
-
     const resetDisplayBCToDefaultHandle = () => {
         dispatch(settingsAC.setDisplayBackgroundColor(defaultTheme.displayBackgroundColor))
     };
+    return {
+        classes, theme, lang, onMenuBCChangeHandler,
+        onDisplayBCChangeHandler, resetMenuBCToDefaultHandle,
+        resetDisplayBCToDefaultHandle
+    }
+};
+
+//====================== COMPONENT ============================
+const Settings: React.FC = (): ReactElement => {
+    const {
+        classes, theme, lang, onMenuBCChangeHandler,
+        onDisplayBCChangeHandler, resetMenuBCToDefaultHandle,
+        resetDisplayBCToDefaultHandle
+    } = useSettings();
 
     return (
         <Card className={classes.card} elevation={6}>

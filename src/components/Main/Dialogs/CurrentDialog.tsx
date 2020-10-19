@@ -12,19 +12,25 @@ import {DialogsSidebarItemEnum} from "../../../types/types";
 import {getLang} from "../../../redux/app-selectors";
 import {translate} from "../../../const/lang";
 
-const CurrentDialog: React.FC<PropsType> = ({currentDialog, userId}) => {
+//================= Custom Hook =========================
+const useCurrentDialog = (currentDialog: DialogType | null) => {
     const classes = useStyles();
     const messages = useSelector(getMessagesSelector);
     const currentDialogsSidebarItem = useSelector(getCurrentDialogsSidebarItem);
     const deletedMessages = useSelector(getDeletedMessages);
     const lang = useSelector(getLang);
-
     const src = (currentDialog !== null ? currentDialog.photos.small : undefined) as string | undefined;
+    return {src, classes, messages, currentDialogsSidebarItem, deletedMessages, lang}
+};
+
+//======================= COMPONENT =============================
+const CurrentDialog: React.FC<PropsType> = ({currentDialog, userId}) => {
+    const {src, classes, messages, currentDialogsSidebarItem, deletedMessages, lang} = useCurrentDialog(currentDialog);
 
     return (
         <Card elevation={6}>
             { currentDialogsSidebarItem === DialogsSidebarItemEnum.all ||
-            currentDialogsSidebarItem === DialogsSidebarItemEnum.deleted && deletedMessages.length
+            (currentDialogsSidebarItem === DialogsSidebarItemEnum.deleted && deletedMessages.length)
                 ? <List disablePadding
                       subheader={
                           <CurrentDialogHeader currentDialog={currentDialog}

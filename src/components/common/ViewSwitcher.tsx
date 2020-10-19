@@ -5,11 +5,16 @@ import ToggleButton from "@material-ui/lab/ToggleButton";
 import React from 'react';
 import {ViewType} from "../../types/types";
 
-const ViewSwitcher: React.FC<PropsType> = ({view, setView}) => {
-
+//======================== CUSTOM HOOK =========================
+const useViewSwitcher = ({setView}: UseViewSwitcherType) => {
     const onChangeHandle = (event: React.MouseEvent<HTMLElement>, newView: ViewType) => {
         setView(newView);
     };
+    return {onChangeHandle}
+};
+
+const ViewSwitcher: React.FC<PropsType> = ({view, setView}) => {
+    const {onChangeHandle} = useViewSwitcher({setView});
 
     return (
         <ToggleButtonGroup
@@ -35,5 +40,8 @@ export default ViewSwitcher;
 //========================== TYPES ===========================
 type PropsType = {
     view: ViewType
+    setView: (view: ViewType) => void
+}
+type UseViewSwitcherType = {
     setView: (view: ViewType) => void
 }

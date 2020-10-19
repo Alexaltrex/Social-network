@@ -1,7 +1,6 @@
 import Button from "@material-ui/core/Button";
-import React from "react";
+import React, {ReactElement} from "react";
 import {makeStyles} from "@material-ui/core/styles";
-import Popover from "@material-ui/core/Popover";
 import {reduxForm, Field, InjectedFormProps} from 'redux-form'
 import {updateStatus} from "../../../redux/profile-reducer";
 import {useDispatch, useSelector} from "react-redux";
@@ -11,17 +10,23 @@ import {getStatusSelector} from "../../../redux/profile-selectors";
 import {translate} from "../../../const/lang";
 import {getLang} from "../../../redux/app-selectors";
 
-//=================================== FORM ==========================================================================================
-const Form: React.FC<InjectedFormProps<StatusFormValuesType, StatusFormOwnPropsType> & StatusFormOwnPropsType> = (props) => {
-    const {handleSubmit, onClose} = props
+//===================== CUSTOM HOOK ===========================
+const useForm = () => {
     const classes = useStyles();
     const classesField = useStylesField();
     const lang = useSelector(getLang);
-    const normalize = (value: any) => {
+    const normalize = (value: string) => {
         if (empty(value)) {
             return ''
         } else return value
     };
+    const buttonLabel = translate(lang, 'Save status');
+    return {classes, classesField, normalize, buttonLabel}
+}
+
+//======================== FORM ================================
+const Form: React.FC<FormPropsType> = ({handleSubmit, onClose}): ReactElement => {
+    const {classes, classesField, normalize, buttonLabel} = useForm();
 
     return (
         <form onSubmit={handleSubmit} className={classes.form}>
@@ -45,7 +50,7 @@ const Form: React.FC<InjectedFormProps<StatusFormValuesType, StatusFormOwnPropsT
                         type="submit"
                         onClick={onClose}
                         variant="outlined">
-                    {translate(lang, 'Save status')}
+                    {buttonLabel}
                 </Button>
             </div>
         </form>)
@@ -56,23 +61,25 @@ const ReduxStatusForm = reduxForm<StatusFormValuesType, StatusFormOwnPropsType>(
     form: 'status',
 })(Form);
 
-
-//====================================== COMPONENT =====================================================================
-const ProfileStatusForm = (props: PropsType) => {
-    const {onClose} = props
-
+//===================== CUSTOM HOOK ===========================
+const useProfileStatusForm = () => {
     const dispatch = useDispatch();
-
     const onSubmit = (formValue: StatusFormValuesType) => {
         dispatch(updateStatus(formValue.status));
     };
-
     const statusFromState = useSelector(getStatusSelector);
     const status = statusFromState ? statusFromState : ''
-
     const initialValues = {
         status: status
     };
+    return {onSubmit, initialValues}
+};
+
+//====================================== COMPONENT =====================================================================
+const ProfileStatusForm = ({onClose}: PropsType): ReactElement => {
+    const {
+        onSubmit, initialValues
+    } = useProfileStatusForm();
 
     return (
         <ReduxStatusForm onSubmit={onSubmit}
@@ -87,7 +94,6 @@ export default ProfileStatusForm
 type initialValuesType = {
     status: string
 }
-
 type PropsType = {
     onClose: () => void
 }
@@ -98,6 +104,7 @@ type StatusFormOwnPropsType = {
     onClose: () => void
     initialValues: initialValuesType
 }
+type FormPropsType = InjectedFormProps<StatusFormValuesType, StatusFormOwnPropsType> & StatusFormOwnPropsType
 
 //======================== STYLE =================================================================
 const useStyles = makeStyles({

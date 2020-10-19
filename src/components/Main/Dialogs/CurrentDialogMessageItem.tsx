@@ -24,7 +24,8 @@ import CircularPreloader from "../../common/CircularPreloader";
 import {DialogsSidebarItemEnum} from "../../../types/types";
 import {getLang} from "../../../redux/app-selectors";
 
-const CurrentDialogMessageItem: React.FC<PropsType> = ({message, src}) => {
+//================= CUSTOM HOOK =========================
+const useCurrentDialogMessageItem = ({message, src}: PropsType) => {
     const classes = useStyles();
     const [hover, setHover] = useState(false);
     const myId = useSelector(getId);
@@ -34,7 +35,6 @@ const CurrentDialogMessageItem: React.FC<PropsType> = ({message, src}) => {
     const messagesIsDeleting = useSelector(getMessagesIsDeleting);
     const currentDialogsSidebarItem = useSelector(getCurrentDialogsSidebarItem);
     const lang = useSelector(getLang);
-
     const dispatch = useDispatch();
     let selected: boolean;
     if (currentDialogsSidebarItem === DialogsSidebarItemEnum.all) {
@@ -44,8 +44,7 @@ const CurrentDialogMessageItem: React.FC<PropsType> = ({message, src}) => {
     } else {
         selected = false
     }
-
-    const onClickHandle = () => {
+    const onClickHandler = () => {
         if (currentDialogsSidebarItem === DialogsSidebarItemEnum.all) {
             if (!selected) {
                 dispatch(dialogsAC.addToSelectedMessages(message))
@@ -59,7 +58,6 @@ const CurrentDialogMessageItem: React.FC<PropsType> = ({message, src}) => {
                 dispatch(dialogsAC.removeFromSelectedDeletedMessages(message))
             }
         }
-
     };
     const onMouseEnterHandler = () => {
         setHover(true)
@@ -67,19 +65,31 @@ const CurrentDialogMessageItem: React.FC<PropsType> = ({message, src}) => {
     const onMouseLeaveHandler = () => {
         setHover(false)
     };
-
     const srcFinally = (profile
         ? (message.senderId === myId) ? profile.photos.small : src
         : undefined) as string | undefined
-
     const to = (message.senderId === myId) ? '/profile' : `/users/${message.senderId}`;
-
     const icon = message.senderId === myId ? <ArrowForwardIcon/> : <ArrowBackIcon/>
+
+    return {
+        classes, hover, selectedMessages,
+        messagesIsDeleting, lang, selected, onClickHandler,
+        onMouseEnterHandler, onMouseLeaveHandler, srcFinally, to, icon
+    }
+};
+
+//======================= COMPONENT ===============================
+const CurrentDialogMessageItem: React.FC<PropsType> = ({message, src}) => {
+    const {
+        classes, hover, selectedMessages, messagesIsDeleting,
+        lang, selected, onClickHandler, onMouseEnterHandler,
+        onMouseLeaveHandler, srcFinally, to, icon
+    } = useCurrentDialogMessageItem({message, src});
 
     return (
         <div className={classes.listItemWrapper}>
             <ListItem button
-                      onClick={onClickHandle}
+                      onClick={onClickHandler}
                       selected={selected}
                       className={classes.listItem}
                       classes={{

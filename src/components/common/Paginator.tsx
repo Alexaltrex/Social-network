@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Button} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
@@ -6,40 +6,40 @@ import FirstPageIcon from '@material-ui/icons/FirstPage';
 import LastPageIcon from '@material-ui/icons/LastPage';
 import indigo from "@material-ui/core/colors/indigo";
 
-const Paginator: React.FC<PropsType> = (props) => {
-    const {totalItemsCount, pageSize, currentPage, onPageChanged, portionSize = 10} = props;
+//======================== CUSTOM HOOK =========================
+const usePaginator = (props: UsePaginatorType) => {
+    const {
+        totalItemsCount, pageSize, onPageChanged,
+        portionSize, currentPage, portionNumber,
+        setPortionNumber
+    } = props;
     const classes = useStyles();
-    let pagesCount = Math.ceil(totalItemsCount / pageSize);// число страниц
+    const pagesCount = Math.ceil(totalItemsCount / pageSize);// число страниц
     let pages: Array<number> = [];
     for (let i = 1; i < pagesCount + 1; i++) {
         pages.push(i);
     }
-    let portionCount = Math.ceil(pagesCount / portionSize); // число порций (блоков) страниц
-    let [portionNumber, setPortionNumber] = useState(1);// текущий номер порции (начинается с 1)
-    let startPortionNumber = (portionNumber - 1) * portionSize + 1; // номер первого элемента в порции
-    let endPortionNumber = portionNumber * portionSize; // номер последнего элемента в порции
-
+    const portionCount = Math.ceil(pagesCount / portionSize); // число порций (блоков) страниц
+    //const [portionNumber, setPortionNumber] = useState(1);// текущий номер порции (начинается с 1)
+    const startPortionNumber = (portionNumber - 1) * portionSize + 1; // номер первого элемента в порции
+    const endPortionNumber = portionNumber * portionSize; // номер последнего элемента в порции
     const setPrevPortion = () => {
         setPortionNumber(portionNumber - 1);
-        onPageChanged((portionNumber - 2) * portionSize + 1);
+        onPageChanged((portionNumber - 1) * portionSize);
     };
-
     const setNextPortion = () => {
         setPortionNumber(portionNumber + 1);
         onPageChanged((portionNumber) * portionSize + 1);
     };
-
     const setFirstPortion = () => {
         setPortionNumber(1);
         onPageChanged(1);
     };
-
     const setLastPortion = () => {
         setPortionNumber(portionCount);
         //onPageChanged((portionCount - 1) * portionSize + 1);
         onPageChanged(pagesCount);
     };
-
     const elements = pages
         .filter(p => p >= startPortionNumber && p <= endPortionNumber)
         .map(p => (
@@ -58,14 +58,33 @@ const Paginator: React.FC<PropsType> = (props) => {
                 </Button>
             )
         );
-
     const prevPortionLabelStart = (portionNumber - 2) * pageSize + 1;
     const prevPortionLabelEnd = (portionNumber - 1) * pageSize;
     const prevPortionLabel = `${prevPortionLabelStart}...${prevPortionLabelEnd}`;
-
     const nextPortionLabelStart = portionNumber * pageSize + 1;
     const nextPortionLabelEnd = (portionNumber < portionCount - 1) ? (portionNumber + 1) * pageSize : pagesCount;
     const nextPortionLabel = `${nextPortionLabelStart}...${nextPortionLabelEnd}`;
+
+    return {
+        classes, portionNumber, portionCount, setPrevPortion,
+        setNextPortion, setFirstPortion, setLastPortion, elements,
+        prevPortionLabel, nextPortionLabel
+    }
+}
+
+//======================= COMPONENT ===============================
+const Paginator: React.FC<PropsType> = (props) => {
+    const {
+        totalItemsCount, pageSize, currentPage,
+        onPageChanged, portionSize = 10, portionNumber,
+        setPortionNumber
+    } = props;
+    const {
+        classes, portionCount, setPrevPortion,
+        setNextPortion, setFirstPortion, setLastPortion, elements,
+        prevPortionLabel, nextPortionLabel
+    } = usePaginator({totalItemsCount, pageSize, onPageChanged,
+        portionSize, currentPage, portionNumber, setPortionNumber});
 
     return (
         <div>
@@ -118,6 +137,17 @@ type PropsType = {
     currentPage: number
     onPageChanged: (pageNumber: number) => void
     portionSize?: number
+    portionNumber: number
+    setPortionNumber: (portionNumber: number) => void
+}
+type UsePaginatorType = {
+    totalItemsCount: number
+    pageSize: number
+    currentPage: number
+    onPageChanged: (pageNumber: number) => void
+    portionSize: number
+    portionNumber: number
+    setPortionNumber: (portionNumber: number) => void
 }
 
 //========================== STYLES ================================================

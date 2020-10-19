@@ -7,25 +7,25 @@ import {getIsLoading} from "../../../redux/app-selectors";
 import {getDialogsSelector} from "../../../redux/dialogs-selectors";
 import {dialogsAC, getDialogs, getMessages} from "../../../redux/dialogs-reducer";
 import {DialogType} from "../../../DAL/dialogs-api";
-import {withAuthRedirect} from "../../../hoc/withAuthRedirect";
 import DialogsSidebar from "./DialogsSidebar";
 import { useParams } from "react-router-dom";
 import {UseParamsType} from "../../../types/types";
+import useAuthRedirect from "../../../hooks/useAuthRedirect";
 
-const Dialogs: React.FC = () => {
+//================= CUSTOM HOOK =========================
+const useDialogs = () => {
+    useAuthRedirect();
+
     const classes = useStyles();
     const dispatch = useDispatch()
     const isLoading = useSelector(getIsLoading);
     const dialogs = useSelector(getDialogsSelector);
-
     // если userId === undefined, значит диалог не выбран
     let {userId} = useParams<UseParamsType>();
     const userIdNumber: number | undefined = userId ? +userId : undefined;
-
     useEffect(() => {
         dispatch(getDialogs())
-    }, []);
-
+    }, [dispatch]);
     useEffect(() => {
         if (userIdNumber) {
             dispatch(getMessages(userIdNumber));
@@ -33,9 +33,14 @@ const Dialogs: React.FC = () => {
         return () => {
             dispatch(dialogsAC.setMessages(null))
         }
-    }, [userIdNumber]);
-
+    }, [userIdNumber, dispatch]);
     const currentDialog = (dialogs && userIdNumber) ? dialogs.find(el => el.id === userIdNumber) as DialogType : null;
+    return {classes, isLoading, dialogs, userIdNumber, currentDialog}
+};
+
+//======================= COMPONENT ===============================
+const Dialogs: React.FC = () => {
+    const {classes, isLoading, dialogs, userIdNumber, currentDialog} = useDialogs();
 
     return (
         <>
@@ -62,7 +67,7 @@ const Dialogs: React.FC = () => {
     );
 };
 
-export default withAuthRedirect(Dialogs);
+export default Dialogs;
 
 //========================== STYLES =============================================
 const useStyles = makeStyles({

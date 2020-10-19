@@ -6,10 +6,16 @@ import {getLang} from "../../../redux/app-selectors";
 import {useSelector} from "react-redux";
 import {translate} from "../../../const/lang";
 
-const FriendsSomethingElse: React.FC = () => {
+//====================== CUSTOM HOOK =========================
+const useFriendsSomethingElse = () => {
     const classes = useStyles();
     const lang = useSelector(getLang);
+    return {classes, lang}
+};
 
+//======================= COMPONENT ===============================
+const FriendsSomethingElse: React.FC = () => {
+    const {classes, lang} = useFriendsSomethingElse();
     return (
         <Card className={classes.card} elevation={6}>
             <Typography variant='h6' color='primary' align='center'>
@@ -18,9 +24,9 @@ const FriendsSomethingElse: React.FC = () => {
         </Card>
     )
 };
-
 export default FriendsSomethingElse;
 
+//==================== STYLES ====================
 const useStyles = makeStyles({
     card: {
         padding: 20,

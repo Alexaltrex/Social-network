@@ -13,43 +13,34 @@ import {getIsInitialized} from "./redux/app-reducer";
 import indigo from "@material-ui/core/colors/indigo";
 import {getTheme} from "./redux/settings-selectors";
 
-const App: React.FC = () => {
+//======================== CUSTOM HOOK =========================
+const useApp = () => {
     const classes = useStyles();
     const messageIsSending = useSelector(getMessageIsSending);
     const recipientName = useSelector(getRecipientName);
-
     const [showAlert, setShowAlert] = React.useState(false);
     const dispatch = useDispatch();
-
-
     const catchAllUnhandledErrors = (e: PromiseRejectionEvent) => {
         alert(e);
     };
-
     useEffect(() => {
         dispatch(getIsInitialized())
         window.addEventListener('unhandledrejection', catchAllUnhandledErrors);
         return () => {
             window.removeEventListener('unhandledrejection', catchAllUnhandledErrors);
         }
-    }, []);
-
+    }, [dispatch]);
     useEffect(() => {
         if (!messageIsSending && recipientName) {
             setShowAlert(true);
         }
-        return () => {
-            //dispatch(dialogsAC.setRecipientName(null))
-        }
-    }, [messageIsSending])
-
+    }, [messageIsSending, recipientName])
     const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
         if (reason === 'clickaway') {
             return;
         }
         setShowAlert(false);
     };
-
     const theme = useSelector(getTheme);
     const useStylesSettings = makeStyles({
         root: {
@@ -58,6 +49,18 @@ const App: React.FC = () => {
         }
     });
     const classesSettings = useStylesSettings();
+    return {
+        classes, recipientName, showAlert,
+        handleClose, classesSettings
+    }
+};
+
+//======================= COMPONENT ===============================
+const App: React.FC = () => {
+    const {
+        classes, recipientName, showAlert,
+        handleClose, classesSettings
+    } = useApp();
 
     return (
         <div className={classesSettings.root}>
@@ -100,7 +103,6 @@ const useStyles = makeStyles({
         boxSizing: 'border-box',
         paddingTop: 64,
         minHeight: '100vh',
-        //overflow: 'auto'
     },
 
 });

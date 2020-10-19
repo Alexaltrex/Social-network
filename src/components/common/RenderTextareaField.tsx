@@ -16,6 +16,7 @@ const RenderTextAreaField: React.FC<PropsType> = (props) => {
                 multiline
                 variant="outlined"
                 label={label}
+                rows={rows}
                 placeholder={placeholder}
                 error={touched && invalid}
                 helperText={touched && error}

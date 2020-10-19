@@ -25,7 +25,9 @@ import {DialogsSidebarItemEnum} from "../../../types/types";
 import {getLang} from "../../../redux/app-selectors";
 import {translate} from "../../../const/lang";
 
-const CurrentDialogHeader: React.FC<PropsType> = ({currentDialog, userId}) => {
+//================= CUSTOM HOOK =========================
+const useCurrentDialogHeader = ({currentDialog, userId}: PropsType) => {
+
     const classes = useStyles();
     const selectedMessages = useSelector(getSelectedMessages);
     const selectedDeletedMessages = useSelector(getSelectedDeletedMessages);
@@ -75,6 +77,33 @@ const CurrentDialogHeader: React.FC<PropsType> = ({currentDialog, userId}) => {
         }
     };
 
+    const messagesLabel = translate(lang, 'messages');
+    const deleteLabel = translate(lang, "Delete");
+    const selectADialogLabel = translate(lang, 'Select a dialog');
+    const restoreLabel = translate(lang, "Restore");
+    const selectDeletedDialogLabel = translate(lang, 'Select deleted dialog');
+
+    return {
+        classes, selectedMessages, selectedDeletedMessages, dialogsIsLoading,
+        loading, currentDialogsSidebarItem, to,
+        currentDeletedDialog, src, onDeleteHandler, onCleanArrayHandler,
+        onSpamHandler, onRestoreHandler, messagesLabel, deleteLabel,
+        selectADialogLabel, restoreLabel, selectDeletedDialogLabel
+    }
+
+};
+
+//======================= COMPONENT ===============================
+const CurrentDialogHeader: React.FC<PropsType> = ({currentDialog, userId}) => {
+    const {
+        classes, selectedMessages, selectedDeletedMessages,
+        dialogsIsLoading, loading, currentDialogsSidebarItem,
+        to, currentDeletedDialog, src, onDeleteHandler,
+        onCleanArrayHandler, onSpamHandler, onRestoreHandler,
+        messagesLabel, deleteLabel, selectADialogLabel, restoreLabel,
+        selectDeletedDialogLabel
+    } = useCurrentDialogHeader({currentDialog, userId});
+
     return (
         <div className={classes.headerWrapper}>
             {
@@ -102,7 +131,7 @@ const CurrentDialogHeader: React.FC<PropsType> = ({currentDialog, userId}) => {
                                         <>
                                             <div className={classes.messagesCount}>
                                                 <Typography variant='body2' color='textPrimary'>
-                                                    {selectedMessages.length} {translate(lang, 'messages')}
+                                                    {selectedMessages.length} {messagesLabel}
                                                 </Typography>
                                                 <IconButton onClick={onCleanArrayHandler}
                                                             className={classes.iconClean}
@@ -113,7 +142,8 @@ const CurrentDialogHeader: React.FC<PropsType> = ({currentDialog, userId}) => {
                                             </div>
 
                                             <div className={classes.iconButtonWrapper}>
-                                                <Tooltip title={translate(lang, "Delete")} TransitionComponent={Zoom} arrow={true}>
+                                                <Tooltip title={deleteLabel} TransitionComponent={Zoom}
+                                                         arrow={true}>
                                                     <IconButton onClick={onDeleteHandler}
                                                                 className={classes.iconClean}
                                                                 disabled={loading}
@@ -139,7 +169,7 @@ const CurrentDialogHeader: React.FC<PropsType> = ({currentDialog, userId}) => {
 
                                 </>
                                 : <Typography variant='subtitle1' color='primary'>
-                                    {translate(lang, 'Select a dialog')}
+                                    {selectADialogLabel}
                                 </Typography>
                             }
                         </ListSubheader>
@@ -168,7 +198,7 @@ const CurrentDialogHeader: React.FC<PropsType> = ({currentDialog, userId}) => {
                                     <>
                                         <div className={classes.messagesCount}>
                                             <Typography variant='body2' color='textPrimary'>
-                                                {selectedDeletedMessages.length} {translate(lang, 'messages')}
+                                                {selectedDeletedMessages.length} {messagesLabel}
                                             </Typography>
                                             <IconButton onClick={onCleanArrayHandler}
                                                         className={classes.iconClean}
@@ -179,7 +209,8 @@ const CurrentDialogHeader: React.FC<PropsType> = ({currentDialog, userId}) => {
                                         </div>
 
                                         <div className={classes.iconButtonWrapper}>
-                                            <Tooltip title={translate(lang, "Restore")} TransitionComponent={Zoom} arrow={true}>
+                                            <Tooltip title={restoreLabel} TransitionComponent={Zoom}
+                                                     arrow={true}>
                                                 <IconButton onClick={onRestoreHandler}
                                                             className={classes.iconClean}
                                                             disabled={loading}
@@ -194,7 +225,7 @@ const CurrentDialogHeader: React.FC<PropsType> = ({currentDialog, userId}) => {
 
                             </>
                             : <Typography variant='subtitle1' color='primary'>
-                                {translate(lang, 'Select deleted dialog')}
+                                {selectDeletedDialogLabel}
                             </Typography>
                     }
                 </ListSubheader>

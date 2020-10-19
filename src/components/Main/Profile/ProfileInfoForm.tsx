@@ -1,4 +1,4 @@
-import React from "react";
+import React, {ReactElement} from "react";
 import {Card} from "@material-ui/core";
 import CardContent from "@material-ui/core/CardContent";
 import {makeStyles} from "@material-ui/core/styles";
@@ -30,13 +30,11 @@ import {required, shouldNotBeEmpty} from "../../../utilities/validators/validato
 import {getLang} from "../../../redux/app-selectors";
 import {translate} from "../../../const/lang";
 
-//========================== FORM ==============================================
-const Form: React.FC<InjectedFormProps<FormValuesType, FormOwnPropsType> & FormOwnPropsType> = (props) => {
+//===================== CUSTOM HOOK ===========================
+const useForm = ({profile}: FormOwnPropsType) => {
     const classes = useStyles();
     const lang = useSelector(getLang);
-    const {handleSubmit, submitting, pristine, error, profile} = props
     const currentInfoFormSidebarItem = useSelector(getCurrentInfoFormSidebarItem);
-
     const FieldContactsIconArray = [
         <FacebookIcon/>,
         <HttpIcon/>,
@@ -47,7 +45,6 @@ const Form: React.FC<InjectedFormProps<FormValuesType, FormOwnPropsType> & FormO
         <GitHubIcon/>,
         <LanguageIcon/>
     ];
-
     const FieldContactsElements = Object.keys(profile.contacts)
         .map((el, i) => <div key={i} className={classes.fieldWrapper}>
             <Field name={`contacts.${el}`}
@@ -59,6 +56,20 @@ const Form: React.FC<InjectedFormProps<FormValuesType, FormOwnPropsType> & FormO
                    size='small'
             />
         </div>);
+
+    return {
+        classes, lang, currentInfoFormSidebarItem,
+        FieldContactsElements
+    }
+};
+
+//========================== FORM ==============================================
+const Form: React.FC<InjectedFormProps<FormValuesType, FormOwnPropsType> & FormOwnPropsType> = (props): ReactElement => {
+    const {handleSubmit, submitting, pristine, error, profile} = props;
+    const {
+        classes, lang, currentInfoFormSidebarItem,
+        FieldContactsElements
+    } = useForm({profile});
 
     return (
         <form onSubmit={handleSubmit}>
@@ -121,11 +132,10 @@ const Form: React.FC<InjectedFormProps<FormValuesType, FormOwnPropsType> & FormO
 //----------------------------REDUX-FORM------------------------------------------------
 const ReduxForm = reduxForm<FormValuesType, FormOwnPropsType>({
     form: 'profile-info',
-
 })(Form);
 
-//----------------------------COMPONENT-------------------------------------------------------
-const ProfileInfoForm = () => {
+//===================== CUSTOM HOOK ===========================
+const useProfileInfoForm = () => {
     const classes = useStyles();
     const currentInfoFormSidebarItem = useSelector(getCurrentInfoFormSidebarItem);
     const profile = useSelector(getProfileSelector);
@@ -149,8 +159,18 @@ const ProfileInfoForm = () => {
     let onSubmit = (values: FormValuesType) => {
         dispatch(saveProfile(values));
     };
-
     const initialValues = profile ? profile : undefined;
+
+    return {
+        classes, profile, title, onSubmit, initialValues
+    }
+}
+
+//----------------------------COMPONENT-------------------------------------------------------
+const ProfileInfoForm: React.FC = (): ReactElement => {
+    const {
+        classes, profile, title, onSubmit, initialValues
+    } = useProfileInfoForm();
 
     return (
         <>
@@ -226,7 +246,6 @@ const useStyles = makeStyles({
     }
 });
 
-const useStylesField = makeStyles({});
 
 
 

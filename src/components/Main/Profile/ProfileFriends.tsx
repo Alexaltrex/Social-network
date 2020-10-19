@@ -12,23 +12,31 @@ import {useDispatch, useSelector} from "react-redux";
 import {sidebarAC} from "../../../redux/sidebar-reducer";
 import Typography from "@material-ui/core/Typography";
 import {getLang} from "../../../redux/app-selectors";
-import {Lang, translate} from "../../../const/lang";
+import {translate} from "../../../const/lang";
 
-const ProfileFriends: React.FC<PropsType> = ({friends, totalFriendsCount}) => {
+//===================== CUSTOM HOOK ===========================
+const useProfileFriends = ({friends}: UseProfileFriendsType) => {
     const classes = useStyles();
     const dispatch = useDispatch();
-
     const FriendsElements = friends
         && friends
             .map((el, i) => <ProfileFriendsItem key={i} friend={el}/>)
             .slice(0, Math.min(9, friends.length));
-
     const onClickHandler = () => {
         dispatch(sidebarAC.setCurrentSidebarItem(SidebarItemEnum.friends))
     };
-
     const lang = useSelector(getLang);
     const title = translate(lang, 'Friends');
+    return {
+        classes, FriendsElements, onClickHandler, title
+    }
+};
+
+//====================== COMPONENT ============================
+const ProfileFriends: React.FC<PropsType> = ({friends, totalFriendsCount}) => {
+    const {
+        classes, FriendsElements, onClickHandler, title
+    } = useProfileFriends({friends});
 
     return (
         <Card className={classes.card} elevation={6}>
@@ -63,7 +71,9 @@ type PropsType = {
     friends: Array<UserType> | null
     totalFriendsCount: number
 }
-
+type UseProfileFriendsType = {
+    friends: Array<UserType> | null
+}
 //========================== STYLES =============================================
 const useStyles = makeStyles({
     card: {

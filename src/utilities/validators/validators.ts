@@ -1,6 +1,3 @@
-import {LangType} from "../../types/types";
-import {translate} from "../../const/lang";
-
 export const required: FieldValidatorType = (value) =>
     value ? undefined : 'Field is required';
 

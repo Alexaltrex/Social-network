@@ -1,4 +1,4 @@
-import React, {Suspense} from 'react';
+import React, {ReactElement, Suspense} from 'react';
 import {Route, Switch} from "react-router-dom";
 import CircularPreloader from "../common/CircularPreloader";
 import Login from "../Login/Login";
@@ -13,9 +13,17 @@ import PageNotFound from "../common/PageNotFound";
 const Dialogs = React.lazy(() => import('./Dialogs/Dialogs'));
 const Profile = React.lazy(() => import('./Profile/Profile'));
 
-const Main: React.FC = () => {
+//======================== CUSTOM HOOK =========================
+const useMain = () => {
     const classes = useStyles();
     const isInitialized = useSelector(getIsInitializedSelector);
+    return {classes, isInitialized}
+}
+
+
+//======================= COMPONENT ===============================
+const Main: React.FC = (): ReactElement => {
+    const {classes, isInitialized} = useMain();
 
     if (!isInitialized) {
         return <CircularPreloader/>

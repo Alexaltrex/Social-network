@@ -2,8 +2,8 @@ import {CircularProgress} from "@material-ui/core";
 import React from "react";
 import {makeStyles} from "@material-ui/core/styles";
 
-const CircularPreloader: React.FC<PropsType> = (props) => {
-    const {size = 100, styleType = 'static-center'} = props;
+//======================== CUSTOM HOOK =========================
+const useCircularPreloader = ({styleType}: UseCircularPreloaderPropsType) => {
     const classesAbsolute = useStylesAbsolute();
     const classesStaticCenter = useStylesStaticCenter();
     const classesStaticTop = useStylesStaticTop();
@@ -14,6 +14,13 @@ const CircularPreloader: React.FC<PropsType> = (props) => {
     if (styleType === 'static-top') {
         classes = classesStaticTop;
     }
+    return {classes}
+};
+
+//======================= COMPONENT ===============================
+const CircularPreloader: React.FC<PropsType> = (props) => {
+    const {size = 100, styleType = 'static-center'} = props;
+    const {classes} = useCircularPreloader({styleType});
 
     return (
         <div className={classes.circularWrapper}>
@@ -29,6 +36,10 @@ type PropsType = {
     size?: number | undefined
     styleType?: 'absolute' | 'static-center' | 'static-top'
 }
+type UseCircularPreloaderPropsType = {
+    styleType?: 'absolute' | 'static-center' | 'static-top'
+}
+
 //============================ STYLES =======================================================
 const useStylesAbsolute = makeStyles({
     circularWrapper: {

@@ -28,11 +28,15 @@ let initialState = {
     currentFriendsSidebarItem: 0, // номер элемента бокового меню
     needToChangeListOfFriends: false, // список друзей нужно изменить (используется для обновления после удаления)?
     friendIdToRemove: null as null | number, // id друга, которого удаляем
-    valueFromHeaderSearch: null as null | string // страка поиска пользователя из header
+    valueFromHeaderSearch: null as null | string, // страка поиска пользователя из header
+    portionNumber: 1 // текущий номер порции страниц пользователей (начинается с 1)
 };
 
 const usersReducer = (state = initialState, action: UsersActionsType): initialStateType => {
     switch (action.type) {
+        case 'USERS/SET_PORTION_NUMBER': {
+            return {...state, portionNumber: action.portionNumber}
+        }
         case 'USERS/SET_VALUE_FROM_HEADER_SEARCH': {
             return {...state, valueFromHeaderSearch: action.valueFromHeaderSearch}
         }
@@ -109,6 +113,7 @@ const usersReducer = (state = initialState, action: UsersActionsType): initialSt
 };
 
 export const usersAC = {
+    setPortionNumber: (portionNumber: number) => ({type: 'USERS/SET_PORTION_NUMBER', portionNumber} as const),
     setValueFromHeaderSearch: (valueFromHeaderSearch: string | null) => ({type: 'USERS/SET_VALUE_FROM_HEADER_SEARCH', valueFromHeaderSearch} as const),
     toggleIsFriendsSearching: (isFriendsSearching: boolean) => ({type: 'USERS/TOGGLE_IS_FRIENDS_SEARCHING', isFriendsSearching} as const),
     setNeedToChangeListOfFriends: (needToChangeListOfFriends: boolean, friendIdToRemove: number | null) => ({

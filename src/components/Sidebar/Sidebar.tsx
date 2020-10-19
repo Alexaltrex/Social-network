@@ -11,7 +11,8 @@ import {getLang} from "../../redux/app-selectors";
 import { useSelector } from 'react-redux';
 import {Lang} from "../../const/lang";
 
-const Sidebar: React.FC = () => {
+//======================== CUSTOM HOOK =========================
+const useSidebar = () => {
     const classes = useStyles();
     const lang = useSelector(getLang);
     const profileLabel = lang === 'rus' ? Lang['My profile'].rus : Lang['My profile'].eng;
@@ -19,6 +20,18 @@ const Sidebar: React.FC = () => {
     const profileUsers = lang === 'rus' ? Lang['Users'].rus : Lang['Users'].eng;
     const profileFriends = lang === 'rus' ? Lang['Friends'].rus : Lang['Friends'].eng;
     const profileSettings = lang === 'rus' ? Lang['Settings'].rus : Lang['Settings'].eng;
+    return {
+        classes, profileLabel, profileDialogs,
+        profileUsers, profileFriends, profileSettings
+    }
+};
+
+//======================= COMPONENT ===============================
+const Sidebar: React.FC = () => {
+    const {
+        classes, profileLabel, profileDialogs,
+        profileUsers, profileFriends, profileSettings
+    } = useSidebar();
 
     return (
         <List className={classes.list}>

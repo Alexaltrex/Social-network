@@ -27,11 +27,11 @@ import SendIcon from '@material-ui/icons/Send';
 import SendMessageForm from "../../common/SendMessageForm";
 import {getDialogsSelector} from "../../../redux/dialogs-selectors";
 import {getDialogs} from "../../../redux/dialogs-reducer";
-import {Lang, translate} from "../../../const/lang";
+import {translate} from "../../../const/lang";
 import {getLang} from "../../../redux/app-selectors";
 
-const ProfileAvatar: React.FC<PropsType> = (props) => {
-    const {isOwner, userId, profile, followed} = props;
+//===================== CUSTOM HOOK ===========================
+const useProfileAvatar = ({followed, userId, profile}: UseProfileAvatarType) => {
     const classes = useStyles();
     const [onAvatarHover, setOnAvatarHover] = useState(false);
     const [openSendMessageForm, setOpenSendMessageForm] = React.useState(false);
@@ -40,13 +40,10 @@ const ProfileAvatar: React.FC<PropsType> = (props) => {
     const editMode = useSelector(getEditMode);
     const followingInProgress = useSelector(getFollowingInProgress);
     const dialogs = useSelector(getDialogsSelector);
-
     const dispatch = useDispatch();
-
     useEffect(() => {
         dispatch(getDialogs());
-    }, []);
-
+    }, [dispatch]);
     const onPhotoSelected = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             if (e.target.files.length) {
@@ -54,23 +51,18 @@ const ProfileAvatar: React.FC<PropsType> = (props) => {
             }
         }
     };
-
     const onAvatarDelete = () => {
         dispatch(profileAC.setPhotos({small: null, large: null}));
     };
-
     const onMouseAvatarEnter = () => {
         setOnAvatarHover(true)
     };
-
     const onMouseAvatarLeave = () => {
         setOnAvatarHover(false)
     };
-
     const onEditProfileClick = () => {
         dispatch(profileAC.setEditMode(true));
     };
-
     const onFollowUnfollowClick = () => {
         if (followed) {
             dispatch(getUnfollow(userId));
@@ -80,22 +72,44 @@ const ProfileAvatar: React.FC<PropsType> = (props) => {
             dispatch(profileAC.setFollowed(true));
         }
     };
-
     const onOpenSendMessageFormHandle = () => {
         setOpenSendMessageForm(true)
     };
-
     const lang = useSelector(getLang);
     const buttonLabel = followed
         ? translate(lang, 'Unfollow')
         : translate(lang, 'Follow');
     const startIcon = followed ? <PersonAddDisabledIcon/> : <GroupAddIcon/>;
     const src = ((profile && profile.photos.small) ? profile.photos.small : undefined) as string | undefined;
-
     const deleteAvatarTitle = translate(lang, 'Delete avatar');
-    const сhangeAvatarTitle = translate(lang, 'Change avatar');
+    const changeAvatarTitle = translate(lang, 'Change avatar');
     const editProfileLabel = translate(lang, 'Edit profile');
 
+    return {
+        classes, onAvatarHover,
+        openSendMessageForm, setOpenSendMessageForm,
+        avatarIsLoading, isFollowing, editMode,
+        followingInProgress, dialogs, onPhotoSelected,
+        onAvatarDelete, onMouseAvatarEnter, onMouseAvatarLeave,
+        onEditProfileClick, onFollowUnfollowClick, onOpenSendMessageFormHandle,
+        buttonLabel, src, startIcon, deleteAvatarTitle,
+        changeAvatarTitle, editProfileLabel
+    }
+};
+
+//====================== COMPONENT ============================
+const ProfileAvatar: React.FC<PropsType> = (props) => {
+    const {isOwner, userId, profile, followed} = props;
+    const {
+        classes, onAvatarHover,
+        openSendMessageForm, setOpenSendMessageForm,
+        avatarIsLoading, isFollowing, editMode,
+        followingInProgress, dialogs, onPhotoSelected,
+        onAvatarDelete, onMouseAvatarEnter, onMouseAvatarLeave,
+        onEditProfileClick, onFollowUnfollowClick, onOpenSendMessageFormHandle,
+        buttonLabel, src, startIcon, deleteAvatarTitle,
+        changeAvatarTitle, editProfileLabel
+    } = useProfileAvatar({followed, userId, profile});
     return (
         <>
             {profile &&
@@ -148,7 +162,7 @@ const ProfileAvatar: React.FC<PropsType> = (props) => {
                                                 component="span">
                                         <PhotoCamera className={classes.buttonIconInner}/>
                                         <Typography variant='body2'>
-                                            {сhangeAvatarTitle}
+                                            {changeAvatarTitle}
                                         </Typography>
                                     </IconButton>
                                 </label>
@@ -157,7 +171,6 @@ const ProfileAvatar: React.FC<PropsType> = (props) => {
 
                     </div>
                 </CardMedia>
-
 
                 <CardActions className={classes.cardActions}>
                     {isOwner
@@ -220,12 +233,10 @@ const ProfileAvatar: React.FC<PropsType> = (props) => {
                                              dialogs={dialogs}
                             />
 
-
                         </div>
 
                     }
                 </CardActions>
-
 
             </Card>
             }
@@ -238,6 +249,11 @@ export default ProfileAvatar;
 //========================== TYPES =================================================
 type PropsType = {
     isOwner: boolean
+    userId: number
+    profile: ProfileType
+    followed: boolean | null
+}
+type UseProfileAvatarType = {
     userId: number
     profile: ProfileType
     followed: boolean | null

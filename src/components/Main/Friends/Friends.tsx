@@ -1,15 +1,23 @@
 import React from "react";
-import {withAuthRedirect} from "../../../hoc/withAuthRedirect";
 import {makeStyles} from "@material-ui/core/styles";
 import FriendsList from "./FriendsList";
 import FriendsSidebar from "./FriendsSidebar";
 import {useSelector} from "react-redux";
 import {getCurrentFriendsSidebarItem} from "../../../redux/users-selectors";
 import FriendsSomethingElse from "./FriendsSomethingElse";
+import useAuthRedirect from "../../../hooks/useAuthRedirect";
 
-const Friends = () => {
+//================= CUSTOM HOOK =========================
+const useFriends = () => {
     const classes = useStyles();
     const currentFriendsSidebarItem = useSelector(getCurrentFriendsSidebarItem);
+    return {classes, currentFriendsSidebarItem}
+};
+
+//======================= COMPONENT ===============================
+const Friends: React.FC = () => {
+    useAuthRedirect();
+    const {classes, currentFriendsSidebarItem} = useFriends();
 
     return (
         <div className={classes.wrapper}>
@@ -27,7 +35,7 @@ const Friends = () => {
     )
 };
 
-export default withAuthRedirect(Friends);
+export default Friends;
 
 
 //========================== STYLES ================================================

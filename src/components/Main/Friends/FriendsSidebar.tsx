@@ -6,22 +6,35 @@ import indigo from "@material-ui/core/colors/indigo";
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import Tab from "@material-ui/core/Tab";
 import GroupIcon from '@material-ui/icons/Group';
-import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import {useDispatch, useSelector} from "react-redux";
 import {getCurrentFriendsSidebarItem} from "../../../redux/users-selectors";
 import {usersAC} from "../../../redux/users-reduser";
 import {getLang} from "../../../redux/app-selectors";
 import {translate} from "../../../const/lang";
 
-const FriendsSidebar = () => {
+//====================== CUSTOM HOOK =========================
+const useFriendsSidebar = () => {
     const classes = useStyles();
     const currentFriendsSidebarItem = useSelector(getCurrentFriendsSidebarItem);
     const lang = useSelector(getLang);
     const dispatch = useDispatch();
-
     const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
         dispatch(usersAC.setCurrentFriendsSidebarItem(newValue));
     };
+    const friendsLabel = translate(lang, "Friends");
+    const somethingElseLabel = translate(lang, "Something else")
+    return {
+        classes, currentFriendsSidebarItem,
+        handleChange, friendsLabel, somethingElseLabel
+    }
+};
+
+//======================= COMPONENT ===============================
+const FriendsSidebar: React.FC = () => {
+    const {
+        classes, currentFriendsSidebarItem,
+        handleChange, friendsLabel, somethingElseLabel
+    } = useFriendsSidebar();
 
     return (
         <Card className={classes.card} elevation={6}>
@@ -35,21 +48,21 @@ const FriendsSidebar = () => {
                 className={classes.tabs}
             >
 
-                <Tab label={translate(lang, "Friends")} icon={<GroupIcon className={classes.icon}/>} classes={{
+                <Tab label={friendsLabel} icon={<GroupIcon className={classes.icon}/>} classes={{
                     wrapper: classes.wrapper,
                     selected: classes.selected,
                     root: classes.tabRoot,
                     labelIcon: classes.labelIcon
                 }}/>
 
-                <Tab label={translate(lang, "Something else")} icon={<HelpOutlineIcon className={classes.icon}/>} classes={{
+                <Tab label={somethingElseLabel} icon={<HelpOutlineIcon className={classes.icon}/>} classes={{
                     wrapper: classes.wrapper,
                     selected: classes.selected,
                     root: classes.tabRoot,
                     labelIcon: classes.labelIcon
                 }}/>
 
-                <Tab label={translate(lang, "Something else")} icon={<HelpOutlineIcon className={classes.icon}/>} classes={{
+                <Tab label={somethingElseLabel} icon={<HelpOutlineIcon className={classes.icon}/>} classes={{
                     wrapper: classes.wrapper,
                     selected: classes.selected,
                     root: classes.tabRoot,

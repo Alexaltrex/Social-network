@@ -3,7 +3,7 @@ import {Field, InjectedFormProps, reduxForm} from "redux-form";
 import {required, shouldNotBeEmpty} from "../../utilities/validators/validators";
 import {useDispatch, useSelector} from "react-redux";
 import {login} from "../../redux/auth-reducer";
-import {Redirect} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import {getCaptchaSelector, getIsAuth} from "../../redux/auth-selectors";
 import {makeStyles} from "@material-ui/core/styles";
 import MailOutlineIcon from '@material-ui/icons/MailOutline';
@@ -16,17 +16,26 @@ import Button from "@material-ui/core/Button";
 import {getLang} from "../../redux/app-selectors";
 import {Lang} from "../../const/lang";
 
-//=================================== Form =========================================
-const LoginForm: React.FC<LoginFormPropsType> = (props) => {
-    const {handleSubmit, submitting, pristine, error, captcha} = props;
+//================= CUSTOM HOOK =========================
+const useLoginForm = () => {
     const classes = useStyles();
     const lang = useSelector(getLang);
     const emailLabel = lang === 'rus' ? Lang['email'].rus : Lang['email'].eng;
     const passwordLabel = lang === 'rus' ? Lang['password'].rus : Lang['password'].eng;
     const rememberMeLabel = lang === 'rus' ? Lang['Remember me'].rus : Lang['Remember me'].eng;
-    const сaptchaLabel = lang === 'rus' ? Lang['Captcha'].rus : Lang['Captcha'].eng;
-    const сaptchaText = lang === 'rus' ? Lang['Enter symbols from image'].rus : Lang['Enter symbols from image'].eng;
+    const captchaLabel = lang === 'rus' ? Lang['Captcha'].rus : Lang['Captcha'].eng;
+    const captchaText = lang === 'rus' ? Lang['Enter symbols from image'].rus : Lang['Enter symbols from image'].eng;
     const buttonLabel = lang === 'rus' ? Lang['Login'].rus : Lang['Login'].eng;
+    return {classes, emailLabel, passwordLabel, rememberMeLabel,
+        captchaLabel, captchaText, buttonLabel}
+}
+
+
+//=================================== Form =========================================
+const LoginForm: React.FC<LoginFormPropsType> = (props) => {
+    const {handleSubmit, submitting, pristine, error, captcha} = props;
+    const {classes, emailLabel, passwordLabel, rememberMeLabel,
+        captchaLabel, captchaText, buttonLabel} = useLoginForm();
 
     return <form onSubmit={handleSubmit}>
 
@@ -64,15 +73,15 @@ const LoginForm: React.FC<LoginFormPropsType> = (props) => {
                     <img src={captcha} alt=""/>
                 </div>
                 <Typography className={classes.captcha}>
-                    {сaptchaText}
+                    {captchaText}
                 </Typography>
                 <div className={classes.fieldWrapper}>
                     <Field
                         name='captcha'
                         className={classes.textField}
                         component={RenderTextField}
-                        placeholder={сaptchaLabel}
-                        label={сaptchaLabel}
+                        placeholder={captchaLabel}
+                        label={captchaLabel}
                         validate={[required, shouldNotBeEmpty]}
                         size='small'
                     />
@@ -104,24 +113,27 @@ const ReduxLoginForm = reduxForm<LoginFormValuesType, LoginFormOwnProps>({
     form: 'login'
 })(LoginForm);
 
-
-//========================= COMPONENT =============================================================
-const Login: React.FC = () => {
+//================= CUSTOM HOOK =========================
+const useLogin = () => {
     const classes = useStyles();
     const isAuth = useSelector(getIsAuth);
     const captcha = useSelector(getCaptchaSelector);
     const lang = useSelector(getLang);
     const dispatch = useDispatch();
-
     const onSubmit = (values: LoginFormValuesType) => {
         dispatch(login(values.email, values.password, values.rememberMe, values.captcha));
     };
-
     const title = lang === 'rus' ? Lang['Enter in your profile'].rus : Lang['Enter in your profile'].eng;
-
+    let history = useHistory();
     if (isAuth) {
-        return <Redirect to='/profile'/>
+        history.push('/profile');
     }
+    return {classes, captcha, onSubmit, title}
+};
+
+//========================= COMPONENT =============================================================
+const Login: React.FC = () => {
+    const {classes, captcha, onSubmit, title} = useLogin();
     return (
         <div className={classes.root}>
             <Card className={classes.card} elevation={6}>

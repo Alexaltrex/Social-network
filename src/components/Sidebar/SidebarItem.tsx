@@ -12,12 +12,11 @@ import {usersAC} from "../../redux/users-reduser";
 import {sidebarAC} from "../../redux/sidebar-reducer";
 import {getCurrentSidebarItem} from "../../redux/sidebar-selectors";
 
-const SidebarItem: React.FC<PropsTypes> = (props) => {
-    const {to, primary, icon, ownIndex} = props;
+//======================== CUSTOM HOOK =========================
+const useSidebarItem = (ownIndex: number) => {
     const classes = useStyles();
     const currentSidebarItem = useSelector(getCurrentSidebarItem)
     const dispatch = useDispatch();
-
     const onClick = () => {
         dispatch(sidebarAC.setCurrentSidebarItem(ownIndex));// установить номер текущего элемнта бокового меню
         dispatch(profileAC.setEditMode(false)); // выключить режим редактирования профиля
@@ -27,6 +26,17 @@ const SidebarItem: React.FC<PropsTypes> = (props) => {
         dispatch(usersAC.setCurrentFriendsSidebarItem(0)); // переключение на первый элмемент бокового меню
         dispatch(usersAC.setValueFromHeaderSearch('')); // обнуление строки поиска пользователей из заголовка
     };
+    return {
+        classes, currentSidebarItem, onClick
+    }
+};
+
+//======================= COMPONENT ===============================
+const SidebarItem: React.FC<PropsTypes> = (props) => {
+    const {to, primary, icon, ownIndex} = props;
+    const {
+        classes, currentSidebarItem, onClick
+    } = useSidebarItem(ownIndex);
 
     return (
         <li>

@@ -26,24 +26,21 @@ import HeaderSearch from "./HeaderSearch";
 import {getTheme} from "../../redux/settings-selectors";
 import HeaderLang from "./HeaderLang";
 import {getLang} from "../../redux/app-selectors";
-import {Lang, translate} from "../../const/lang";
+import {translate} from "../../const/lang";
 
-const Header: React.FC = () => {
+//================= CUSTOM HOOK =========================
+const useHeader = () => {
     const classes = useStyles();
-
     const isAuth = useSelector(getIsAuth);
     const login = useSelector(getLogin);
     const profile = useSelector(getProfileSelector);
     const id = useSelector(getId);
-
     const dispatch = useDispatch();
-
     useEffect(() => {
         if (id) {
             dispatch(getProfile(id))
         }
-    }, [id]);
-
+    }, [id, dispatch]);
     //===================================================================================
     const [open, setOpen] = useState(false);
     const icon = open ? <ExpandLessIcon className={classes.icon}/> : <ExpandMoreIcon className={classes.icon}/>
@@ -57,17 +54,15 @@ const Header: React.FC = () => {
         }
         setOpen(false);
     };
-
     function handleListKeyDown(event: React.KeyboardEvent) {
         if (event.key === 'Tab') {
             event.preventDefault();
             setOpen(false);
         }
     }
-
     // return focus to the button when we transitioned from !open -> open
     const prevOpen = React.useRef(open);
-    React.useEffect(() => {
+    useEffect(() => {
         if (prevOpen.current === true && open === false) {
             anchorRef.current!.focus();
         }
@@ -94,14 +89,34 @@ const Header: React.FC = () => {
         }
     });
     const classesSettings = useStylesSettings();
-
     const lang = useSelector(getLang);
+    const logo = translate(lang, 'Social Network');
+    const settingsLabel = translate(lang, 'Settings');
+    const logoutLabel = translate(lang, 'Logout');
+    const loginLabel = translate(lang, 'Login')
+
+    return {
+        classes, isAuth, login, profile, open, icon, anchorRef,
+        handleToggle, handleClose, handleListKeyDown, onSettingsClick,
+        onLogoutClick, classesSettings, logo, settingsLabel,
+        logoutLabel, loginLabel
+    }
+};
+
+//======================= COMPONENT ===============================
+const Header: React.FC = () => {
+    const {
+        classes, isAuth, login, profile, open, icon, anchorRef,
+        handleToggle, handleClose, handleListKeyDown, onSettingsClick,
+        onLogoutClick, classesSettings, logo, settingsLabel,
+        logoutLabel, loginLabel
+    } = useHeader();
 
     return (
         <div className={classesSettings.wrapper}>
             <Toolbar className={classes.toolBar}>
                 <Typography variant="h6" noWrap className={classes.logo}>
-                    {translate(lang, 'Social Network')}
+                    {logo}
                 </Typography>
 
                 <HeaderSearch/>
@@ -149,7 +164,7 @@ const Header: React.FC = () => {
                                                         <ListItemIcon>
                                                             <ExitToAppIcon/>
                                                         </ListItemIcon>
-                                                        <ListItemText primary={translate(lang, 'Logout')}/>
+                                                        <ListItemText primary={logoutLabel}/>
                                                     </MenuItem>
                                                     <MenuItem onClick={onSettingsClick}
                                                               component={RouterLink}
@@ -158,7 +173,7 @@ const Header: React.FC = () => {
                                                         <ListItemIcon>
                                                             <SettingsIcon/>
                                                         </ListItemIcon>
-                                                        <ListItemText primary={translate(lang, 'Settings')}/>
+                                                        <ListItemText primary={settingsLabel}/>
                                                     </MenuItem>
                                                 </MenuList>
                                             </ClickAwayListener>
@@ -171,7 +186,7 @@ const Header: React.FC = () => {
                                   className={classes.login}
                                   component={RouterLink}
                                   to='/login'>
-                            {translate(lang, 'Login')}
+                            {loginLabel}
                         </Button>
                 }
 

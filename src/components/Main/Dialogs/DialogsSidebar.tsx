@@ -14,17 +14,30 @@ import {Link as RouterLink} from "react-router-dom";
 import {getLang} from "../../../redux/app-selectors";
 import {translate} from "../../../const/lang";
 
-
-const DialogsSidebar = () => {
+//================= CUSTOM HOOK =========================
+const useDialogsSidebar = () => {
     const classes = useStyles();
     const currentDialogsSidebarItem = useSelector(getCurrentDialogsSidebarItem);
     const loading = useSelector(getLoading);
     const lang = useSelector(getLang);
     const dispatch = useDispatch();
-
     const onChangeHandle = (event: React.ChangeEvent<{}>, newValue: number) => {
         dispatch(dialogsAC.setCurrentDialogsSidebarItem(newValue));
     };
+    const allLabel = translate(lang, "All");
+    const deletedLabel = translate(lang, "Deleted");
+    return {
+        classes, currentDialogsSidebarItem, loading,
+        onChangeHandle, allLabel, deletedLabel
+    }
+};
+
+//======================= COMPONENT ===============================
+const DialogsSidebar: React.FC = () => {
+    const {
+        classes, currentDialogsSidebarItem, loading,
+        onChangeHandle, allLabel, deletedLabel
+    } = useDialogsSidebar();
 
     return (
         <Card className={classes.card} elevation={6}>
@@ -38,7 +51,7 @@ const DialogsSidebar = () => {
                 className={classes.tabs}
             >
 
-                <Tab label={translate(lang, "All")}
+                <Tab label={allLabel}
                      component={RouterLink}
                      to='/dialogs'
                      disabled={loading}
@@ -50,7 +63,7 @@ const DialogsSidebar = () => {
                          labelIcon: classes.labelIcon
                      }}/>
 
-                <Tab label={translate(lang, "Deleted")}
+                <Tab label={deletedLabel}
                      component={RouterLink}
                      to='/dialogs'
                      disabled={loading}

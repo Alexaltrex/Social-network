@@ -9,20 +9,30 @@ import {sidebarAC} from "../../../redux/sidebar-reducer";
 import {useDispatch} from "react-redux";
 import {Typography} from "@material-ui/core";
 
-const ProfileFriendsItem: React.FC<PropsType> = ({friend}) => {
+//===================== CUSTOM HOOK ===========================
+const useProfileFriendsItem = ({friend}: PropsType) => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const src = friend.photos.small;
-
-    let indexBeforeWhiteSpace = friend.name.search(/[\s_]/);
+    const indexBeforeWhiteSpace = friend.name.search(/[\s_]/);
     let shortName = (indexBeforeWhiteSpace > 0) ?  friend.name.slice(0, indexBeforeWhiteSpace) : friend.name;
     if (shortName.length > 10 ) {
         shortName = shortName.slice(0,9) + '...';
     }
-
     const onListItemClick = () => {
         dispatch(sidebarAC.setCurrentSidebarItem(3));
     };
+
+    return {
+        classes, src, shortName, onListItemClick
+    }
+};
+
+//====================== COMPONENT ============================
+const ProfileFriendsItem: React.FC<PropsType> = ({friend}) => {
+    const {
+        classes, src, shortName, onListItemClick
+    } = useProfileFriendsItem({friend});
 
     return (
         <Grid item xs={4} className={classes.item}>

@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {ReactElement, useEffect} from "react";
 import {reduxForm, Field, InjectedFormProps, submit} from 'redux-form'
 import {makeStyles} from "@material-ui/core/styles";
 import RenderTextField from "../../common/RenderTextField";
@@ -15,13 +15,33 @@ import {getValueFromHeaderSearch} from "../../../redux/users-selectors";
 import {getLang} from "../../../redux/app-selectors";
 import {translate} from "../../../const/lang";
 
-//========================== FORM =======================================
-const SearchUsersForm: React.FC<SearchUsersFormPropsType> = (props) => {
-    const {handleSubmit, submitting, pristine, error} = props;
+//======================== CUSTOM HOOK =========================
+const useSearchUsersForm = () => {
     const classes = useStyles();
     const classesRadioButton = useStylesRadioButton();
-    const dispatch = useDispatch();
     const lang = useSelector(getLang);
+    const nameLabel = translate(lang, 'Name');
+    const userAreFriendOrNotLabel = translate(lang, 'User are friend or not');
+    const allLabel = translate(lang, 'All');
+    const friendLabel = translate(lang, 'Friend');
+    const notFriendLabel = translate(lang, 'Not friend')
+    const searchLabel = translate(lang, 'Search')
+
+    return {
+        classes, classesRadioButton, nameLabel,
+        userAreFriendOrNotLabel, allLabel, friendLabel,
+        notFriendLabel, searchLabel
+    }
+}
+
+//========================== FORM =======================================
+const SearchUsersForm: React.FC<SearchUsersFormPropsType> = (props): ReactElement => {
+    const {handleSubmit, submitting, pristine, error} = props;
+    const {
+        classes, classesRadioButton, nameLabel,
+        userAreFriendOrNotLabel, allLabel, friendLabel,
+        notFriendLabel, searchLabel
+    } = useSearchUsersForm();
 
     return (
         <form onSubmit={handleSubmit}>
@@ -31,18 +51,18 @@ const SearchUsersForm: React.FC<SearchUsersFormPropsType> = (props) => {
                    fullWidth
                    autoFocus={true}
                    validate={[shouldNotBeEmpty]}
-                   label={translate(lang, 'Name')}
+                   label={nameLabel}
                    size='small'
             />
 
             <Field name='friend'
-                   label={translate(lang, 'User are friend or not')}
+                   label={userAreFriendOrNotLabel}
                    component={RenderRadioButton}
                    classes={classesRadioButton}
                    labels={[
-                       {value: "all", label: translate(lang, 'All')},
-                       {value: "true", label: translate(lang, 'Friend')},
-                       {value: "false", label: translate(lang, 'Not friend')}
+                       {value: "all", label: allLabel},
+                       {value: "true", label: friendLabel},
+                       {value: "false", label: notFriendLabel}
                    ]}
                    size='small'
             />
@@ -56,7 +76,7 @@ const SearchUsersForm: React.FC<SearchUsersFormPropsType> = (props) => {
                         disabled={submitting || pristine}
                         className={classes.button}
                 >
-                    {translate(lang, 'Search')}
+                    {searchLabel}
                 </Button>
             </div>
 
@@ -75,22 +95,18 @@ const SearchUsersReduxForm = reduxForm<SearchUsersParamsType, SearchUsersFormOwn
     form: 'searchUsers',
 })(SearchUsersForm);
 
-// =========================== COMPONENT ============================================================
-const UsersSearch: React.FC = () => {
+//======================== CUSTOM HOOK =========================
+const useUsersSearch = () => {
     const classes = useStyles();
     const valueFromHeaderSearch = useSelector(getValueFromHeaderSearch);
     const dispatch = useDispatch();
-
     const onSubmit = (formValue: SearchUsersParamsType) => {
         dispatch(usersAC.setSearchUsersParams(formValue));
         dispatch(usersAC.setCurrentPage(1));
         dispatch(usersAC.setShowUsersFrom('search'));
     };
-
     const term = valueFromHeaderSearch ? valueFromHeaderSearch : '';
-
     const initialValues = {term: term, friend: 'all'} as SearchUsersParamsType;
-
     useEffect(() => {
         if (valueFromHeaderSearch) {
             dispatch(submit('searchUsers'));
@@ -98,7 +114,17 @@ const UsersSearch: React.FC = () => {
             dispatch(usersAC.setCurrentPage(1));
             dispatch(usersAC.setShowUsersFrom('search'));
         }
-    }, [valueFromHeaderSearch])
+    }, [valueFromHeaderSearch, dispatch]);
+    return {
+        classes, onSubmit, initialValues
+    }
+}
+
+// =========================== COMPONENT ============================================================
+const UsersSearch: React.FC = (): ReactElement => {
+    const {
+        classes, onSubmit, initialValues
+    } = useUsersSearch();
 
     return (
         <Card className={classes.card} elevation={6}>
@@ -153,5 +179,4 @@ const useStylesRadioButton = makeStyles({
         marginLeft: 10
     },
     formControlLabel: {},
-
 });

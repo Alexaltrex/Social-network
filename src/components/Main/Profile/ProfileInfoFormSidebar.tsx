@@ -1,5 +1,5 @@
 import CardContent from "@material-ui/core/CardContent";
-import React from "react";
+import React, {ReactElement} from "react";
 import {Card, Theme} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import Tabs from "@material-ui/core/Tabs";
@@ -14,7 +14,8 @@ import {profileAC} from "../../../redux/profile-reducer";
 import {getLang} from "../../../redux/app-selectors";
 import {translate} from "../../../const/lang";
 
-const ProfileInfoFormSidebar = () => {
+//===================== CUSTOM HOOK ===========================
+const useProfileInfoFormSidebar = () => {
     const classes = useStyles();
     const currentInfoFormSidebarItem = useSelector(getCurrentInfoFormSidebarItem);
     const lang = useSelector(getLang);
@@ -22,6 +23,18 @@ const ProfileInfoFormSidebar = () => {
     const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
         dispatch(profileAC.setCurrentInfoFormSidebarItem(newValue));
     };
+    return {
+        classes, currentInfoFormSidebarItem,
+        lang, handleChange
+    }
+};
+
+//====================== COMPONENT ============================
+const ProfileInfoFormSidebar: React.FC = (): ReactElement => {
+    const {
+        classes, currentInfoFormSidebarItem,
+        lang, handleChange
+    } = useProfileInfoFormSidebar();
 
     return (
         <Card elevation={6}>

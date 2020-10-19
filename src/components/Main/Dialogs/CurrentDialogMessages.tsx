@@ -13,9 +13,9 @@ import CircularPreloader from "../../common/CircularPreloader";
 import {dialogsAC} from "../../../redux/dialogs-reducer";
 import {DialogsSidebarItemEnum} from "../../../types/types";
 
-const CurrentDialogMessages: React.FC<PropsType> = ({messages, src, userId}) => {
+//================= CUSTOM HOOK =========================
+const useCurrentDialogMessages = ({messages, src, userId}: PropsType) => {
     const classes = useStyles();
-
     const messagesIsLoading = useSelector(getMessagesIsLoading);
     const messageIsSending = useSelector(getMessageIsSending);
     const messagesIsDeleting = useSelector(getMessagesIsDeleting);
@@ -23,11 +23,10 @@ const CurrentDialogMessages: React.FC<PropsType> = ({messages, src, userId}) => 
     const currentDialogsSidebarItem = useSelector(getCurrentDialogsSidebarItem);
     const dispatch = useDispatch();
 
-
-    // очистка массива выделенных сообщений при первой отрисове или при изменении диалога
+    // очистка массива выделенных сообщений при первой отрисовке или при изменении диалога
     useEffect(() => {
         dispatch(dialogsAC.cleanSelectedMessages())
-    }, [userId]);
+    }, [userId, dispatch]);
 
     const elements = messages && messages
         .map(el => <CurrentDialogMessageItem key={el.id} message={el} src={src}/>);
@@ -38,7 +37,6 @@ const CurrentDialogMessages: React.FC<PropsType> = ({messages, src, userId}) => 
     const elementsDeleted = deletedMessagesItem && deletedMessagesItem
         .messages
         .map(el => <CurrentDialogMessageItem key={el.id} message={el} src={src}/>);
-
     // 1
     // сообщение удаляется - messagesIsDeleting
     // показывать messages
@@ -60,6 +58,16 @@ const CurrentDialogMessages: React.FC<PropsType> = ({messages, src, userId}) => 
     // messages есть - показывать messages, messages нет - ничего не показывать
 
     // во время загрузки, отправки и удаления блокировать форму добавления сообщений и боковую панель
+    return {classes, messagesIsLoading, messageIsSending, messagesIsDeleting,
+        currentDialogsSidebarItem, elements, deletedMessagesItem,
+        elementsDeleted}
+};
+
+//======================= COMPONENT ===============================
+const CurrentDialogMessages: React.FC<PropsType> = ({messages, src, userId}) => {
+    const {classes, messagesIsLoading, messageIsSending, messagesIsDeleting,
+        currentDialogsSidebarItem, elements, deletedMessagesItem,
+        elementsDeleted} = useCurrentDialogMessages({messages, src, userId});
 
     return (
         <>

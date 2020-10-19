@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {ReactElement} from 'react';
 import {ListItem} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import {Link as RouterLink} from "react-router-dom";
@@ -20,16 +20,14 @@ import Typography from "@material-ui/core/Typography";
 import {translate} from "../../../const/lang";
 import {getLang} from "../../../redux/app-selectors";
 
-
-const UserListItem: React.FC<PropType> = ({user, dialogs}) => {
+//======================== CUSTOM HOOK =========================
+const useUserListItem = (user: UserType) => {
     const classes = useStyles();
     const [openSendMessageForm, setOpenSendMessageForm] = React.useState(false);
     const followingInProgress = useSelector(getFollowingInProgress);
     const isFollowing = useSelector(getIsFollowing);
     const lang = useSelector(getLang);
-
     const dispatch = useDispatch();
-
     const followUnfollowHandle = () => {
         if (user.followed) {
             dispatch(getUnfollow(user.id));
@@ -37,22 +35,34 @@ const UserListItem: React.FC<PropType> = ({user, dialogs}) => {
             dispatch(getFollow(user.id));
         }
     };
-
     const onOpenSendMessageFormHandle = () => {
         setOpenSendMessageForm(true)
     };
-
     const goToUserHandle = () => {
         dispatch(sidebarAC.setCurrentSidebarItem(SidebarItemEnum.users));
     };
-
     const followLabel = user.followed
         ? translate(lang, 'Unfollow') :
         translate(lang, 'Follow');
-
     const startIcon = user.followed ? <PersonAddDisabledIcon/> : <GroupAddIcon/>;
     const src = ((user && user.photos.small) ? user.photos.small : undefined) as string | undefined;
+    const sendMessageLabel = translate(lang, 'Send message')
+    return {
+        classes, openSendMessageForm, setOpenSendMessageForm,
+        followingInProgress, isFollowing, followUnfollowHandle,
+        onOpenSendMessageFormHandle, goToUserHandle, followLabel,
+        startIcon, src, sendMessageLabel
+    }
+};
 
+//======================= COMPONENT ===============================
+const UserListItem: React.FC<PropType> = ({user, dialogs}): ReactElement => {
+    const {
+        classes, openSendMessageForm, setOpenSendMessageForm,
+        followingInProgress, isFollowing, followUnfollowHandle,
+        onOpenSendMessageFormHandle, goToUserHandle, followLabel,
+        startIcon, src, sendMessageLabel
+    } = useUserListItem(user);
 
     return (
         <ListItem className={classes.listItem}>
@@ -71,7 +81,7 @@ const UserListItem: React.FC<PropType> = ({user, dialogs}) => {
 
                 </Link>
                 <Link component={RouterLink} to='#' variant='body2' onClick={onOpenSendMessageFormHandle}>
-                    {translate(lang, 'Send message')}
+                    {sendMessageLabel}
                 </Link>
                 <div className={classes.buttonWrapper}>
                     <Button className={classes.button}

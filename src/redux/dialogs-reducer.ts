@@ -212,19 +212,19 @@ export const getDialogs = (): ThunkType => async (dispatch) => {
 };
 
 // ???
-export const startDialog = (userId: number): ThunkType => async (dispatch) => {
-    try {
-        //dispatch(appAC.toggleLoading(true));
-        let data = await dialogsAPI.startDialog(userId);
-        //console.log(data)
-        //dispatch(usersAC.setUsers(data.items));
-        //dispatch(usersAC.setTotalUsersCount(data.totalCount));
-    } catch (e) {
-        //dispatch(appAC.setLanError(true));
-    } finally {
-        //dispatch(appAC.toggleLoading(false));
-    }
-};
+// export const startDialog = (userId: number): ThunkType => async (dispatch) => {
+//     try {
+//         //dispatch(appAC.toggleLoading(true));
+//         let data = await dialogsAPI.startDialog(userId);
+//         //console.log(data)
+//         //dispatch(usersAC.setUsers(data.items));
+//         //dispatch(usersAC.setTotalUsersCount(data.totalCount));
+//     } catch (e) {
+//         //dispatch(appAC.setLanError(true));
+//     } finally {
+//         //dispatch(appAC.toggleLoading(false));
+//     }
+// };
 
 // послать сообщение пользователю
 export const sendMessage = (userId: number, message: string): ThunkType => async (dispatch) => {
@@ -261,20 +261,20 @@ export const getMessages = (userId: number): ThunkType => async (dispatch) => {
 };
 
 // определить, просмотрено ли сообщение
-export const getIsMessageViewed = (messageId: string): ThunkType => async (dispatch) => {
-    try {
-        //dispatch(profileAC.toggleStatusLoading(true));
-        const data = await dialogsAPI.getIsMessageViewed(messageId);
-        //console.log(data)
-        // if (data.resultCode === 0) {
-        //     dispatch(profileAC.setStatus(status));
-        // }
-    } catch (e) {
-        //dispatch(appAC.setLanError(true));
-    } finally {
-        //dispatch(profileAC.toggleStatusLoading(false));
-    }
-};
+// export const getIsMessageViewed = (messageId: string): ThunkType => async (dispatch) => {
+//     try {
+//         //dispatch(profileAC.toggleStatusLoading(true));
+//         const data = await dialogsAPI.getIsMessageViewed(messageId);
+//         //console.log(data)
+//         // if (data.resultCode === 0) {
+//         //     dispatch(profileAC.setStatus(status));
+//         // }
+//     } catch (e) {
+//         //dispatch(appAC.setLanError(true));
+//     } finally {
+//         //dispatch(profileAC.toggleStatusLoading(false));
+//     }
+// };
 
 // отметить сообщения как спам (при этом удаляется?)
 export const signMessageAsSpam = (messages: Array<MessageType>, dialog: DialogType): ThunkType => async (dispatch) => {

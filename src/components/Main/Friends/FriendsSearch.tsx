@@ -13,18 +13,21 @@ import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import {translate} from "../../../const/lang";
 import {getLang} from "../../../redux/app-selectors";
 
-//========================== FORM =======================================
-const Form: React.FC<FormPropsType> = (props) => {
-    const {handleSubmit} = props;
+//================= CUSTOM HOOK =========================
+const useForm = () => {
     const lang = useSelector(getLang);
-
+    const dispatch = useDispatch();
     const onChangeHandler = () => {
         setTimeout(() => dispatch(submit('friends-search')));
         dispatch(usersAC.setCurrentFriendsPage(1))
-
     };
+    const nameOfTheFriendLabel = translate(lang, 'Name of the friend')
+    return {onChangeHandler, nameOfTheFriendLabel}
+}
 
-    const dispatch = useDispatch();
+//========================== FORM =======================================
+const Form: React.FC<FormPropsType> = ({handleSubmit}) => {
+    const {onChangeHandler, nameOfTheFriendLabel} = useForm();
     return (
         <form onSubmit={handleSubmit}>
             <div>
@@ -32,7 +35,7 @@ const Form: React.FC<FormPropsType> = (props) => {
                        component={RenderTextField}
                        fullWidth
                        validate={[shouldNotBeEmpty]}
-                       label={translate(lang, 'Name of the friend')}
+                       label={nameOfTheFriendLabel}
                        size='small'
                        onChange={onChangeHandler}
                 />
@@ -46,21 +49,18 @@ const ReduxForm = reduxForm<FormParamsType, FormOwnPropsType>({
     form: 'friends-search',
 })(Form);
 
-// =========================== COMPONENT ============================================================
-const FriendsSearch: React.FC = () => {
+//====================== CUSTOM HOOK =========================
+const useFriendsSearch = () => {
     const classes = useStyles();
     const isFriendsSearching = useSelector(getIsFriendsSearching);
     const searchFriendsParams = useSelector(getSearchFriendsParams);
     const dispatch = useDispatch();
-
     const onSubmit = (formValue: FormParamsType) => {
         dispatch(usersAC.setSearchFriendsParams({term: formValue.term}))
     };
-
     const icon = searchFriendsParams.term === ''
         ? <SearchIcon/>
         : <HighlightOffIcon/>;
-
     const onClickHandler = () => {
         if (searchFriendsParams.term !== '') {
             dispatch(usersAC.setSearchFriendsParams({term: ''}));
@@ -68,6 +68,18 @@ const FriendsSearch: React.FC = () => {
             dispatch(reset('friends-search'));
         }
     };
+    return {
+        classes, isFriendsSearching,
+        onSubmit, icon, onClickHandler
+    }
+};
+
+// =========================== COMPONENT ============================================================
+const FriendsSearch: React.FC = () => {
+    const {
+        classes, isFriendsSearching,
+        onSubmit, icon, onClickHandler
+    } = useFriendsSearch();
 
     return (
         <div className={classes.search}>
@@ -87,10 +99,9 @@ const FriendsSearch: React.FC = () => {
 
     )
 
-}
+};
 
 export default FriendsSearch;
-
 
 //===================================== TYPES====================================================
 type FormPropsType =

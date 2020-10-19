@@ -15,23 +15,20 @@ import {getLang} from "../../../redux/app-selectors";
 import { useSelector } from "react-redux";
 import {translate} from "../../../const/lang";
 
-const ProfileInfo: React.FC<PropsType> = ({isOwner, userId, profile}) => {
+//===================== CUSTOM HOOK ===========================
+const useProfileInfo = ({profile}: UseProfileInfoType) => {
     const classes = useStyles();
     const [showDetailedInfo, setShowDetailedInfo] = useState(false)
-
     const onShowInfoClick = () => {
         setShowDetailedInfo(!showDetailedInfo);
     };
-
     const lang = useSelector(getLang);
     const showDetailedInfoTitle = showDetailedInfo
         ? translate(lang, 'Hide detailed information')
         : translate(lang, 'Show detailed information');
-
     const lookingForAJob = profile && profile.lookingForAJob
         ? translate(lang, 'Yes')
         : translate(lang, 'No');
-
     const contactsElements = profile && Object
         .keys(profile.contacts)
         .map(key => {
@@ -42,6 +39,21 @@ const ProfileInfo: React.FC<PropsType> = ({isOwner, userId, profile}) => {
                                    rightType='link'/>
             }
         });
+
+    return {
+        classes, showDetailedInfo,
+        onShowInfoClick, lang, showDetailedInfoTitle,
+        lookingForAJob, contactsElements
+    }
+}
+
+//====================== COMPONENT ============================
+const ProfileInfo: React.FC<PropsType> = ({isOwner, userId, profile}) => {
+    const {
+        classes, showDetailedInfo,
+            onShowInfoClick, lang, showDetailedInfoTitle,
+            lookingForAJob, contactsElements
+    } = useProfileInfo({profile});
 
     if (!profile) return <CircularPreloader/>
 
@@ -134,5 +146,8 @@ const useStyles = makeStyles({
 type PropsType = {
     isOwner: boolean
     userId: number
+    profile: ProfileType
+}
+type UseProfileInfoType = {
     profile: ProfileType
 }

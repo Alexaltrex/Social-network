@@ -5,7 +5,7 @@ export type PostType = {
     message: string
     likeCount: number
     likeMe: boolean
-    time: string
+    time: Date
 }
 
 export type ContactsType = {

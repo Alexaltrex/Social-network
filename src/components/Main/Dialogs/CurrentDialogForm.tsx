@@ -15,15 +15,22 @@ import {
 import {getLang} from "../../../redux/app-selectors";
 import {translate} from "../../../const/lang";
 
-//===================== FORM ==================================
-const Form: React.FC<FormPropsType> = (props) => {
-    const {handleSubmit, submitting, pristine, loading, messageIsSending} = props;
+//================= Custom Hook =========================
+const useForm = (messageIsSending: boolean) => {
     const classes = useStyles();
     const classesField = useStylesField();
     const lang = useSelector(getLang);
     const label = messageIsSending
         ? translate(lang, 'Message is sent...')
-        : translate(lang, 'Enter your message')
+        : translate(lang, 'Enter your message');
+    const placeholder = translate(lang, 'Enter your message');
+    return {classes, classesField, label, placeholder}
+}
+
+//===================== FORM ==================================
+const Form: React.FC<FormPropsType> = (props) => {
+    const {handleSubmit, submitting, pristine, loading, messageIsSending} = props;
+    const {classes, classesField, label, placeholder} = useForm(messageIsSending);
 
     return (
         <form onSubmit={handleSubmit} className={classes.form}>
@@ -36,7 +43,7 @@ const Form: React.FC<FormPropsType> = (props) => {
                        className={classes.textArea}
                        classes={classesField}
                        label={label}
-                       placeholder={translate(lang, 'Enter your message')}
+                       placeholder={placeholder}
                        size='small'
                 />
             </div>
@@ -63,8 +70,8 @@ const ReduxForm = reduxForm<FormValuesType, OwnPropsType>({
     onSubmitSuccess: afterSubmit
 })(Form);
 
-//============================= COMPONENT =========================================
-const CurrentDialogForm: React.FC<ComponentPropsType> = ({id}) => {
+//================= Custom Hook =========================
+const useCurrentDialogForm = (id: number | undefined) => {
     const classes = useStyles();
     const messageIsSending = useSelector(getMessageIsSending);
     const loading = useSelector(getLoading);
@@ -75,6 +82,14 @@ const CurrentDialogForm: React.FC<ComponentPropsType> = ({id}) => {
             dispatch(sendMessage(id, formValue.message))
         }
     };
+    return {
+        classes, messageIsSending, loading, onSubmit
+    }
+};
+
+//============================= COMPONENT =========================================
+const CurrentDialogForm: React.FC<ComponentPropsType> = ({id}) => {
+    const {classes, messageIsSending, loading, onSubmit} = useCurrentDialogForm(id);
 
     return (
         <div className={classes.formWrapper}>

@@ -1,4 +1,4 @@
-﻿# Social-network
+# Social-network
 Ссылка: https://alexaltrex.github.io/Social-network
 
 ## Описание

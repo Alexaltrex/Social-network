@@ -1,5 +1,6 @@
 # Social-network
 Ссылка: https://alexaltrex.github.io/Social-network
+email: alexaltrex@mail.ru, password: 12345
 
 ## Описание
 Социальная сеть.

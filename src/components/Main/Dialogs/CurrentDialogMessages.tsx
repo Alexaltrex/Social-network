@@ -8,7 +8,7 @@ import {
     getMessageIsSending,
     getMessagesIsDeleting,
     getMessagesIsLoading
-} from "../../../redux/dialogs-selectors";
+} from "../../../redux/selectors/dialogs-selectors";
 import CircularPreloader from "../../common/CircularPreloader";
 import {dialogsAC} from "../../../redux/dialogs-reducer";
 import {DialogsSidebarItemEnum} from "../../../types/types";

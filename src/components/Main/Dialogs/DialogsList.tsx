@@ -11,11 +11,11 @@ import {
     getDeletedMessages,
     getDialogsIsLoading,
     getSpamMessages
-} from "../../../redux/dialogs-selectors";
+} from "../../../redux/selectors/dialogs-selectors";
 import Typography from "@material-ui/core/Typography";
 import {DialogsSidebarItemEnum} from "../../../types/types";
 import {translate} from "../../../const/lang";
-import {getLang} from "../../../redux/app-selectors";
+import {getLang} from "../../../redux/selectors/app-selectors";
 
 //================= CUSTOM HOOK =========================
 const useSkeletonListItem = () => {

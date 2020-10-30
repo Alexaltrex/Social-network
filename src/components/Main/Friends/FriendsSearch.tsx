@@ -7,11 +7,11 @@ import {shouldNotBeEmpty} from "../../../utilities/validators/validators";
 import {useDispatch, useSelector} from "react-redux";
 import {usersAC} from "../../../redux/users-reduser";
 import {IconButton} from "@material-ui/core";
-import {getIsFriendsSearching, getSearchFriendsParams} from "../../../redux/users-selectors";
+import {getIsFriendsSearching, getSearchFriendsParams} from "../../../redux/selectors/users-selectors";
 import CircularPreloader from "../../common/CircularPreloader";
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import {translate} from "../../../const/lang";
-import {getLang} from "../../../redux/app-selectors";
+import {getLang} from "../../../redux/selectors/app-selectors";
 
 //================= CUSTOM HOOK =========================
 const useForm = () => {

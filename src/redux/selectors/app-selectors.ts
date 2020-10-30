@@ -1,4 +1,4 @@
-import {StateType} from "./redux-store";
+import {StateType} from "../redux-store";
 
 export const getIsInitializedSelector = (state: StateType) => state.app.isInitialized;
 export const getIsLoading = (state: StateType) => state.app.isLoading;

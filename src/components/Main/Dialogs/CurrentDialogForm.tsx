@@ -6,13 +6,13 @@ import RenderTextAreaField from "../../common/RenderTextareaField";
 import {shouldNotBeEmpty} from "../../../utilities/validators/validators";
 import {reduxForm, Field, InjectedFormProps, reset} from "redux-form";
 import grey from "@material-ui/core/colors/grey";
-import {sendMessage} from "../../../redux/dialogs-reducer";
+import {dialogsSagaAC} from "../../../redux/dialogs-reducer";
 import {useDispatch, useSelector} from "react-redux";
 import {
     getLoading,
     getMessageIsSending,
-} from "../../../redux/dialogs-selectors";
-import {getLang} from "../../../redux/app-selectors";
+} from "../../../redux/selectors/dialogs-selectors";
+import {getLang} from "../../../redux/selectors/app-selectors";
 import {translate} from "../../../const/lang";
 
 //================= Custom Hook =========================
@@ -79,7 +79,7 @@ const useCurrentDialogForm = (id: number | undefined) => {
 
     const onSubmit = (formValue: FormValuesType) => {
         if (id) {
-            dispatch(sendMessage(id, formValue.message))
+            dispatch(dialogsSagaAC.sendMessage(id, formValue.message))
         }
     };
     return {

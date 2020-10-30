@@ -4,14 +4,14 @@ import Header from "./Components/Header/Header";
 import Sidebar from "./Components/Sidebar/Sidebar";
 import Main from "./Components/Main/Main";
 import {useDispatch, useSelector} from "react-redux";
-import {getMessageIsSending, getRecipientName} from "./redux/dialogs-selectors";
+import {getMessageIsSending, getRecipientName} from "./redux/selectors/dialogs-selectors";
 import {Snackbar} from "@material-ui/core";
 import {Alert} from "@material-ui/lab";
 import Typography from "@material-ui/core/Typography";
 import {withRouter} from "react-router-dom";
 import {getIsInitialized} from "./redux/app-reducer";
 import indigo from "@material-ui/core/colors/indigo";
-import {getTheme} from "./redux/settings-selectors";
+import {getTheme} from "./redux/selectors/settings-selectors";
 
 //======================== CUSTOM HOOK =========================
 const useApp = () => {

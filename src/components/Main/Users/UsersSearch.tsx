@@ -11,8 +11,8 @@ import {shouldNotBeEmpty} from "../../../utilities/validators/validators";
 import {useDispatch, useSelector} from "react-redux";
 import {usersAC} from "../../../redux/users-reduser";
 import {SearchUsersParamsType} from "../../../types/types";
-import {getValueFromHeaderSearch} from "../../../redux/users-selectors";
-import {getLang} from "../../../redux/app-selectors";
+import {getValueFromHeaderSearch} from "../../../redux/selectors/users-selectors";
+import {getLang} from "../../../redux/selectors/app-selectors";
 import {translate} from "../../../const/lang";
 
 //======================== CUSTOM HOOK =========================

@@ -12,17 +12,17 @@ import {
     getCurrentDialogsSidebarItem,
     getDeletedMessages,
     getDialogsIsLoading, getLoading, getSelectedDeletedMessages, getSelectedMessages,
-} from "../../../redux/dialogs-selectors";
+} from "../../../redux/selectors/dialogs-selectors";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from '@material-ui/icons/Close';
-import {deleteMessages, dialogsAC, restoreMessages, signMessageAsSpam} from "../../../redux/dialogs-reducer";
+import {dialogsAC, dialogsSagaAC} from "../../../redux/dialogs-reducer";
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import RestoreFromTrashIcon from '@material-ui/icons/RestoreFromTrash';
 import Tooltip from "@material-ui/core/Tooltip";
 import Zoom from "@material-ui/core/Zoom";
 //import WarningIcon from '@material-ui/icons/Warning';
 import {DialogsSidebarItemEnum} from "../../../types/types";
-import {getLang} from "../../../redux/app-selectors";
+import {getLang} from "../../../redux/selectors/app-selectors";
 import {translate} from "../../../const/lang";
 
 //================= CUSTOM HOOK =========================
@@ -61,19 +61,13 @@ const useCurrentDialogHeader = ({currentDialog, userId}: PropsType) => {
 
     const onDeleteHandler = () => {
         if (userId && currentDialog) {
-            dispatch(deleteMessages(selectedMessages, currentDialog));
-        }
-    };
-
-    const onSpamHandler = () => {
-        if (userId && currentDialog) {
-            dispatch(signMessageAsSpam(selectedMessages, currentDialog));
+            dispatch(dialogsSagaAC.deleteMessages(selectedMessages, currentDialog));
         }
     };
 
     const onRestoreHandler = () => {
         if (userId && currentDialog) {
-            dispatch(restoreMessages(selectedDeletedMessages));
+            dispatch(dialogsSagaAC.restoreMessages(selectedDeletedMessages));
         }
     };
 
@@ -87,7 +81,7 @@ const useCurrentDialogHeader = ({currentDialog, userId}: PropsType) => {
         classes, selectedMessages, selectedDeletedMessages, dialogsIsLoading,
         loading, currentDialogsSidebarItem, to,
         currentDeletedDialog, src, onDeleteHandler, onCleanArrayHandler,
-        onSpamHandler, onRestoreHandler, messagesLabel, deleteLabel,
+        onRestoreHandler, messagesLabel, deleteLabel,
         selectADialogLabel, restoreLabel, selectDeletedDialogLabel
     }
 
@@ -99,7 +93,7 @@ const CurrentDialogHeader: React.FC<PropsType> = ({currentDialog, userId}) => {
         classes, selectedMessages, selectedDeletedMessages,
         dialogsIsLoading, loading, currentDialogsSidebarItem,
         to, currentDeletedDialog, src, onDeleteHandler,
-        onCleanArrayHandler, onSpamHandler, onRestoreHandler,
+        onCleanArrayHandler, onRestoreHandler,
         messagesLabel, deleteLabel, selectADialogLabel, restoreLabel,
         selectDeletedDialogLabel
     } = useCurrentDialogHeader({currentDialog, userId});

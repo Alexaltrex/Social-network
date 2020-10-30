@@ -2,7 +2,7 @@ import Button from "@material-ui/core/Button";
 import React from "react";
 import LanguageIcon from '@material-ui/icons/Language';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import {getLang} from "../../redux/app-selectors";
+import {getLang} from "../../redux/selectors/app-selectors";
 import {useDispatch, useSelector} from "react-redux";
 import {makeStyles} from "@material-ui/core/styles";
 import Tooltip from "@material-ui/core/Tooltip";

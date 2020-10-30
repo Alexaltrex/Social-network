@@ -4,7 +4,7 @@ import {required, shouldNotBeEmpty} from "../../utilities/validators/validators"
 import {useDispatch, useSelector} from "react-redux";
 import {login} from "../../redux/auth-reducer";
 import {useHistory} from "react-router-dom";
-import {getCaptchaSelector, getIsAuth} from "../../redux/auth-selectors";
+import {getCaptchaSelector, getIsAuth} from "../../redux/selectors/auth-selectors";
 import {makeStyles} from "@material-ui/core/styles";
 import MailOutlineIcon from '@material-ui/icons/MailOutline';
 import RenderTextField from "../common/RenderTextField";
@@ -13,7 +13,7 @@ import Typography from "@material-ui/core/Typography";
 import RenderPasswordField from "../common/RenderPasswordField";
 import RenderCheckbox from "../common/RenderCheckbox";
 import Button from "@material-ui/core/Button";
-import {getLang} from "../../redux/app-selectors";
+import {getLang} from "../../redux/selectors/app-selectors";
 import {Lang} from "../../const/lang";
 
 //================= CUSTOM HOOK =========================

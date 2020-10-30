@@ -1,8 +1,8 @@
 import React, {ReactElement, useEffect} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {useParams} from "react-router";
-import {getId} from "../../../redux/auth-selectors";
-import {getIsLoading} from "../../../redux/app-selectors";
+import {getId} from "../../../redux/selectors/auth-selectors";
+import {getIsLoading} from "../../../redux/selectors/app-selectors";
 import {getCurrentUserProfile, getFollowed, getProfile} from "../../../redux/profile-reducer";
 import {makeStyles} from "@material-ui/core/styles";
 import ProfileAvatar from "./ProfileAvatar";
@@ -13,14 +13,14 @@ import {
     getCurrentUserProfileSelector,
     getEditMode, getFollowedSelector, getPosts,
     getProfileSelector,
-} from "../../../redux/profile-selectors";
+} from "../../../redux/selectors/profile-selectors";
 import ProfileFriends from "./ProfileFriends";
 import {
     getCurrentPage,
     getFriendsSelector,
     getPageSize,
     getTotalFriendsCount
-} from "../../../redux/users-selectors";
+} from "../../../redux/selectors/users-selectors";
 import {searchFriends} from "../../../redux/users-reduser";
 import ProfilePostForm from "./ProfilePostForm";
 import ProfilePost from "./ProfilePost";

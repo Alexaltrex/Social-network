@@ -8,8 +8,8 @@ import {
     getSearchUsersParams, getShowUsersFrom,
     getTotalUsersCount,
     getUsersSelector, getValueFromHeaderSearch
-} from "../../../redux/users-selectors";
-import {getIsLoading, getLang} from "../../../redux/app-selectors";
+} from "../../../redux/selectors/users-selectors";
+import {getIsLoading, getLang} from "../../../redux/selectors/app-selectors";
 import {getUsers, searchUsers, usersAC} from "../../../redux/users-reduser";
 import Badge from "@material-ui/core/Badge";
 import PeopleIcon from '@material-ui/icons/People';
@@ -19,8 +19,8 @@ import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import Button from "@material-ui/core/Button";
 import Collapse from "@material-ui/core/Collapse";
 import UsersSearch from "./UsersSearch";
-import {getDialogs} from "../../../redux/dialogs-reducer";
-import {getDialogsSelector} from "../../../redux/dialogs-selectors";
+import {dialogsSagaAC} from "../../../redux/dialogs-reducer";
+import {getDialogsSelector} from "../../../redux/selectors/dialogs-selectors";
 import ViewSwitcher from "../../common/ViewSwitcher";
 import UsersList from "./UsersList";
 import {ViewType} from "../../../types/types";
@@ -44,7 +44,8 @@ const useUsers = () => {
     const [searchPanelIsOpen, setSearchPanelIsOpen] = useState(false);
     const [view, setView] = useState<ViewType>('block')
     useEffect(() => {
-        dispatch(getDialogs());
+        //dispatch(getDialogs());
+        dispatch(dialogsSagaAC.getDialogs());
     }, [dispatch]);
     useEffect(() => {
         if (showUsersFrom === 'all') {

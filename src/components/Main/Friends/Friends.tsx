@@ -3,7 +3,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import FriendsList from "./FriendsList";
 import FriendsSidebar from "./FriendsSidebar";
 import {useSelector} from "react-redux";
-import {getCurrentFriendsSidebarItem} from "../../../redux/users-selectors";
+import {getCurrentFriendsSidebarItem} from "../../../redux/selectors/users-selectors";
 import FriendsSomethingElse from "./FriendsSomethingElse";
 import useAuthRedirect from "../../../hooks/useAuthRedirect";
 

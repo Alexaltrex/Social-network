@@ -7,7 +7,7 @@ import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
 import SidebarItem from "./SidebarItem";
 import HomeIcon from '@material-ui/icons/Home';
 import SettingsIcon from '@material-ui/icons/Settings';
-import {getLang} from "../../redux/app-selectors";
+import {getLang} from "../../redux/selectors/app-selectors";
 import { useSelector } from 'react-redux';
 import {Lang} from "../../const/lang";
 

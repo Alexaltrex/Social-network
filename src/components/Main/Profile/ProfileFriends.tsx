@@ -11,7 +11,7 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import {useDispatch, useSelector} from "react-redux";
 import {sidebarAC} from "../../../redux/sidebar-reducer";
 import Typography from "@material-ui/core/Typography";
-import {getLang} from "../../../redux/app-selectors";
+import {getLang} from "../../../redux/selectors/app-selectors";
 import {translate} from "../../../const/lang";
 
 //===================== CUSTOM HOOK ===========================

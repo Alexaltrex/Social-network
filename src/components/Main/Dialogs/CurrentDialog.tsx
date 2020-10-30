@@ -2,14 +2,14 @@ import {makeStyles} from "@material-ui/core/styles";
 import {Card, Typography} from "@material-ui/core";
 import React from "react";
 import {useSelector} from "react-redux";
-import {getCurrentDialogsSidebarItem, getDeletedMessages, getMessagesSelector} from "../../../redux/dialogs-selectors";
+import {getCurrentDialogsSidebarItem, getDeletedMessages, getMessagesSelector} from "../../../redux/selectors/dialogs-selectors";
 import List from "@material-ui/core/List";
 import CurrentDialogHeader from "./CurrentDialogHeader";
 import {DialogType} from "../../../DAL/dialogs-api";
 import CurrentDialogMessages from "./CurrentDialogMessages";
 import CurrentDialogForm from "./CurrentDialogForm";
 import {DialogsSidebarItemEnum} from "../../../types/types";
-import {getLang} from "../../../redux/app-selectors";
+import {getLang} from "../../../redux/selectors/app-selectors";
 import {translate} from "../../../const/lang";
 
 //================= Custom Hook =========================

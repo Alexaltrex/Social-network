@@ -4,7 +4,7 @@ import CircularPreloader from "../common/CircularPreloader";
 import Login from "../Login/Login";
 import {makeStyles} from "@material-ui/core/styles";
 import {useSelector} from "react-redux";
-import {getIsInitializedSelector} from "../../redux/app-selectors";
+import {getIsInitializedSelector} from "../../redux/selectors/app-selectors";
 import Users from "./Users/Users";
 import Friends from "./Friends/Friends";
 import Settings from "./Settings/Settings";

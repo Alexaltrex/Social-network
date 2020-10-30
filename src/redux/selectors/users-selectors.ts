@@ -1,11 +1,11 @@
-import {StateType} from "./redux-store";
+import {StateType} from "../redux-store";
 
 export const getUsersSelector = (state: StateType) => state.users.users;
 export const getFriendsSelector = (state: StateType) => state.users.friends;
 export const getPageSize = (state: StateType) => state.users.pageSize;
 export const getCurrentPage = (state: StateType) => state.users.currentPage;
 export const getCurrentFriendsPage = (state: StateType) => state.users.currentFriendsPage;
-export const getFollowingInProgress = (state: StateType) => state.users.followingInProgress;
+export const getArrayOfUserIdWhichFollowingOrUnfollowing = (state: StateType) => state.users.arrayOfUserIdWhichFollowingOrUnfollowing;
 export const getTotalUsersCount = (state: StateType) => state.users.totalUsersCount;
 export const getTotalFriendsCount = (state: StateType) => state.users.totalFriendsCount;
 export const getIsLoading = (state: StateType) => state.users.isLoading;

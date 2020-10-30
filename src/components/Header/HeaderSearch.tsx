@@ -8,7 +8,7 @@ import indigo from "@material-ui/core/colors/indigo";
 import {useDispatch, useSelector} from "react-redux";
 import { useHistory } from "react-router-dom";
 import {usersAC} from "../../redux/users-reduser";
-import {getLang} from "../../redux/app-selectors";
+import {getLang} from "../../redux/selectors/app-selectors";
 import {Lang} from "../../const/lang";
 
 //==================== CUSTOM HOOK =========================

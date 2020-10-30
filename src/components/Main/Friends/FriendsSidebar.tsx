@@ -7,9 +7,9 @@ import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import Tab from "@material-ui/core/Tab";
 import GroupIcon from '@material-ui/icons/Group';
 import {useDispatch, useSelector} from "react-redux";
-import {getCurrentFriendsSidebarItem} from "../../../redux/users-selectors";
+import {getCurrentFriendsSidebarItem} from "../../../redux/selectors/users-selectors";
 import {usersAC} from "../../../redux/users-reduser";
-import {getLang} from "../../../redux/app-selectors";
+import {getLang} from "../../../redux/selectors/app-selectors";
 import {translate} from "../../../const/lang";
 
 //====================== CUSTOM HOOK =========================

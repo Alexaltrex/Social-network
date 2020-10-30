@@ -18,14 +18,14 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import ListItemText from "@material-ui/core/ListItemText";
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import {useDispatch, useSelector} from "react-redux";
-import {getId, getIsAuth, getLogin} from "../../redux/auth-selectors";
-import {getProfileSelector} from "../../redux/profile-selectors";
+import {getId, getIsAuth, getLogin} from "../../redux/selectors/auth-selectors";
+import {getProfileSelector} from "../../redux/selectors/profile-selectors";
 import {logout} from "../../redux/auth-reducer";
 import {getProfile} from "../../redux/profile-reducer";
 import HeaderSearch from "./HeaderSearch";
-import {getTheme} from "../../redux/settings-selectors";
+import {getTheme} from "../../redux/selectors/settings-selectors";
 import HeaderLang from "./HeaderLang";
-import {getLang} from "../../redux/app-selectors";
+import {getLang} from "../../redux/selectors/app-selectors";
 import {translate} from "../../const/lang";
 
 //================= CUSTOM HOOK =========================

@@ -6,7 +6,10 @@ import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import PersonAddDisabledIcon from '@material-ui/icons/PersonAddDisabled';
 import Avatar from "@material-ui/core/Avatar";
 import {useDispatch, useSelector} from "react-redux";
-import {getFollowingInProgress, getIsFollowing} from "../../../redux/users-selectors";
+import {
+    getArrayOfUserIdWhichFollowingOrUnfollowing,
+    getIsFollowing
+} from "../../../redux/selectors/users-selectors";
 import {SidebarItemEnum, UserType} from "../../../types/types";
 import {getFollow, getUnfollow} from "../../../redux/users-reduser";
 import CircularPreloader from "../../common/CircularPreloader";
@@ -18,13 +21,13 @@ import {sidebarAC} from "../../../redux/sidebar-reducer";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import {translate} from "../../../const/lang";
-import {getLang} from "../../../redux/app-selectors";
+import {getLang} from "../../../redux/selectors/app-selectors";
 
 //======================== CUSTOM HOOK =========================
 const useUserListItem = (user: UserType) => {
     const classes = useStyles();
     const [openSendMessageForm, setOpenSendMessageForm] = React.useState(false);
-    const followingInProgress = useSelector(getFollowingInProgress);
+    const arrayOfUserIdWhichFollowingOrUnfollowing = useSelector(getArrayOfUserIdWhichFollowingOrUnfollowing);
     const isFollowing = useSelector(getIsFollowing);
     const lang = useSelector(getLang);
     const dispatch = useDispatch();
@@ -49,7 +52,7 @@ const useUserListItem = (user: UserType) => {
     const sendMessageLabel = translate(lang, 'Send message')
     return {
         classes, openSendMessageForm, setOpenSendMessageForm,
-        followingInProgress, isFollowing, followUnfollowHandle,
+        arrayOfUserIdWhichFollowingOrUnfollowing, isFollowing, followUnfollowHandle,
         onOpenSendMessageFormHandle, goToUserHandle, followLabel,
         startIcon, src, sendMessageLabel
     }
@@ -59,7 +62,7 @@ const useUserListItem = (user: UserType) => {
 const UserListItem: React.FC<PropType> = ({user, dialogs}): ReactElement => {
     const {
         classes, openSendMessageForm, setOpenSendMessageForm,
-        followingInProgress, isFollowing, followUnfollowHandle,
+        arrayOfUserIdWhichFollowingOrUnfollowing, isFollowing, followUnfollowHandle,
         onOpenSendMessageFormHandle, goToUserHandle, followLabel,
         startIcon, src, sendMessageLabel
     } = useUserListItem(user);
@@ -88,7 +91,7 @@ const UserListItem: React.FC<PropType> = ({user, dialogs}): ReactElement => {
                             color="primary"
                             size='small'
                             fullWidth
-                            disabled={followingInProgress.some(item => item === user.id)}
+                            disabled={arrayOfUserIdWhichFollowingOrUnfollowing.some(item => item === user.id)}
                             onClick={followUnfollowHandle}
                             startIcon={startIcon}
                     >
@@ -97,7 +100,7 @@ const UserListItem: React.FC<PropType> = ({user, dialogs}): ReactElement => {
 
                     {
                         isFollowing
-                        && followingInProgress.some(item => item === user.id)
+                        && arrayOfUserIdWhichFollowingOrUnfollowing.some(item => item === user.id)
                         &&
                         <CircularPreloader size={20} styleType={'absolute'}/>
                     }

@@ -1,4 +1,4 @@
-import {StateType} from "./redux-store";
+import {StateType} from "../redux-store";
 
 export const getPosts = (state: StateType) => state.profile.posts;
 export const getProfileSelector = (state: StateType) => state.profile.profile;

@@ -20,7 +20,7 @@ import {profileAC} from "../../../redux/profile-reducer";
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import {translate} from "../../../const/lang";
-import {getLang} from "../../../redux/app-selectors";
+import {getLang} from "../../../redux/selectors/app-selectors";
 import {DATE} from "../../../utilities/date";
 
 //===================== CUSTOM HOOK ===========================

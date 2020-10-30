@@ -2,7 +2,7 @@ import React from "react";
 import {Card} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import {makeStyles} from "@material-ui/core/styles";
-import {getLang} from "../../../redux/app-selectors";
+import {getLang} from "../../../redux/selectors/app-selectors";
 import {useSelector} from "react-redux";
 import {translate} from "../../../const/lang";
 

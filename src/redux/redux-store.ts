@@ -9,6 +9,8 @@ import { reducer as formReducer } from 'redux-form';
 import appReducer from "./app-reducer";
 import {composeWithDevTools} from "redux-devtools-extension";
 import settingsReducer from "./settings-reducer";
+import createSagaMiddleware from 'redux-saga';
+import {rootSaga} from "../Saga/saga";
 
 let rootReducer = combineReducers({
     profile: profileReducer,
@@ -20,11 +22,12 @@ let rootReducer = combineReducers({
     settings: settingsReducer,
     form: formReducer
 });
-const middleware: Array<Middleware> = [thunkMiddleware];
-let store = createStore(rootReducer, composeWithDevTools(applyMiddleware(...middleware)));
 
-// @ts-ignore
-window.store = store;
+const sagaMiddleware = createSagaMiddleware();
+const middleware: Array<Middleware> = [thunkMiddleware, sagaMiddleware];
+let store = createStore(rootReducer, composeWithDevTools(applyMiddleware(...middleware)));
+sagaMiddleware.run(rootSaga);
+
 export default store;
 
 //======================== TYPE ==========================

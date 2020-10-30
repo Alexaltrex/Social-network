@@ -1,6 +1,6 @@
 import React, {ReactElement, useEffect, useRef, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {getStatusIsLoading, getStatusSelector} from "../../../redux/profile-selectors";
+import {getStatusIsLoading, getStatusSelector} from "../../../redux/selectors/profile-selectors";
 import ListItem from "@material-ui/core/ListItem";
 import {makeStyles} from "@material-ui/core/styles";
 import ProfileStatusForm from "./ProfileStatusForm";

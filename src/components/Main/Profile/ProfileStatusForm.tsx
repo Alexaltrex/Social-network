@@ -6,9 +6,9 @@ import {updateStatus} from "../../../redux/profile-reducer";
 import {useDispatch, useSelector} from "react-redux";
 import RenderTextField from "../../common/RenderTextField";
 import {empty, maxLength30} from "../../../utilities/validators/validators";
-import {getStatusSelector} from "../../../redux/profile-selectors";
+import {getStatusSelector} from "../../../redux/selectors/profile-selectors";
 import {translate} from "../../../const/lang";
-import {getLang} from "../../../redux/app-selectors";
+import {getLang} from "../../../redux/selectors/app-selectors";
 
 //===================== CUSTOM HOOK ===========================
 const useForm = () => {

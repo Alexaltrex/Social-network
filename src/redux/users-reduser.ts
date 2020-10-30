@@ -9,7 +9,7 @@ import {Dispatch} from "redux";
 import {usersAPI} from "../DAL/users-api";
 import {appAC, AppActionsType} from "./app-reducer";
 
-let initialState = {
+const initialState = {
     users: null as null | Array<UserType>, // массив пользователей
     pageSize: 10, // количество пользователей на одной странице
     pageFriendsSize: 10, // количество друзей на одной странице
@@ -19,7 +19,7 @@ let initialState = {
     currentFriendsPage: 1, // номер текущей страницы друзей
     isLoading: false, // загрузка происходит?
     isFollowing: false, // отписка/подписка происходит?
-    followingInProgress: [] as Array<number>, // массив пользователей, для которых послан запрос на подписку/отписку
+    arrayOfUserIdWhichFollowingOrUnfollowing: [] as Array<number>, // массив пользователей, для которых послан запрос на подписку/отписку
     friends: null as null | Array<UserType>, // массив друзей
     searchUsersParams: {term: '', friend: 'all'} as SearchUsersParamsType, // параметры поиска пользователей
     searchFriendsParams: {term: ''} as SearchFriendsParamsType, // параметры поиска друзей
@@ -28,7 +28,7 @@ let initialState = {
     currentFriendsSidebarItem: 0, // номер элемента бокового меню
     needToChangeListOfFriends: false, // список друзей нужно изменить (используется для обновления после удаления)?
     friendIdToRemove: null as null | number, // id друга, которого удаляем
-    valueFromHeaderSearch: null as null | string, // страка поиска пользователя из header
+    valueFromHeaderSearch: null as null | string, // строка поиска пользователя из header
     portionNumber: 1 // текущий номер порции страниц пользователей (начинается с 1)
 };
 
@@ -101,10 +101,10 @@ const usersReducer = (state = initialState, action: UsersActionsType): initialSt
             return {
                 ...state,
                 // если запрос на подписку-отписку послан - добавить в массив, иначе удалить из массива
-                followingInProgress:
+                arrayOfUserIdWhichFollowingOrUnfollowing:
                     action.followingInProgress
-                        ? [...state.followingInProgress, action.id]
-                        : state.followingInProgress.filter(id => id !== action.id)
+                        ? [...state.arrayOfUserIdWhichFollowingOrUnfollowing, action.id]
+                        : state.arrayOfUserIdWhichFollowingOrUnfollowing.filter(id => id !== action.id)
             }
         }
         default:
@@ -213,34 +213,36 @@ export const removeAndUpdateFriends = (currentPage: number, pageSize: number, id
     }
 };
 
-type FollowUnfollwType = UsersActionsType;//followType | unfollowType
-
-const _followUnfollowFlow = async (dispatch: DispatchType,
-                                   id: number,
-                                   apiMethod: any,
-                                   actionCreator: (id: number) => FollowUnfollwType) => {
-    dispatch(usersAC.toggleFollowing(true));
-    dispatch(usersAC.toggleFollowingProgress(true, id));
-    let data = await apiMethod(id)
-    if (data.resultCode === 0) {
-        dispatch(actionCreator(id))
-    }
-    dispatch(usersAC.toggleFollowingProgress(false, id));
-};
-
 export const getFollow = (id: number): ThunkType => async (dispatch) => {
     try {
-        await _followUnfollowFlow(dispatch, id, usersAPI.followUser.bind(id), usersAC.setFollow);
+        dispatch(usersAC.toggleFollowing(true));
+        dispatch(usersAC.toggleFollowingProgress(true, id));
+        const data = await usersAPI.followUser(id);
+        if (data.resultCode === 0) {
+            dispatch(usersAC.setFollow(id));
+            dispatch(usersAC.toggleFollowingProgress(false, id));
+        }
     } catch (e) {
         dispatch(appAC.setLanError(true));
     } finally {
         dispatch(usersAC.toggleFollowing(false));
     }
-
 };
 
 export const getUnfollow = (id: number): ThunkType => async (dispatch) => {
-    await _followUnfollowFlow(dispatch, id, usersAPI.unfollowUser.bind(id), usersAC.setUnfollow);
+    try {
+        dispatch(usersAC.toggleFollowing(true));
+        dispatch(usersAC.toggleFollowingProgress(true, id));
+        const data = await usersAPI.unfollowUser(id);
+        if (data.resultCode === 0) {
+            dispatch(usersAC.setUnfollow(id));
+            dispatch(usersAC.toggleFollowingProgress(false, id));
+        }
+    } catch (e) {
+        dispatch(appAC.setLanError(true));
+    } finally {
+        dispatch(usersAC.toggleFollowing(false));
+    }
 };
 
 export default usersReducer;

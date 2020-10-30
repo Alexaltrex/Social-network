@@ -1,4 +1,4 @@
-import {StateType} from "./redux-store";
+import {StateType} from "../redux-store";
 
 export const getId = (state: StateType) => state.auth.id;
 export const getEmail = (state: StateType) => state.auth.email;

@@ -3,7 +3,7 @@ import {Card} from "@material-ui/core";
 import CardContent from "@material-ui/core/CardContent";
 import {makeStyles} from "@material-ui/core/styles";
 import {useDispatch, useSelector} from "react-redux";
-import {getCurrentInfoFormSidebarItem, getProfileSelector} from "../../../redux/profile-selectors";
+import {getCurrentInfoFormSidebarItem, getProfileSelector} from "../../../redux/selectors/profile-selectors";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import {Field, InjectedFormProps, reduxForm} from "redux-form";
@@ -27,7 +27,7 @@ import clsx from "clsx";
 import RenderTextAreaField from "../../common/RenderTextareaField";
 import {saveProfile} from "../../../redux/profile-reducer";
 import {required, shouldNotBeEmpty} from "../../../utilities/validators/validators";
-import {getLang} from "../../../redux/app-selectors";
+import {getLang} from "../../../redux/selectors/app-selectors";
 import {translate} from "../../../const/lang";
 
 //===================== CUSTOM HOOK ===========================

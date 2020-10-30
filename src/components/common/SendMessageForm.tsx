@@ -14,9 +14,9 @@ import {shouldNotBeEmpty} from "../../utilities/validators/validators";
 import RenderTextAreaField from "./RenderTextareaField";
 import SendIcon from '@material-ui/icons/Send';
 import {useDispatch, useSelector} from "react-redux";
-import {sendMessage} from "../../redux/dialogs-reducer";
+import {dialogsSagaAC} from "../../redux/dialogs-reducer";
 import {DialogType} from "../../DAL/dialogs-api";
-import {getLang} from "../../redux/app-selectors";
+import {getLang} from "../../redux/selectors/app-selectors";
 import {translate} from "../../const/lang";
 
 //======================== CUSTOM HOOK =========================
@@ -77,7 +77,7 @@ const useSendMessageForm = ({onClose, id, dialogs}: UseSendMessageFormType) => {
         onClose(false);
     };
     const onSubmit = (formValue: FormValuesType) => {
-        dispatch(sendMessage(id, formValue.message));
+        dispatch(dialogsSagaAC.sendMessage(id, formValue.message));
         onClose(false);
     };
     const dialogIsExist = dialogs && dialogs.some(el => el.id === id);

@@ -8,10 +8,10 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import WorkOutlineIcon from '@material-ui/icons/WorkOutline';
 import LanguageIcon from '@material-ui/icons/Language';
 import {useDispatch, useSelector} from "react-redux";
-import {getCurrentInfoFormSidebarItem} from "../../../redux/profile-selectors";
+import {getCurrentInfoFormSidebarItem} from "../../../redux/selectors/profile-selectors";
 import indigo from "@material-ui/core/colors/indigo";
 import {profileAC} from "../../../redux/profile-reducer";
-import {getLang} from "../../../redux/app-selectors";
+import {getLang} from "../../../redux/selectors/app-selectors";
 import {translate} from "../../../const/lang";
 
 //===================== CUSTOM HOOK ===========================

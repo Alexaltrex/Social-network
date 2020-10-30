@@ -11,7 +11,7 @@ import ListItem from "@material-ui/core/ListItem";
 import Collapse from "@material-ui/core/Collapse";
 import BlockField from "../../common/BlockField";
 import {ContactsType, ProfileType} from "../../../types/types";
-import {getLang} from "../../../redux/app-selectors";
+import {getLang} from "../../../redux/selectors/app-selectors";
 import { useSelector } from "react-redux";
 import {translate} from "../../../const/lang";
 

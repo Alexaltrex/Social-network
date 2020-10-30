@@ -18,11 +18,14 @@ import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import MenuList from "@material-ui/core/MenuList";
 import MenuItem from "@material-ui/core/MenuItem";
 import {usersAC} from "../../../redux/users-reduser";
-import {getFollowingInProgress, getIsFollowing} from "../../../redux/users-selectors";
+import {
+    getArrayOfUserIdWhichFollowingOrUnfollowing,
+    getIsFollowing
+} from "../../../redux/selectors/users-selectors";
 import CircularPreloader from "../../common/CircularPreloader";
 import SendMessageForm from "../../common/SendMessageForm";
 import {DialogType} from "../../../DAL/dialogs-api";
-import {getLang} from "../../../redux/app-selectors";
+import {getLang} from "../../../redux/selectors/app-selectors";
 import {translate} from "../../../const/lang";
 
 //================= CUSTOM HOOK =========================
@@ -30,7 +33,7 @@ const useFriendsListItem = ({friend}: UseFriendsListItemType) => {
     const classes = useStyles();
     const [openSendMessageForm, setOpenSendMessageForm] = React.useState(false);
     const dispatch = useDispatch();
-    const followingInProgress = useSelector(getFollowingInProgress);
+    const arrayOfUserIdWhichFollowingOrUnfollowing = useSelector(getArrayOfUserIdWhichFollowingOrUnfollowing);
     const isFollowing = useSelector(getIsFollowing);
     const lang = useSelector(getLang);
     const onListItemClick = () => {
@@ -94,7 +97,7 @@ const useFriendsListItem = ({friend}: UseFriendsListItemType) => {
     const sendMessageLabel = translate(lang, 'Send message')
     return {
         classes, openSendMessageForm, setOpenSendMessageForm,
-        followingInProgress, isFollowing, onListItemClick,
+        arrayOfUserIdWhichFollowingOrUnfollowing, isFollowing, onListItemClick,
         onOpenSendMessageFormHandle, src, open, anchorRef,
         handleToggle, handleClose, handleListKeyDown,
         menuItemsElements, sendMessageLabel
@@ -105,7 +108,7 @@ const useFriendsListItem = ({friend}: UseFriendsListItemType) => {
 const FriendsListItem: React.FC<PropsTypes> = ({friend, dialogs}) => {
     const {
         classes, openSendMessageForm, setOpenSendMessageForm,
-        followingInProgress, isFollowing, onListItemClick,
+        arrayOfUserIdWhichFollowingOrUnfollowing, isFollowing, onListItemClick,
         onOpenSendMessageFormHandle, src, open, anchorRef,
         handleToggle, handleClose, handleListKeyDown,
         menuItemsElements, sendMessageLabel
@@ -183,7 +186,7 @@ const FriendsListItem: React.FC<PropsTypes> = ({friend, dialogs}) => {
                     </div>
                 </div>
                 {
-                    isFollowing && followingInProgress.some(item => item === friend.id)
+                    isFollowing && arrayOfUserIdWhichFollowingOrUnfollowing.some(item => item === friend.id)
                     && <CircularPreloader size={80} styleType={'absolute'}/>
                 }
             </ListItem>

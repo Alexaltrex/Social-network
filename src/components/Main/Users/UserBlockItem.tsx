@@ -12,21 +12,24 @@ import CardActions from "@material-ui/core/CardActions";
 import Avatar from "@material-ui/core/Avatar";
 import Typography from "@material-ui/core/Typography";
 import {useDispatch, useSelector} from "react-redux";
-import {getFollowingInProgress, getIsFollowing} from "../../../redux/users-selectors";
+import {
+    getArrayOfUserIdWhichFollowingOrUnfollowing,
+    getIsFollowing
+} from "../../../redux/selectors/users-selectors";
 import {UserType} from "../../../types/types";
 import {getFollow, getUnfollow} from "../../../redux/users-reduser";
 import CircularPreloader from "../../common/CircularPreloader";
 import SendIcon from '@material-ui/icons/Send';
 import SendMessageForm from "../../common/SendMessageForm";
 import {DialogType} from "../../../DAL/dialogs-api";
-import {getLang} from "../../../redux/app-selectors";
+import {getLang} from "../../../redux/selectors/app-selectors";
 import {translate} from "../../../const/lang";
 
 //======================== CUSTOM HOOK =========================
 const useUserBlockItem = (user: UserType) => {
     const classes = useStyles();
     const [openSendMessageForm, setOpenSendMessageForm] = React.useState(false);
-    const followingInProgress = useSelector(getFollowingInProgress);
+    const arrayOfUserIdWhichFollowingOrUnfollowing = useSelector(getArrayOfUserIdWhichFollowingOrUnfollowing);
     const isFollowing = useSelector(getIsFollowing);
     const lang = useSelector(getLang);
     const dispatch = useDispatch();
@@ -48,7 +51,7 @@ const useUserBlockItem = (user: UserType) => {
     const sendMessageLabel = translate(lang, 'Send message')
     return {
         classes, openSendMessageForm, setOpenSendMessageForm,
-        followingInProgress, isFollowing, onFollowUnfollowClick,
+        arrayOfUserIdWhichFollowingOrUnfollowing, isFollowing, onFollowUnfollowClick,
         onOpenSendMessageFormHandle, buttonLabel, startIcon, src,
         sendMessageLabel
     }
@@ -58,7 +61,7 @@ const useUserBlockItem = (user: UserType) => {
 const UserBlockItem: React.FC<PropType> = ({user, dialogs}): ReactElement => {
     const {
         classes, openSendMessageForm, setOpenSendMessageForm,
-        followingInProgress, isFollowing, onFollowUnfollowClick,
+        arrayOfUserIdWhichFollowingOrUnfollowing, isFollowing, onFollowUnfollowClick,
         onOpenSendMessageFormHandle, buttonLabel, startIcon, src,
         sendMessageLabel
     } = useUserBlockItem(user);
@@ -89,7 +92,7 @@ const UserBlockItem: React.FC<PropType> = ({user, dialogs}): ReactElement => {
                                     color="primary"
                                     size='small'
                                     fullWidth
-                                    disabled={followingInProgress.some(item => item === user.id)}
+                                    disabled={arrayOfUserIdWhichFollowingOrUnfollowing.some(item => item === user.id)}
                                     onClick={onFollowUnfollowClick}
                                     startIcon={startIcon}
                             >
@@ -98,7 +101,7 @@ const UserBlockItem: React.FC<PropType> = ({user, dialogs}): ReactElement => {
 
                             {
                                 isFollowing
-                                && followingInProgress.some(item => item === user.id)
+                                && arrayOfUserIdWhichFollowingOrUnfollowing.some(item => item === user.id)
                                 &&
                                 <CircularPreloader size={20} styleType={'absolute'}/>
                             }

@@ -54,7 +54,7 @@ export const dialogsAPI = {
 };
 
 //================================= TYPE =======================================
-type SendMessageType = {
+export type SendMessageType = {
     data: {message: MessageType}
     messages: Array<string>
     fieldsErrors: Array<string>
@@ -71,13 +71,13 @@ export type MessageType = {
     recipientId: number
     recipientName: string
     viewed: boolean
-    deletedBySender: boolean // только для post
-    deletedByRecipient: boolean  //только для post
-    isSpam: boolean  //только для post
-    distributionId: any  //только для post
+    //deletedBySender: boolean // только для post
+    //deletedByRecipient: boolean  //только для post
+    //isSpam: boolean  //только для post
+    //distributionId: any  //только для post
 }
 
-type GetMessagesType = {
+export type GetMessagesType = {
     items: Array<MessageType>
     totalCount: number
     error: any

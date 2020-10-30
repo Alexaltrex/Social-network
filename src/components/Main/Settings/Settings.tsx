@@ -4,10 +4,10 @@ import {Card} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import {useDispatch, useSelector} from "react-redux";
 import {settingsAC} from "../../../redux/settings-reducer";
-import {getTheme} from "../../../redux/settings-selectors";
+import {getTheme} from "../../../redux/selectors/settings-selectors";
 import SettingsRow from "./SettingsRow";
 import {defaultTheme} from "../../../const/const";
-import {getLang} from "../../../redux/app-selectors";
+import {getLang} from "../../../redux/selectors/app-selectors";
 import {translate} from "../../../const/lang";
 
 //===================== CUSTOM HOOK ===========================

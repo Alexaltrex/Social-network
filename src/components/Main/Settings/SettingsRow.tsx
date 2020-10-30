@@ -3,7 +3,7 @@ import ColorPicker from "material-ui-color-picker";
 import Button from "@material-ui/core/Button";
 import React, {ReactElement} from "react";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import {getLang} from "../../../redux/app-selectors";
+import {getLang} from "../../../redux/selectors/app-selectors";
 import {useSelector} from "react-redux";
 import {translate} from "../../../const/lang";
 

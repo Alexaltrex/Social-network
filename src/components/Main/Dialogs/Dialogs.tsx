@@ -3,9 +3,9 @@ import {makeStyles} from "@material-ui/core/styles";
 import DialogsList from "./DialogsList";
 import CurrentDialog from "./CurrentDialog";
 import {useDispatch, useSelector} from "react-redux";
-import {getIsLoading} from "../../../redux/app-selectors";
-import {getDialogsSelector} from "../../../redux/dialogs-selectors";
-import {dialogsAC, getDialogs, getMessages} from "../../../redux/dialogs-reducer";
+import {getIsLoading} from "../../../redux/selectors/app-selectors";
+import {getDialogsSelector} from "../../../redux/selectors/dialogs-selectors";
+import {dialogsAC, dialogsSagaAC} from "../../../redux/dialogs-reducer";
 import {DialogType} from "../../../DAL/dialogs-api";
 import DialogsSidebar from "./DialogsSidebar";
 import { useParams } from "react-router-dom";
@@ -24,11 +24,12 @@ const useDialogs = () => {
     let {userId} = useParams<UseParamsType>();
     const userIdNumber: number | undefined = userId ? +userId : undefined;
     useEffect(() => {
-        dispatch(getDialogs())
+        //dispatch(getDialogs())
+        dispatch(dialogsSagaAC.getDialogs());
     }, [dispatch]);
     useEffect(() => {
         if (userIdNumber) {
-            dispatch(getMessages(userIdNumber));
+            dispatch(dialogsSagaAC.getMessages(userIdNumber));
         }
         return () => {
             dispatch(dialogsAC.setMessages(null))

@@ -10,9 +10,9 @@ import {useDispatch, useSelector} from "react-redux";
 import RenderNakedTextAreaField from "../../common/RenderNakedTextareaField";
 import Typography from "@material-ui/core/Typography";
 import {profileAC} from "../../../redux/profile-reducer";
-import {getEditingPost} from "../../../redux/profile-selectors";
+import {getEditingPost} from "../../../redux/selectors/profile-selectors";
 import BlockTitle from "../../common/BlockTitle";
-import {getLang} from "../../../redux/app-selectors";
+import {getLang} from "../../../redux/selectors/app-selectors";
 import {translate} from "../../../const/lang";
 import useOutsideClick from "../../../hooks/useOutsideClick";
 

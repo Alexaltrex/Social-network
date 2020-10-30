@@ -9,7 +9,7 @@ import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import Avatar from "@material-ui/core/Avatar";
 import {DATE} from "../../../utilities/date";
 import {UseParamsType} from "../../../types/types";
-import {getLang} from "../../../redux/app-selectors";
+import {getLang} from "../../../redux/selectors/app-selectors";
 import {useSelector} from "react-redux";
 
 //================= CUSTOM HOOK =========================

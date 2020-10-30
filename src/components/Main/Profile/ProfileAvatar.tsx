@@ -4,7 +4,7 @@ import {profileAC, savePhoto} from "../../../redux/profile-reducer";
 import {
     getAvatarIsLoading,
     getEditMode,
-} from "../../../redux/profile-selectors";
+} from "../../../redux/selectors/profile-selectors";
 import Avatar from '@material-ui/core/Avatar';
 import {makeStyles} from "@material-ui/core/styles";
 import {Card, CircularProgress} from "@material-ui/core";
@@ -17,7 +17,7 @@ import Typography from "@material-ui/core/Typography";
 import Tooltip from "@material-ui/core/Tooltip";
 import Button from "@material-ui/core/Button";
 import CardActions from "@material-ui/core/CardActions";
-import {getFollowingInProgress, getIsFollowing} from "../../../redux/users-selectors";
+import {getArrayOfUserIdWhichFollowingOrUnfollowing, getIsFollowing} from "../../../redux/selectors/users-selectors";
 import {getFollow, getUnfollow} from "../../../redux/users-reduser";
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import PersonAddDisabledIcon from '@material-ui/icons/PersonAddDisabled';
@@ -25,10 +25,10 @@ import {ProfileType} from "../../../types/types";
 import CircularPreloader from "../../common/CircularPreloader";
 import SendIcon from '@material-ui/icons/Send';
 import SendMessageForm from "../../common/SendMessageForm";
-import {getDialogsSelector} from "../../../redux/dialogs-selectors";
-import {getDialogs} from "../../../redux/dialogs-reducer";
+import {getDialogsSelector} from "../../../redux/selectors/dialogs-selectors";
+import {dialogsSagaAC} from "../../../redux/dialogs-reducer";
 import {translate} from "../../../const/lang";
-import {getLang} from "../../../redux/app-selectors";
+import {getLang} from "../../../redux/selectors/app-selectors";
 
 //===================== CUSTOM HOOK ===========================
 const useProfileAvatar = ({followed, userId, profile}: UseProfileAvatarType) => {
@@ -38,11 +38,12 @@ const useProfileAvatar = ({followed, userId, profile}: UseProfileAvatarType) => 
     const avatarIsLoading = useSelector(getAvatarIsLoading);
     const isFollowing = useSelector(getIsFollowing);
     const editMode = useSelector(getEditMode);
-    const followingInProgress = useSelector(getFollowingInProgress);
+    const arrayOfUserIdWhichFollowingOrUnfollowing = useSelector(getArrayOfUserIdWhichFollowingOrUnfollowing);
     const dialogs = useSelector(getDialogsSelector);
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(getDialogs());
+        //dispatch(getDialogs());
+        dispatch(dialogsSagaAC.getDialogs());
     }, [dispatch]);
     const onPhotoSelected = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
@@ -89,7 +90,7 @@ const useProfileAvatar = ({followed, userId, profile}: UseProfileAvatarType) => 
         classes, onAvatarHover,
         openSendMessageForm, setOpenSendMessageForm,
         avatarIsLoading, isFollowing, editMode,
-        followingInProgress, dialogs, onPhotoSelected,
+        arrayOfUserIdWhichFollowingOrUnfollowing, dialogs, onPhotoSelected,
         onAvatarDelete, onMouseAvatarEnter, onMouseAvatarLeave,
         onEditProfileClick, onFollowUnfollowClick, onOpenSendMessageFormHandle,
         buttonLabel, src, startIcon, deleteAvatarTitle,
@@ -104,7 +105,7 @@ const ProfileAvatar: React.FC<PropsType> = (props) => {
         classes, onAvatarHover,
         openSendMessageForm, setOpenSendMessageForm,
         avatarIsLoading, isFollowing, editMode,
-        followingInProgress, dialogs, onPhotoSelected,
+        arrayOfUserIdWhichFollowingOrUnfollowing, dialogs, onPhotoSelected,
         onAvatarDelete, onMouseAvatarEnter, onMouseAvatarLeave,
         onEditProfileClick, onFollowUnfollowClick, onOpenSendMessageFormHandle,
         buttonLabel, src, startIcon, deleteAvatarTitle,
@@ -196,7 +197,7 @@ const ProfileAvatar: React.FC<PropsType> = (props) => {
                                     color="primary"
                                     size='small'
                                     fullWidth
-                                    disabled={followingInProgress.some(item => item === userId)}
+                                    disabled={arrayOfUserIdWhichFollowingOrUnfollowing.some(item => item === userId)}
                                     onClick={onFollowUnfollowClick}
                                     startIcon={startIcon}
                                 >
@@ -204,7 +205,7 @@ const ProfileAvatar: React.FC<PropsType> = (props) => {
                                 </Button>
                                 {
                                     isFollowing
-                                    && followingInProgress.some(item => item === userId)
+                                    && arrayOfUserIdWhichFollowingOrUnfollowing.some(item => item === userId)
                                     &&
                                     <CircularPreloader size={20} styleType={'absolute'}/>
                                 }

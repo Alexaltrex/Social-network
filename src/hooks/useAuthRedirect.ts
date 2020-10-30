@@ -1,5 +1,5 @@
 import {useSelector} from "react-redux";
-import {getIsAuth} from "../redux/auth-selectors";
+import {getIsAuth} from "../redux/selectors/auth-selectors";
 import { useHistory } from "react-router-dom";
 
 const useAuthRedirect = () => {

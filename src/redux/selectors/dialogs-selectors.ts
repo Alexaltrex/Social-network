@@ -1,4 +1,4 @@
-import {StateType} from "./redux-store";
+import {StateType} from "../redux-store";
 
 export const getDialogsSelector = (state: StateType) => state.dialogs.dialogs;
 export const getMessagesSelector = (state: StateType) => state.dialogs.messages;

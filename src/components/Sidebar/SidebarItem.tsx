@@ -10,7 +10,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {profileAC} from "../../redux/profile-reducer";
 import {usersAC} from "../../redux/users-reduser";
 import {sidebarAC} from "../../redux/sidebar-reducer";
-import {getCurrentSidebarItem} from "../../redux/sidebar-selectors";
+import {getCurrentSidebarItem} from "../../redux/selectors/sidebar-selectors";
 
 //======================== CUSTOM HOOK =========================
 const useSidebarItem = (ownIndex: number) => {

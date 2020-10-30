@@ -5,7 +5,7 @@ import {
     getFriendsSelector,
     getNeedToChangeListOfFriends,
     getPageSize, getPortionNumber, getSearchFriendsParams, getTotalFriendsCount
-} from "../../../redux/users-selectors";
+} from "../../../redux/selectors/users-selectors";
 import FriendsListItem from "./FriendsListItem";
 import React, {useEffect} from "react";
 import {searchFriends, removeAndUpdateFriends, usersAC} from "../../../redux/users-reduser";
@@ -15,10 +15,10 @@ import {makeStyles} from "@material-ui/core/styles";
 import FriendsSearch from "./FriendsSearch";
 import Typography from "@material-ui/core/Typography";
 import Paginator from "../../common/Paginator";
-import {getDialogs} from "../../../redux/dialogs-reducer";
-import {getDialogsSelector} from "../../../redux/dialogs-selectors";
+import {dialogsSagaAC} from "../../../redux/dialogs-reducer";
+import {getDialogsSelector} from "../../../redux/selectors/dialogs-selectors";
 import Divider from "@material-ui/core/Divider";
-import {getLang} from "../../../redux/app-selectors";
+import {getLang} from "../../../redux/selectors/app-selectors";
 import {translate} from "../../../const/lang";
 
 //================= CUSTOM HOOK =========================
@@ -46,7 +46,8 @@ const useFriendsList = () => {
         }
     }, [needToChangeListOfFriends, dispatch]);
     useEffect(() => {
-        dispatch(getDialogs());
+        //dispatch(getDialogs());
+        dispatch(dialogsSagaAC.getDialogs());
     }, [dispatch]);
     const onPageChanged = (pageNumber: number) => {
         dispatch(usersAC.setCurrentFriendsPage(pageNumber));

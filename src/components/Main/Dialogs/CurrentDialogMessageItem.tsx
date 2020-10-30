@@ -7,8 +7,8 @@ import Avatar from "@material-ui/core/Avatar";
 import {Link as RouterLink} from "react-router-dom";
 import Link from "@material-ui/core/Link";
 import {useDispatch, useSelector} from "react-redux";
-import {getId} from "../../../redux/auth-selectors";
-import {getProfileSelector} from "../../../redux/profile-selectors";
+import {getId} from "../../../redux/selectors/auth-selectors";
+import {getProfileSelector} from "../../../redux/selectors/profile-selectors";
 import Typography from "@material-ui/core/Typography";
 import {DATE} from "../../../utilities/date";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
@@ -19,10 +19,10 @@ import {
     getCurrentDialogsSidebarItem,
     getMessagesIsDeleting, getSelectedDeletedMessages,
     getSelectedMessages
-} from "../../../redux/dialogs-selectors";
+} from "../../../redux/selectors/dialogs-selectors";
 import CircularPreloader from "../../common/CircularPreloader";
 import {DialogsSidebarItemEnum} from "../../../types/types";
-import {getLang} from "../../../redux/app-selectors";
+import {getLang} from "../../../redux/selectors/app-selectors";
 
 //================= CUSTOM HOOK =========================
 const useCurrentDialogMessageItem = ({message, src}: PropsType) => {

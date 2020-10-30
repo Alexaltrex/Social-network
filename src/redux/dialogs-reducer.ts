@@ -4,6 +4,12 @@ import {dialogsAPI, DialogType, MessageType} from "../DAL/dialogs-api";
 import {DialogsSidebarItemEnum, DeletedMessagesType} from "../types/types";
 import {ResultCodesEnum} from "../DAL/api";
 
+export const GET_DIALOGS = 'DIALOGS/GET_DIALOGS';
+export const SEND_MASSAGE = 'DIALOGS/SEND_MASSAGE';
+export const GET_MASSAGES = 'DIALOGS/GET_MASSAGES';
+export const DELETE_MESSAGES = 'DIALOGS/DELETE_MESSAGES';
+export const RESTORE_MESSAGES = 'DIALOGS/RESTORE_MESSAGES';
+
 let initialState = {
     dialogs: null as null | Array<DialogType>, // массив диалогов
     messages: null as null | Array<MessageType>, // сообщения из текущего диалога
@@ -22,9 +28,10 @@ let initialState = {
 
 export type initialStateType = typeof initialState;
 type DialogsActionsType = GetActionsType<typeof dialogsAC>
+export type DialogsSagaActionsType = GetActionsType<typeof dialogsSagaAC>
 type ThunkType = BaseThunkType<DialogsActionsType | AppActionsType>
 
-const dialogsReducer = (state = initialState, action: DialogsActionsType): initialStateType => {
+const dialogsReducer = (state = initialState, action: DialogsActionsType | DialogsSagaActionsType): initialStateType => {
     switch (action.type) {
         case 'dialogs/REMOVE_FROM_DELETED_MESSAGES': {
             let deletedMessages = [...state.deletedMessages];
@@ -134,6 +141,22 @@ const dialogsReducer = (state = initialState, action: DialogsActionsType): initi
         case 'dialogs/SET_DIALOGS': {
             return {...state, dialogs: action.dialogs}
         }
+        // SAGA
+        case GET_DIALOGS: {
+            return state
+        }
+        case SEND_MASSAGE: {
+            return state
+        }
+        case GET_MASSAGES: {
+            return state
+        }
+        case DELETE_MESSAGES: {
+            return state
+        }
+        case RESTORE_MESSAGES: {
+            return state
+        }
         default:
             return state;
     }
@@ -198,18 +221,189 @@ export const dialogsAC = {
     setDialogs: (dialogs: Array<DialogType>) => ({type: 'dialogs/SET_DIALOGS', dialogs} as const),
 };
 
-// получить массив пользователей с кем ведется диалог
-export const getDialogs = (): ThunkType => async (dispatch) => {
-    try {
-        dispatch(dialogsAC.toggleDialogsIsLoading(true));
-        let data = await dialogsAPI.getDialogs();
-        dispatch(dialogsAC.setDialogs(data));
-    } catch (e) {
-        dispatch(appAC.setLanError(true));
-    } finally {
-        dispatch(dialogsAC.toggleDialogsIsLoading(false));
-    }
+// action creator for sagas
+export const dialogsSagaAC = {
+    getDialogs: () => ({type: GET_DIALOGS} as const),
+    sendMessage: (userId: number, message: string) => ({type: SEND_MASSAGE, userId, message} as const),
+    getMessages: (userId: number) => ({type: GET_MASSAGES, userId} as const),
+    deleteMessages: (messages: Array<MessageType>, dialog: DialogType) => ({
+        type: DELETE_MESSAGES,
+        messages,
+        dialog
+    } as const),
+    restoreMessages: (messages: Array<MessageType>) => ({
+        type: RESTORE_MESSAGES,
+        messages
+    } as const)
 };
+
+// типизация экшн-криейторов для саг (для воркеров)
+export type GetDialogsACType = {
+    type: typeof GET_DIALOGS
+}
+export type SendMessageACType = {
+    type: typeof SEND_MASSAGE
+    userId: number
+    message: string
+}
+export type GetMessagesACType = {
+    type: typeof GET_MASSAGES
+    userId: number
+}
+export type DeleteMessagesACType = {
+    type: typeof DELETE_MESSAGES,
+    messages: Array<MessageType>
+    dialog: DialogType
+}
+export type RestoreMessagesACType = {
+    type: typeof RESTORE_MESSAGES
+    messages: Array<MessageType>
+}
+
+//======================= THUNK-CREATORS (ЗАМЕНЕНЫ НА САГИ) =======================
+// получить массив пользователей с кем ведется диалог
+// export const getDialogs = (): ThunkType => async (dispatch) => {
+//     try {
+//         dispatch(dialogsAC.toggleDialogsIsLoading(true));
+//         let data = await dialogsAPI.getDialogs();
+//         dispatch(dialogsAC.setDialogs(data));
+//     } catch (e) {
+//         dispatch(appAC.setLanError(true));
+//     } finally {
+//         dispatch(dialogsAC.toggleDialogsIsLoading(false));
+//     }
+// };
+
+// послать сообщение пользователю
+// export const sendMessage = (userId: number, message: string): ThunkType => async (dispatch) => {
+//     try {
+//         dispatch(dialogsAC.setMessageIsSending(true)); // сообщение отправляется
+//         const dataSend = await dialogsAPI.sendMessage(userId, message);// post-запрос на сервер
+//         if (dataSend.resultCode === ResultCodesEnum.Success) { // если запрос удачный
+//             dispatch(dialogsAC.setRecipientName(dataSend.data.message.recipientName)); // установить имя адресата сообщения
+//             const data = await dialogsAPI.getMessages(userId);// обновить список сообщений
+//             if (data.error === null) {
+//                 dispatch(dialogsAC.setMessages(data.items));
+//             }
+//         }
+//     } catch (e) {
+//         dispatch(appAC.setLanError(true));
+//     } finally {
+//         dispatch(dialogsAC.setMessageIsSending(false));
+//     }
+// };
+
+// получить массив сообщений из диалога с определенный пользователем
+// export const getMessages = (userId: number): ThunkType => async (dispatch) => {
+//     try {
+//         dispatch(dialogsAC.setMessagesIsLoading(true));
+//         const data = await dialogsAPI.getMessages(userId);
+//         if (data.error === null) {
+//             dispatch(dialogsAC.setMessages(data.items));
+//         }
+//     } catch (e) {
+//         dispatch(appAC.setLanError(true));
+//     } finally {
+//         dispatch(dialogsAC.setMessagesIsLoading(false));
+//     }
+// };
+
+// удаление сообщений
+// export const deleteMessages = (messages: Array<MessageType>, dialog: DialogType): ThunkType => async (dispatch) => {
+//     try {
+//         dispatch(dialogsAC.setMessagesIsDeleting(true));
+//
+//         const arrayOfRequests = messages
+//             .map(el => dialogsAPI.deleteMessage(el.id));
+//         const results = await Promise.all(arrayOfRequests);
+//
+//         let resultCodeFinally: ResultCodesEnum = 0;// определение успеха массива промисов
+//         for (let i = 0; i < results.length - 1; i++) {
+//             if (results[i].resultCode === ResultCodesEnum.Error) {
+//                 resultCodeFinally = ResultCodesEnum.Error;
+//                 break
+//             }
+//         }
+//
+//         if (resultCodeFinally === ResultCodesEnum.Success) {
+//             const data = await dialogsAPI.getMessages(dialog.id);// обновление массива сообщений
+//             if (data.error === null) {
+//                 dispatch(dialogsAC.setMessages(data.items));
+//                 for (let i = 0; i < messages.length; i++) {// добавление сообщений в массив удаленных
+//                     dispatch(dialogsAC.addToDeletedMessages(dialog, messages[i]))
+//                 }
+//                 dispatch(dialogsAC.cleanSelectedMessages()); // очистка массива ид выделенных сообщений
+//             }
+//         }
+//     } catch (e) {
+//         dispatch(appAC.setLanError(true));
+//     } finally {
+//         dispatch(dialogsAC.setMessagesIsDeleting(false));
+//     }
+// };
+
+// восстановить удаленное или помеченное как спам сообщение
+// export const restoreMessages = (messages: Array<MessageType>): ThunkType => async (dispatch) => {
+//     try {
+//         const arrayOfRequests = messages
+//             .map(el => dialogsAPI.restoreMessage(el.id));
+//         const results = await Promise.all(arrayOfRequests);
+//
+//         let resultCodeFinally: ResultCodesEnum = 0;
+//         for (let i = 0; i < results.length - 1; i++) {
+//             if (results[i].resultCode === ResultCodesEnum.Error) {
+//                 resultCodeFinally = ResultCodesEnum.Error;
+//                 break
+//             }
+//         }
+//         if (resultCodeFinally === ResultCodesEnum.Success) {
+//             // очистка массива выделенных удаленных сообщений
+//             dispatch(dialogsAC.cleanSelectedDeletedMessages())
+//             // удалить сообщения из массива удаленнных диалогов
+//             dispatch(dialogsAC.removeFromDeletedMessages(messages));
+//         }
+//     } catch (e) {
+//         dispatch(appAC.setLanError(true));
+//     } finally {
+//     }
+// };
+
+// НЕИСПОЛЬЗУЕМЫЕ
+
+// отметить сообщения как спам (при этом удаляется?)
+// export const signMessageAsSpam = (messages: Array<MessageType>, dialog: DialogType): ThunkType => async (dispatch) => {
+//     try {
+//         dispatch(dialogsAC.setMessagesIsDeleting(true));
+//
+//         const arrayOfRequests = messages
+//             .map(el => dialogsAPI.signMessageAsSpam(el.id));
+//         const results = await Promise.all(arrayOfRequests);
+//
+//         let resultCodeFinally: ResultCodesEnum = 0;// определение успеха массива промисов
+//         for (let i = 0; i < results.length - 1; i++) {
+//             if (results[i].resultCode === ResultCodesEnum.Error) {
+//                 resultCodeFinally = ResultCodesEnum.Error;
+//                 break
+//             }
+//         }
+//
+//         if (resultCodeFinally === ResultCodesEnum.Success) {
+//             const data = await dialogsAPI.getMessages(dialog.id);// обновление массива сообщений (запрос)
+//             if (data.error === null) {
+//                 dispatch(dialogsAC.setMessages(data.items));// обновление массива сообщений (запись в стор)
+//                 for (let i = 0; i < messages.length; i++) {// добавление сообщений в массив удаленных
+//                     dispatch(dialogsAC.addToSpamMessages(dialog, messages[i]))
+//                 }
+//                 dispatch(dialogsAC.cleanSelectedMessages()); // очистка массива ид выделенных сообщений
+//             }
+//         }
+//
+//     } catch (e) {
+//         dispatch(appAC.setLanError(true));
+//     } finally {
+//         dispatch(dialogsAC.setMessagesIsDeleting(false));
+//     }
+// };
 
 // ???
 // export const startDialog = (userId: number): ThunkType => async (dispatch) => {
@@ -226,42 +420,9 @@ export const getDialogs = (): ThunkType => async (dispatch) => {
 //     }
 // };
 
-// послать сообщение пользователю
-export const sendMessage = (userId: number, message: string): ThunkType => async (dispatch) => {
-    try {
-        dispatch(dialogsAC.setMessageIsSending(true)); // сообщение отправляется
-        const dataSend = await dialogsAPI.sendMessage(userId, message);// post-запрос на сервер
-        if (dataSend.resultCode === ResultCodesEnum.Success) { // если запрос удачный
-            dispatch(dialogsAC.setRecipientName(dataSend.data.message.recipientName)); // установить имя адресата сообщения
-            const data = await dialogsAPI.getMessages(userId);// обновить список сообщений
-            if (data.error === null) {
-                dispatch(dialogsAC.setMessages(data.items));
-            }
-        }
-    } catch (e) {
-        dispatch(appAC.setLanError(true));
-    } finally {
-        dispatch(dialogsAC.setMessageIsSending(false));
-    }
-};
-
-// получить массив сообщений из диалога с определенный пользователем
-export const getMessages = (userId: number): ThunkType => async (dispatch) => {
-    try {
-        dispatch(dialogsAC.setMessagesIsLoading(true));
-        const data = await dialogsAPI.getMessages(userId);
-        if (data.error === null) {
-            dispatch(dialogsAC.setMessages(data.items));
-        }
-    } catch (e) {
-        dispatch(appAC.setLanError(true));
-    } finally {
-        dispatch(dialogsAC.setMessagesIsLoading(false));
-    }
-};
-
 // определить, просмотрено ли сообщение
-// export const getIsMessageViewed = (messageId: string): ThunkType => async (dispatch) => {
+//
+//export const getIsMessageViewed = (messageId: string): ThunkType => async (dispatch) => {
 //     try {
 //         //dispatch(profileAC.toggleStatusLoading(true));
 //         const data = await dialogsAPI.getIsMessageViewed(messageId);
@@ -275,102 +436,5 @@ export const getMessages = (userId: number): ThunkType => async (dispatch) => {
 //         //dispatch(profileAC.toggleStatusLoading(false));
 //     }
 // };
-
-// отметить сообщения как спам (при этом удаляется?)
-export const signMessageAsSpam = (messages: Array<MessageType>, dialog: DialogType): ThunkType => async (dispatch) => {
-    try {
-        dispatch(dialogsAC.setMessagesIsDeleting(true));
-
-        const arrayOfRequests = messages
-            .map(el => dialogsAPI.signMessageAsSpam(el.id));
-        const results = await Promise.all(arrayOfRequests);
-
-        let resultCodeFinally: ResultCodesEnum = 0;// определение успеха массива промисов
-        for (let i = 0; i < results.length - 1; i++) {
-            if (results[i].resultCode === ResultCodesEnum.Error) {
-                resultCodeFinally = ResultCodesEnum.Error;
-                break
-            }
-        }
-
-        if (resultCodeFinally === ResultCodesEnum.Success) {
-            const data = await dialogsAPI.getMessages(dialog.id);// обновление массива сообщений (запрос)
-            if (data.error === null) {
-                dispatch(dialogsAC.setMessages(data.items));// обновление массива сообщений (запись в стор)
-                for (let i = 0; i < messages.length; i++) {// добавление сообщений в массив удаленных
-                    dispatch(dialogsAC.addToSpamMessages(dialog, messages[i]))
-                }
-                dispatch(dialogsAC.cleanSelectedMessages()); // очистка массива ид выделенных сообщений
-            }
-        }
-
-    } catch (e) {
-        dispatch(appAC.setLanError(true));
-    } finally {
-        dispatch(dialogsAC.setMessagesIsDeleting(false));
-    }
-};
-
-// удаление сообщений
-export const deleteMessages = (messages: Array<MessageType>, dialog: DialogType): ThunkType => async (dispatch) => {
-    try {
-        dispatch(dialogsAC.setMessagesIsDeleting(true));
-
-        const arrayOfRequests = messages
-            .map(el => dialogsAPI.deleteMessage(el.id));
-        const results = await Promise.all(arrayOfRequests);
-
-        let resultCodeFinally: ResultCodesEnum = 0;// определение успеха массива промисов
-        for (let i = 0; i < results.length - 1; i++) {
-            if (results[i].resultCode === ResultCodesEnum.Error) {
-                resultCodeFinally = ResultCodesEnum.Error;
-                break
-            }
-        }
-
-        if (resultCodeFinally === ResultCodesEnum.Success) {
-            const data = await dialogsAPI.getMessages(dialog.id);// обновление массива сообщений
-            if (data.error === null) {
-                dispatch(dialogsAC.setMessages(data.items));
-                for (let i = 0; i < messages.length; i++) {// добавление сообщений в массив удаленных
-                    dispatch(dialogsAC.addToDeletedMessages(dialog, messages[i]))
-                }
-                dispatch(dialogsAC.cleanSelectedMessages()); // очистка массива ид выделенных сообщений
-            }
-        }
-    } catch (e) {
-        dispatch(appAC.setLanError(true));
-    } finally {
-        dispatch(dialogsAC.setMessagesIsDeleting(false));
-    }
-};
-
-// восстановить удаленное или помеченное как спам сообщение
-export const restoreMessages = (messages: Array<MessageType>): ThunkType => async (dispatch) => {
-    try {
-        const arrayOfRequests = messages
-            .map(el => dialogsAPI.restoreMessage(el.id));
-        const results = await Promise.all(arrayOfRequests);
-
-        let resultCodeFinally: ResultCodesEnum = 0;
-        for (let i = 0; i < results.length - 1; i++) {
-            if (results[i].resultCode === ResultCodesEnum.Error) {
-                resultCodeFinally = ResultCodesEnum.Error;
-                break
-            }
-        }
-
-        if (resultCodeFinally === ResultCodesEnum.Success) {
-            // очистка массива выделенных удаленных сообщений
-            dispatch(dialogsAC.cleanSelectedDeletedMessages())
-            // удалить сообщения из массива удаленнных диалогов
-            dispatch(dialogsAC.removeFromDeletedMessages(messages));
-        }
-    } catch (e) {
-        dispatch(appAC.setLanError(true));
-    } finally {
-    }
-};
-
 
 export default dialogsReducer;

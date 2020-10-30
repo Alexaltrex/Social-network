@@ -1,7 +1,7 @@
 import React from "react";
 import {Typography} from "@material-ui/core";
 import {useSelector} from "react-redux";
-import {getLang} from "../../redux/app-selectors";
+import {getLang} from "../../redux/selectors/app-selectors";
 import {translate} from "../../const/lang";
 
 //================= CUSTOM HOOK =========================

@@ -87,3 +87,4 @@ export type LangType = 'eng' | 'rus'
 export type UseParamsType = {
     userId: string | undefined
 }
+export type ShowUsersFromType = 'all' | 'search';

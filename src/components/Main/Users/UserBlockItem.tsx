@@ -17,7 +17,7 @@ import {
     getIsFollowing
 } from "../../../redux/selectors/users-selectors";
 import {UserType} from "../../../types/types";
-import {getFollow, getUnfollow} from "../../../redux/users-reduser";
+import {getFollow, getUnfollow} from "../../../redux/reducers/users-reduser";
 import CircularPreloader from "../../common/CircularPreloader";
 import SendIcon from '@material-ui/icons/Send';
 import SendMessageForm from "../../common/SendMessageForm";

@@ -10,8 +10,8 @@ import Friends from "./Friends/Friends";
 import Settings from "./Settings/Settings";
 import PageNotFound from "../common/PageNotFound";
 
-const Dialogs = React.lazy(() => import('./Dialogs/Dialogs'));
 const Profile = React.lazy(() => import('./Profile/Profile'));
+const Dialogs = React.lazy(() => import('./Dialogs/Dialogs'));
 
 //======================== CUSTOM HOOK =========================
 const useMain = () => {

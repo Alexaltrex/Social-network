@@ -5,13 +5,14 @@ import {makeStyles} from "@material-ui/core/styles";
 import RenderTextField from "../../common/RenderTextField";
 import {shouldNotBeEmpty} from "../../../utilities/validators/validators";
 import {useDispatch, useSelector} from "react-redux";
-import {usersAC} from "../../../redux/users-reduser";
+import {usersAC} from "../../../redux/reducers/users-reduser";
 import {IconButton} from "@material-ui/core";
 import {getIsFriendsSearching, getSearchFriendsParams} from "../../../redux/selectors/users-selectors";
 import CircularPreloader from "../../common/CircularPreloader";
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import {translate} from "../../../const/lang";
 import {getLang} from "../../../redux/selectors/app-selectors";
+
 
 //================= CUSTOM HOOK =========================
 const useForm = () => {
@@ -24,7 +25,6 @@ const useForm = () => {
     const nameOfTheFriendLabel = translate(lang, 'Name of the friend')
     return {onChangeHandler, nameOfTheFriendLabel}
 }
-
 //========================== FORM =======================================
 const Form: React.FC<FormPropsType> = ({handleSubmit}) => {
     const {onChangeHandler, nameOfTheFriendLabel} = useForm();
@@ -47,6 +47,7 @@ const Form: React.FC<FormPropsType> = ({handleSubmit}) => {
 //================================== REDUX-FORM ======================================
 const ReduxForm = reduxForm<FormParamsType, FormOwnPropsType>({
     form: 'friends-search',
+    enableReinitialize: true,
 })(Form);
 
 //====================== CUSTOM HOOK =========================
@@ -69,7 +70,7 @@ const useFriendsSearch = () => {
         }
     };
     return {
-        classes, isFriendsSearching,
+        classes, isFriendsSearching, searchFriendsParams,
         onSubmit, icon, onClickHandler
     }
 };
@@ -78,7 +79,7 @@ const useFriendsSearch = () => {
 const FriendsSearch: React.FC = () => {
     const {
         classes, isFriendsSearching,
-        onSubmit, icon, onClickHandler
+        onSubmit, icon, onClickHandler, searchFriendsParams
     } = useFriendsSearch();
 
     return (
@@ -92,7 +93,7 @@ const FriendsSearch: React.FC = () => {
             </div>
 
             <div className={classes.form}>
-                <ReduxForm onSubmit={onSubmit}/>
+                <ReduxForm onSubmit={onSubmit} initialValues={searchFriendsParams}/>
             </div>
 
         </div>

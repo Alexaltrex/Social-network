@@ -13,6 +13,7 @@ const useViewSwitcher = ({setView}: UseViewSwitcherType) => {
     return {onChangeHandle}
 };
 
+//====================== COMPONENT ================
 const ViewSwitcher: React.FC<PropsType> = ({view, setView}) => {
     const {onChangeHandle} = useViewSwitcher({setView});
 
@@ -24,11 +25,11 @@ const ViewSwitcher: React.FC<PropsType> = ({view, setView}) => {
             onChange={onChangeHandle}
             aria-label="items view"
         >
-            <ToggleButton value="list" aria-label="list view">
-                <ViewListIcon fontSize='small' color='primary'/>
-            </ToggleButton>
             <ToggleButton value="block" aria-label="block view">
                 <ViewModuleIcon fontSize='small' color='primary'/>
+            </ToggleButton>
+            <ToggleButton value="list" aria-label="list view">
+                <ViewListIcon fontSize='small' color='primary'/>
             </ToggleButton>
 
         </ToggleButtonGroup>

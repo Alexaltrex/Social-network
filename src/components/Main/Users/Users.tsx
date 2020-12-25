@@ -10,7 +10,7 @@ import {
     getUsersSelector, getValueFromHeaderSearch
 } from "../../../redux/selectors/users-selectors";
 import {getIsLoading, getLang} from "../../../redux/selectors/app-selectors";
-import {getUsers, searchUsers, usersAC} from "../../../redux/users-reduser";
+import {getUsers, searchUsers, usersAC} from "../../../redux/reducers/users-reduser";
 import Badge from "@material-ui/core/Badge";
 import PeopleIcon from '@material-ui/icons/People';
 import Typography from "@material-ui/core/Typography";
@@ -19,17 +19,24 @@ import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import Button from "@material-ui/core/Button";
 import Collapse from "@material-ui/core/Collapse";
 import UsersSearch from "./UsersSearch";
-import {dialogsSagaAC} from "../../../redux/dialogs-reducer";
+import {dialogsSagaAC} from "../../../redux/reducers/dialogs-reducer";
 import {getDialogsSelector} from "../../../redux/selectors/dialogs-selectors";
 import ViewSwitcher from "../../common/ViewSwitcher";
 import UsersList from "./UsersList";
-import {ViewType} from "../../../types/types";
+import {FriendsValuesType, ShowUsersFromType, ViewType} from "../../../types/types";
 import {translate} from "../../../const/lang";
 import useAuthRedirect from "../../../hooks/useAuthRedirect";
+import {BooleanParam, NumberParam, StringParam, useQueryParam} from "use-query-params";
+import useCommonQueryParams from "../../../hooks/useCommonQueryParams";
 
 //======================== CUSTOM HOOK =========================
 const useUsers = () => {
+    useAuthRedirect();
+    useCommonQueryParams();
+
     const classes = useStyles();
+    const dispatch = useDispatch();
+    const lang = useSelector(getLang);
     const users = useSelector(getUsersSelector);
     const totalUsersCount = useSelector(getTotalUsersCount);
     const pageSize = useSelector(getPageSize);
@@ -39,13 +46,50 @@ const useUsers = () => {
     const showUsersFrom = useSelector(getShowUsersFrom);
     const dialogs = useSelector(getDialogsSelector);
     const valueFromHeaderSearch = useSelector(getValueFromHeaderSearch);
-    const lang = useSelector(getLang);
-    const dispatch = useDispatch();
+    const portionNumber = useSelector(getPortionNumber);
     const [searchPanelIsOpen, setSearchPanelIsOpen] = useState(false);
-    const [view, setView] = useState<ViewType>('block')
+    const [view, setView] = useState<ViewType>('block');
+
+    const [currentPageQuery, setCurrentPageQuery] = useQueryParam('page', NumberParam);
+    const [portionNumberQuery, setPortionNumberQuery] = useQueryParam('portion', NumberParam);
+    const [viewQuery, setViewQuery] = useQueryParam('view', StringParam);
+    const [searchPanelIsOpenQuery, setSearchPanelIsOpenQuery] = useQueryParam('searchPanelIsOpen', BooleanParam);
+    const [showUsersFromQuery, setShowUsersFromQuery] = useQueryParam('showFrom', StringParam);
+    const [termQuery, setTermQuery] = useQueryParam('term', StringParam);
+    const [friendQuery, setFriendQuery] = useQueryParam('friend', StringParam);
+
+    // URL => STATE
     useEffect(() => {
-        //dispatch(getDialogs());
-        dispatch(dialogsSagaAC.getDialogs());
+        dispatch(usersAC.setCurrentPage(currentPageQuery ? currentPageQuery : currentPage));
+        dispatch(usersAC.setPortionNumber(portionNumberQuery ? portionNumberQuery : portionNumber));
+        setView(viewQuery ? viewQuery as ViewType : view);
+        setSearchPanelIsOpen(searchPanelIsOpenQuery ? searchPanelIsOpenQuery : searchPanelIsOpen);
+        dispatch(usersAC.setShowUsersFrom(showUsersFromQuery ? showUsersFromQuery as ShowUsersFromType : showUsersFrom));
+        dispatch(usersAC.setSearchUsersParams({
+            term: termQuery ? termQuery : searchUsersParams.term,
+            friend: friendQuery ? friendQuery as  FriendsValuesType : searchUsersParams.friend
+        }));
+    }, [dispatch]);
+    // STATE => URL
+    useEffect(() => {
+        setCurrentPageQuery(currentPage !== 1 ? currentPage : undefined);
+        setPortionNumberQuery(portionNumber !== 1 ? portionNumber : undefined);
+        setViewQuery(view !== 'block' ? view : undefined);
+        setSearchPanelIsOpenQuery(searchPanelIsOpen ? searchPanelIsOpen : undefined);
+        setShowUsersFromQuery(showUsersFrom !== 'all' ? showUsersFrom : undefined);
+        setTermQuery(searchUsersParams.term !== '' ? searchUsersParams.term : undefined);
+        setFriendQuery(searchUsersParams.friend !== 'all' ? searchUsersParams.friend : undefined);
+    }, [
+        currentPage,
+        portionNumber,
+        view,
+        searchPanelIsOpen,
+        showUsersFrom,
+        searchUsersParams,
+    ]);
+
+    useEffect(() => {
+       dispatch(dialogsSagaAC.getDialogs());
     }, [dispatch]);
     useEffect(() => {
         if (showUsersFrom === 'all') {
@@ -62,6 +106,7 @@ const useUsers = () => {
     };
     const onShowAllClick = () => {
         dispatch(usersAC.setShowUsersFrom('all'));
+        dispatch(usersAC.setSearchUsersParams({term: '', friend: 'all'}));
         dispatch(usersAC.setCurrentPage(1));
     };
     const countTitle = showUsersFrom === 'all'
@@ -72,13 +117,15 @@ const useUsers = () => {
             setSearchPanelIsOpen(true)
         }
     }, [valueFromHeaderSearch]);
+
     const closeSearchLabel = translate(lang, 'Close search');
     const openSearchLabel = translate(lang, 'Open search');
     const showAllLabel = translate(lang, 'Show all');
-    const portionNumber = useSelector(getPortionNumber);
+
     const setPortionNumber = (portionNumber: number) => {
         dispatch(usersAC.setPortionNumber(portionNumber))
     };
+
     return {
         classes, users, totalUsersCount, pageSize, currentPage,
         isLoading, showUsersFrom, dialogs, searchPanelIsOpen,
@@ -90,7 +137,6 @@ const useUsers = () => {
 
 //======================= COMPONENT ===============================
 const Users: React.FC = (): ReactElement => {
-    useAuthRedirect();
     const {
         classes, users, totalUsersCount, pageSize, currentPage,
         isLoading, showUsersFrom, dialogs, searchPanelIsOpen,
@@ -100,7 +146,7 @@ const Users: React.FC = (): ReactElement => {
     } = useUsers();
 
     return (
-        <div className={classes.root}>
+        <div className={classes.users}>
 
             <Collapse in={searchPanelIsOpen} timeout="auto" unmountOnExit>
                 <UsersSearch/>
@@ -190,8 +236,7 @@ export default Users;
 
 //========================== STYLES ================================================
 const useStyles = makeStyles({
-    root: {
-        //padding: 15,
+    users: {
         minHeight: '100vh'
     },
     topPanel: {

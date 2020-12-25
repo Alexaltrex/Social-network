@@ -1,8 +1,8 @@
-import {BaseThunkType, GetActionsType} from "./redux-store";
+import {BaseThunkType, GetActionsType} from "../redux-store";
 import {appAC, AppActionsType} from "./app-reducer";
-import {dialogsAPI, DialogType, MessageType} from "../DAL/dialogs-api";
-import {DialogsSidebarItemEnum, DeletedMessagesType} from "../types/types";
-import {ResultCodesEnum} from "../DAL/api";
+import {dialogsAPI, DialogType, MessageType} from "../../DAL/dialogs-api";
+import {DialogsSidebarItemEnum, DeletedMessagesType} from "../../types/types";
+import {ResultCodesEnum} from "../../DAL/api";
 
 export const GET_DIALOGS = 'DIALOGS/GET_DIALOGS';
 export const SEND_MASSAGE = 'DIALOGS/SEND_MASSAGE';
@@ -21,7 +21,7 @@ let initialState = {
     messagesIsDeleting: false, // сообщения удаляются (или отправляются в спам)?
     messageIsSending: false, // используется для всплывающего сообщения об отправке сообщения
     recipientName: null as null | string, // имя получателя, используется для всплывающего сообщения об отправке сообщения
-    currentDialogsSidebarItem: 0 as DialogsSidebarItemEnum, // текущий элмемент бокового меню
+    currentDialogsSidebarItem: 0 as DialogsSidebarItemEnum, // текущий элемемент бокового меню
     deletedMessages: [] as DeletedMessagesType, // массив удаленных диалогов [{dialog: DialogType, messages: Array<MessageType>}, ...]
     spamMessages: [] as DeletedMessagesType, // массив диалогов отмеченных как spam [{dialog: DialogType, messages: Array<MessageType>}, ...]
 };

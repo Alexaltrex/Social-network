@@ -9,7 +9,7 @@ import {required, shouldNotBeEmpty} from "../../../utilities/validators/validato
 import {useDispatch, useSelector} from "react-redux";
 import RenderNakedTextAreaField from "../../common/RenderNakedTextareaField";
 import Typography from "@material-ui/core/Typography";
-import {profileAC} from "../../../redux/profile-reducer";
+import {profileAC} from "../../../redux/reducers/profile-reducer";
 import {getEditingPost} from "../../../redux/selectors/profile-selectors";
 import BlockTitle from "../../common/BlockTitle";
 import {getLang} from "../../../redux/selectors/app-selectors";

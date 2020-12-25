@@ -14,7 +14,7 @@ import {DATE} from "../../../utilities/date";
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import Icon from "@material-ui/core/Icon";
-import {dialogsAC} from "../../../redux/dialogs-reducer";
+import {dialogsAC} from "../../../redux/reducers/dialogs-reducer";
 import {
     getCurrentDialogsSidebarItem,
     getMessagesIsDeleting, getSelectedDeletedMessages,

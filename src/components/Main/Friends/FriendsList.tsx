@@ -8,14 +8,14 @@ import {
 } from "../../../redux/selectors/users-selectors";
 import FriendsListItem from "./FriendsListItem";
 import React, {useEffect} from "react";
-import {searchFriends, removeAndUpdateFriends, usersAC} from "../../../redux/users-reduser";
+import {searchFriends, removeAndUpdateFriends, usersAC} from "../../../redux/reducers/users-reduser";
 import {Card} from "@material-ui/core";
 import List from "@material-ui/core/List";
 import {makeStyles} from "@material-ui/core/styles";
 import FriendsSearch from "./FriendsSearch";
 import Typography from "@material-ui/core/Typography";
 import Paginator from "../../common/Paginator";
-import {dialogsSagaAC} from "../../../redux/dialogs-reducer";
+import {dialogsSagaAC} from "../../../redux/reducers/dialogs-reducer";
 import {getDialogsSelector} from "../../../redux/selectors/dialogs-selectors";
 import Divider from "@material-ui/core/Divider";
 import {getLang} from "../../../redux/selectors/app-selectors";
@@ -33,6 +33,7 @@ const useFriendsList = () => {
     const searchFriendsParams = useSelector(getSearchFriendsParams);
     const totalFriendsCount = useSelector(getTotalFriendsCount);
     const dialogs = useSelector(getDialogsSelector);
+    const portionNumber = useSelector(getPortionNumber);
     const lang = useSelector(getLang);
     const dispatch = useDispatch();
     const FriendsListElements = friends
@@ -52,7 +53,7 @@ const useFriendsList = () => {
     const onPageChanged = (pageNumber: number) => {
         dispatch(usersAC.setCurrentFriendsPage(pageNumber));
     };
-    const portionNumber = useSelector(getPortionNumber);
+
     const setPortionNumber = (portionNumber: number) => {
         dispatch(usersAC.setPortionNumber(portionNumber))
     };

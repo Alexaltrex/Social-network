@@ -10,14 +10,14 @@ import {Link as RouterLink} from "react-router-dom";
 import Link from "@material-ui/core/Link";
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import {useDispatch, useSelector} from "react-redux";
-import {sidebarAC} from "../../../redux/sidebar-reducer";
+import {sidebarAC} from "../../../redux/reducers/sidebar-reducer";
 import Popper from "@material-ui/core/Popper";
 import Grow from "@material-ui/core/Grow";
 import Paper from "@material-ui/core/Paper";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import MenuList from "@material-ui/core/MenuList";
 import MenuItem from "@material-ui/core/MenuItem";
-import {usersAC} from "../../../redux/users-reduser";
+import {usersAC} from "../../../redux/reducers/users-reduser";
 import {
     getArrayOfUserIdWhichFollowingOrUnfollowing,
     getIsFollowing

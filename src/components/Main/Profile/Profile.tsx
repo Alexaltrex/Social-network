@@ -3,13 +3,14 @@ import {useDispatch, useSelector} from "react-redux";
 import {useParams} from "react-router";
 import {getId} from "../../../redux/selectors/auth-selectors";
 import {getIsLoading} from "../../../redux/selectors/app-selectors";
-import {getCurrentUserProfile, getFollowed, getProfile} from "../../../redux/profile-reducer";
+import {getCurrentUserProfile, getFollowed, getProfile, profileAC} from "../../../redux/reducers/profile-reducer";
 import {makeStyles} from "@material-ui/core/styles";
 import ProfileAvatar from "./ProfileAvatar";
 import ProfileInfo from "./ProfileInfo";
 import ProfileInfoForm from "./ProfileInfoForm";
 import ProfileInfoFormSidebar from "./ProfileInfoFormSidebar";
 import {
+    getCurrentInfoFormSidebarItem,
     getCurrentUserProfileSelector,
     getEditMode, getFollowedSelector, getPosts,
     getProfileSelector,
@@ -21,15 +22,20 @@ import {
     getPageSize,
     getTotalFriendsCount
 } from "../../../redux/selectors/users-selectors";
-import {searchFriends} from "../../../redux/users-reduser";
+import {searchFriends} from "../../../redux/reducers/users-reduser";
 import ProfilePostForm from "./ProfilePostForm";
 import ProfilePost from "./ProfilePost";
 import {Skeleton} from "@material-ui/lab";
 import {UseParamsType} from "../../../types/types";
 import useAuthRedirect from "../../../hooks/useAuthRedirect";
+import {BooleanParam, NumberParam, useQueryParam} from "use-query-params";
+import useCommonQueryParams from "../../../hooks/useCommonQueryParams";
 
 //===================== CUSTOM HOOK ===========================
 const useProfile = () => {
+    useAuthRedirect();
+    useCommonQueryParams();
+
     const classes = useStyles();
     const authorizedUserId = useSelector(getId);
     const isLoading = useSelector(getIsLoading);
@@ -40,12 +46,31 @@ const useProfile = () => {
     const totalFriendsCount = useSelector(getTotalFriendsCount);
     const followed = useSelector(getFollowedSelector);
     const posts = useSelector(getPosts);
+    const currentInfoFormSidebarItem = useSelector(getCurrentInfoFormSidebarItem);
     const dispatch = useDispatch();
     let {userId} = useParams<UseParamsType>();
     const isOwner = userId ? false : true;
     const userIdFinal = (userId ? +userId : authorizedUserId) as number;
     const profileSelector = isOwner ? getProfileSelector : getCurrentUserProfileSelector;
     const profile = useSelector(profileSelector);
+
+    const [editModeQuery, setEditModeQuery] = useQueryParam('profileEdit', BooleanParam);
+    const [currentInfoFormSidebarItemQuery, setCurrentInfoFormSidebarItemQuery] = useQueryParam('profileTab', NumberParam);
+
+    // URL => STATE
+    useEffect(() => {
+        dispatch(profileAC.setEditMode(editModeQuery ? editModeQuery : editMode));
+        dispatch(profileAC.setCurrentInfoFormSidebarItem(currentInfoFormSidebarItemQuery ? currentInfoFormSidebarItemQuery : currentInfoFormSidebarItem));
+    }, [dispatch]);
+    // STATE => URL
+    useEffect(() => {
+        setEditModeQuery(editMode ? editMode : undefined);
+        setCurrentInfoFormSidebarItemQuery(currentInfoFormSidebarItem !== 0 ? currentInfoFormSidebarItem : undefined);
+    }, [
+        editMode,
+        currentInfoFormSidebarItem,
+    ]);
+
     useEffect(() => {
         if (isOwner) {
             dispatch(getProfile(userIdFinal));
@@ -55,6 +80,7 @@ const useProfile = () => {
             dispatch(getFollowed(userIdFinal));
         }
     }, [userIdFinal, dispatch, currentPage, pageSize, isOwner]);
+
     const MyPostsItemElements = posts
         .map(el => <ProfilePost key={el.id} post={el} profile={profile}/>);
 
@@ -68,7 +94,6 @@ const useProfile = () => {
 
 //====================== COMPONENT ============================
 const Profile: React.FC = (): ReactElement => {
-    useAuthRedirect();
     const {
         classes, isLoading, editMode,
         friends, totalFriendsCount,

@@ -2,10 +2,10 @@ import * as serviceWorker from './serviceWorker';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import AppGlobal from "./AppContainer";
+import AppContainer from "./AppContainer";
 
 ReactDOM.render(
-    <AppGlobal/>,
+    <AppContainer/>,
     document.getElementById('root'));
 
 serviceWorker.unregister();

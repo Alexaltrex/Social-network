@@ -1,6 +1,6 @@
-import {DialogType, MessageType} from "../DAL/dialogs-api";
-import {DeletedMessagesType, DialogsSidebarItemEnum, PhotosType} from "../types/types";
-import dialogsReducer, {dialogsAC} from "../redux/dialogs-reducer";
+import {DialogType, MessageType} from "../../DAL/dialogs-api";
+import {DeletedMessagesType, DialogsSidebarItemEnum, PhotosType} from "../../types/types";
+import dialogsReducer, {dialogsAC} from "../../redux/reducers/dialogs-reducer";
 
 const dialog1 = {
     id: 111,

@@ -15,7 +15,7 @@ import {
 } from "../../../redux/selectors/dialogs-selectors";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from '@material-ui/icons/Close';
-import {dialogsAC, dialogsSagaAC} from "../../../redux/dialogs-reducer";
+import {dialogsAC, dialogsSagaAC} from "../../../redux/reducers/dialogs-reducer";
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import RestoreFromTrashIcon from '@material-ui/icons/RestoreFromTrash';
 import Tooltip from "@material-ui/core/Tooltip";

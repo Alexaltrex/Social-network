@@ -1,4 +1,4 @@
-import authReducer, {authAC} from "../redux/auth-reducer";
+import authReducer, {authAC} from "../../redux/reducers/auth-reducer";
 
 const initialState = {
     id: null as number | null,

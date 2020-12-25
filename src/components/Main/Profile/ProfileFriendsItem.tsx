@@ -5,7 +5,7 @@ import Grid from "@material-ui/core/Grid";
 import Avatar from "@material-ui/core/Avatar";
 import Link from "@material-ui/core/Link";
 import {Link as RouterLink} from "react-router-dom";
-import {sidebarAC} from "../../../redux/sidebar-reducer";
+import {sidebarAC} from "../../../redux/reducers/sidebar-reducer";
 import {useDispatch} from "react-redux";
 import {Typography} from "@material-ui/core";
 

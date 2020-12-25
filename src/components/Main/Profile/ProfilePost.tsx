@@ -16,7 +16,7 @@ import Typography from "@material-ui/core/Typography";
 import {PostType, ProfileType} from "../../../types/types";
 import BlockTitle from "../../common/BlockTitle";
 import {useDispatch, useSelector} from "react-redux";
-import {profileAC} from "../../../redux/profile-reducer";
+import {profileAC} from "../../../redux/reducers/profile-reducer";
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import {translate} from "../../../const/lang";

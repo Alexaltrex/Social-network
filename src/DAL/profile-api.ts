@@ -22,6 +22,7 @@ export const profileAPI = {
         const formData = new FormData();
         formData.append('image', photo);
         let response = await instance.put('profile/photo', formData);
+        console.log(response)
         return response.data;
     },
     async saveProfile(values: ProfileType) {

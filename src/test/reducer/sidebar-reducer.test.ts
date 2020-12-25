@@ -1,5 +1,5 @@
-import sidebarReducer, {sidebarAC} from "../redux/sidebar-reducer";
-import appReducer from "../redux/app-reducer";
+import sidebarReducer, {sidebarAC} from "../../redux/reducers/sidebar-reducer";
+import appReducer from "../../redux/reducers/app-reducer";
 
 const initialState = {
     currentSidebarItem: null as null | number // текущий элемент главного бокового меню

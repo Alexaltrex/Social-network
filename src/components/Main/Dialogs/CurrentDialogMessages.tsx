@@ -10,7 +10,7 @@ import {
     getMessagesIsLoading
 } from "../../../redux/selectors/dialogs-selectors";
 import CircularPreloader from "../../common/CircularPreloader";
-import {dialogsAC} from "../../../redux/dialogs-reducer";
+import {dialogsAC} from "../../../redux/reducers/dialogs-reducer";
 import {DialogsSidebarItemEnum} from "../../../types/types";
 
 //================= CUSTOM HOOK =========================

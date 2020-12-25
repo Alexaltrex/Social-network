@@ -9,7 +9,7 @@ import {Link as RouterLink} from "react-router-dom";
 import Badge from "@material-ui/core/Badge";
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import {useDispatch, useSelector} from "react-redux";
-import {sidebarAC} from "../../../redux/sidebar-reducer";
+import {sidebarAC} from "../../../redux/reducers/sidebar-reducer";
 import Typography from "@material-ui/core/Typography";
 import {getLang} from "../../../redux/selectors/app-selectors";
 import {translate} from "../../../const/lang";

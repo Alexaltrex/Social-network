@@ -6,7 +6,7 @@ import indigo from "@material-ui/core/colors/indigo";
 import Tab from "@material-ui/core/Tab";
 import {useDispatch, useSelector} from "react-redux";
 import {getCurrentDialogsSidebarItem, getLoading} from "../../../redux/selectors/dialogs-selectors";
-import {dialogsAC} from "../../../redux/dialogs-reducer";
+import {dialogsAC} from "../../../redux/reducers/dialogs-reducer";
 //import WarningIcon from '@material-ui/icons/Warning';
 import ChatIcon from '@material-ui/icons/Chat';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';

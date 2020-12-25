@@ -1,11 +1,13 @@
-import {ResultCodeForCaptchaEnum, ResultCodesEnum} from "../DAL/api";
+import {ResultCodeForCaptchaEnum, ResultCodesEnum} from "../../DAL/api";
 import {FormAction, stopSubmit} from 'redux-form';
-import {authAPI} from "../DAL/auth-api";
-import {securityAPI} from "../DAL/security-api";
-import {BaseThunkType, GetActionsType} from "./redux-store";
+import {authAPI} from "../../DAL/auth-api";
+import {securityAPI} from "../../DAL/security-api";
+import {BaseThunkType, GetActionsType} from "../redux-store";
 import {appAC, AppActionsType} from "./app-reducer";
+import {SidebarItemEnum} from "../../types/types";
 import {sidebarAC, SidebarActionsType} from "./sidebar-reducer";
-import {SidebarItemEnum} from "../types/types";
+
+
 
 let initialState = {
     id: null as number | null,

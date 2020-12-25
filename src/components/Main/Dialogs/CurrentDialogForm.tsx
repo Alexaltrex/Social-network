@@ -6,7 +6,7 @@ import RenderTextAreaField from "../../common/RenderTextareaField";
 import {shouldNotBeEmpty} from "../../../utilities/validators/validators";
 import {reduxForm, Field, InjectedFormProps, reset} from "redux-form";
 import grey from "@material-ui/core/colors/grey";
-import {dialogsSagaAC} from "../../../redux/dialogs-reducer";
+import {dialogsSagaAC} from "../../../redux/reducers/dialogs-reducer";
 import {useDispatch, useSelector} from "react-redux";
 import {
     getLoading,

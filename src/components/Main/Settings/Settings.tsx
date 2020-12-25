@@ -3,19 +3,25 @@ import Typography from "@material-ui/core/Typography";
 import {Card} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import {useDispatch, useSelector} from "react-redux";
-import {settingsAC} from "../../../redux/settings-reducer";
+import {settingsAC} from "../../../redux/reducers/settings-reducer";
 import {getTheme} from "../../../redux/selectors/settings-selectors";
 import SettingsRow from "./SettingsRow";
 import {defaultTheme} from "../../../const/const";
 import {getLang} from "../../../redux/selectors/app-selectors";
 import {translate} from "../../../const/lang";
+import useAuthRedirect from "../../../hooks/useAuthRedirect";
+import useCommonQueryParams from "../../../hooks/useCommonQueryParams";
 
 //===================== CUSTOM HOOK ===========================
 const useSettings = () => {
+    useAuthRedirect();
+    useCommonQueryParams();
+
     const classes = useStyles();
+    const dispatch = useDispatch();
     const theme = useSelector(getTheme);
     const lang = useSelector(getLang);
-    const dispatch = useDispatch();
+
     const onMenuBCChangeHandler = (color: string) => {
         if (color) {
             dispatch(settingsAC.setMenuBackgroundColor(color))

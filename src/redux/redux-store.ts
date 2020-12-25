@@ -1,14 +1,14 @@
 import {Action, applyMiddleware, combineReducers, createStore, Middleware} from "redux";
-import profileReducer from "./profile-reducer";
-import dialogsReducer from "./dialogs-reducer";
-import sidebarReducer from "./sidebar-reducer";
-import usersReducer from "./users-reduser";
-import authReducer from "./auth-reducer";
+import profileReducer from "./reducers/profile-reducer";
+import dialogsReducer from "./reducers/dialogs-reducer";
+import sidebarReducer from "./reducers/sidebar-reducer";
+import usersReducer from "./reducers/users-reduser";
+import authReducer from "./reducers/auth-reducer";
 import thunkMiddleware, {ThunkAction} from "redux-thunk";
 import { reducer as formReducer } from 'redux-form';
-import appReducer from "./app-reducer";
+import appReducer from "./reducers/app-reducer";
 import {composeWithDevTools} from "redux-devtools-extension";
-import settingsReducer from "./settings-reducer";
+import settingsReducer from "./reducers/settings-reducer";
 import createSagaMiddleware from 'redux-saga';
 import {rootSaga} from "../Saga/saga";
 

@@ -1,5 +1,5 @@
-import {LangType} from "../types/types";
-import appReducer, {appAC} from "../redux/app-reducer";
+import {LangType} from "../../types/types";
+import appReducer, {appAC} from "../../redux/reducers/app-reducer";
 
 let initialState = {
     isInitialized: false, // приложение проинициализировано (получены инициализационные данные)?

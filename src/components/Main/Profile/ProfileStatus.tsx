@@ -6,7 +6,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import ProfileStatusForm from "./ProfileStatusForm";
 import LinearPreloader from "../../common/LinearPreloader";
 import Typography from "@material-ui/core/Typography";
-import {getStatus} from "../../../redux/profile-reducer";
+import {getStatus} from "../../../redux/reducers/profile-reducer";
 import Fade from '@material-ui/core/Fade';
 import useOutsideClick from "../../../hooks/useOutsideClick";
 

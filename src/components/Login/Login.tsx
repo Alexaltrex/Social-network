@@ -2,7 +2,7 @@ import React from 'react';
 import {Field, InjectedFormProps, reduxForm} from "redux-form";
 import {required, shouldNotBeEmpty} from "../../utilities/validators/validators";
 import {useDispatch, useSelector} from "react-redux";
-import {login} from "../../redux/auth-reducer";
+import {login} from "../../redux/reducers/auth-reducer";
 import {useHistory} from "react-router-dom";
 import {getCaptchaSelector, getIsAuth} from "../../redux/selectors/auth-selectors";
 import {makeStyles} from "@material-ui/core/styles";
@@ -15,9 +15,11 @@ import RenderCheckbox from "../common/RenderCheckbox";
 import Button from "@material-ui/core/Button";
 import {getLang} from "../../redux/selectors/app-selectors";
 import {Lang} from "../../const/lang";
+import useCommonQueryParams from "../../hooks/useCommonQueryParams";
 
 //================= CUSTOM HOOK =========================
 const useLoginForm = () => {
+    useCommonQueryParams();
     const classes = useStyles();
     const lang = useSelector(getLang);
     const emailLabel = lang === 'rus' ? Lang['email'].rus : Lang['email'].eng;
@@ -28,8 +30,7 @@ const useLoginForm = () => {
     const buttonLabel = lang === 'rus' ? Lang['Login'].rus : Lang['Login'].eng;
     return {classes, emailLabel, passwordLabel, rememberMeLabel,
         captchaLabel, captchaText, buttonLabel}
-}
-
+};
 
 //=================================== Form =========================================
 const LoginForm: React.FC<LoginFormPropsType> = (props) => {
@@ -116,10 +117,11 @@ const ReduxLoginForm = reduxForm<LoginFormValuesType, LoginFormOwnProps>({
 //================= CUSTOM HOOK =========================
 const useLogin = () => {
     const classes = useStyles();
+    const dispatch = useDispatch();
     const isAuth = useSelector(getIsAuth);
     const captcha = useSelector(getCaptchaSelector);
     const lang = useSelector(getLang);
-    const dispatch = useDispatch();
+
     const onSubmit = (values: LoginFormValuesType) => {
         dispatch(login(values.email, values.password, values.rememberMe, values.captcha));
     };

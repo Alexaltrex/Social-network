@@ -11,13 +11,13 @@ import {
     getIsFollowing
 } from "../../../redux/selectors/users-selectors";
 import {SidebarItemEnum, UserType} from "../../../types/types";
-import {getFollow, getUnfollow} from "../../../redux/users-reduser";
+import {getFollow, getUnfollow} from "../../../redux/reducers/users-reduser";
 import CircularPreloader from "../../common/CircularPreloader";
 import SendMessageForm from "../../common/SendMessageForm";
 import {DialogType} from "../../../DAL/dialogs-api";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar/ListItemAvatar";
 import Link from "@material-ui/core/Link";
-import {sidebarAC} from "../../../redux/sidebar-reducer";
+import {sidebarAC} from "../../../redux/reducers/sidebar-reducer";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import {translate} from "../../../const/lang";

@@ -8,7 +8,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import Tooltip from "@material-ui/core/Tooltip";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-import { appAC } from "../../redux/app-reducer";
+import { appAC } from "../../redux/reducers/app-reducer";
 import {translate} from "../../const/lang";
 
 //================= CUSTOM HOOK =========================

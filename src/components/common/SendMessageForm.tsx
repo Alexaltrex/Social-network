@@ -14,7 +14,7 @@ import {shouldNotBeEmpty} from "../../utilities/validators/validators";
 import RenderTextAreaField from "./RenderTextareaField";
 import SendIcon from '@material-ui/icons/Send';
 import {useDispatch, useSelector} from "react-redux";
-import {dialogsSagaAC} from "../../redux/dialogs-reducer";
+import {dialogsSagaAC} from "../../redux/reducers/dialogs-reducer";
 import {DialogType} from "../../DAL/dialogs-api";
 import {getLang} from "../../redux/selectors/app-selectors";
 import {translate} from "../../const/lang";

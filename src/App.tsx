@@ -9,17 +9,20 @@ import {Snackbar} from "@material-ui/core";
 import {Alert} from "@material-ui/lab";
 import Typography from "@material-ui/core/Typography";
 import {withRouter} from "react-router-dom";
-import {getIsInitialized} from "./redux/app-reducer";
+import {getIsInitialized} from "./redux/reducers/app-reducer";
 import indigo from "@material-ui/core/colors/indigo";
 import {getTheme} from "./redux/selectors/settings-selectors";
 
 //======================== CUSTOM HOOK =========================
 const useApp = () => {
     const classes = useStyles();
+    const dispatch = useDispatch();
     const messageIsSending = useSelector(getMessageIsSending);
     const recipientName = useSelector(getRecipientName);
+    const theme = useSelector(getTheme);
+
     const [showAlert, setShowAlert] = React.useState(false);
-    const dispatch = useDispatch();
+
     const catchAllUnhandledErrors = (e: PromiseRejectionEvent) => {
         alert(e);
     };
@@ -41,7 +44,7 @@ const useApp = () => {
         }
         setShowAlert(false);
     };
-    const theme = useSelector(getTheme);
+
     const useStylesSettings = makeStyles({
         root: {
             backgroundColor: theme.displayBackgroundColor,
@@ -104,6 +107,5 @@ const useStyles = makeStyles({
         paddingTop: 64,
         minHeight: '100vh',
     },
-
 });
 

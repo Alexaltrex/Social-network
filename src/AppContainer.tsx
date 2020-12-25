@@ -1,18 +1,23 @@
 import {Provider} from "react-redux";
 import store from "./redux/redux-store";
-import {HashRouter} from "react-router-dom";
-import React from "react";
+import {HashRouter, Route} from "react-router-dom";
+import React, {ReactElement} from "react";
 import App from "./App";
 import ErrorBoundary from "./Components/common/ErrorBoundary";
+import {QueryParamProvider} from "use-query-params";
 
-const AppGlobal = () => {
-    return <HashRouter>
-        <Provider store={store}>
-            <ErrorBoundary>
-                <App/>
-            </ErrorBoundary>
-        </Provider>
-    </HashRouter>
+const AppContainer: React.FC = (): ReactElement => {
+    return (
+        <HashRouter>
+            <Provider store={store}>
+                <QueryParamProvider ReactRouterRoute={Route}>
+                    <ErrorBoundary>
+                        <App/>
+                    </ErrorBoundary>
+                </QueryParamProvider>
+            </Provider>
+        </HashRouter>
+    )
 }
 
-export default AppGlobal;
+export default AppContainer;

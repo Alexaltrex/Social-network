@@ -25,7 +25,7 @@ import CircularPreloader from "../../common/CircularPreloader";
 import {ProfileSidebarItemEnum, ProfileType} from "../../../types/types";
 import clsx from "clsx";
 import RenderTextAreaField from "../../common/RenderTextareaField";
-import {saveProfile} from "../../../redux/profile-reducer";
+import {saveProfile} from "../../../redux/reducers/profile-reducer";
 import {required, shouldNotBeEmpty} from "../../../utilities/validators/validators";
 import {getLang} from "../../../redux/selectors/app-selectors";
 import {translate} from "../../../const/lang";

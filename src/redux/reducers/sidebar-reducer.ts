@@ -1,4 +1,4 @@
-import {GetActionsType} from "./redux-store";
+import {GetActionsType} from "../redux-store";
 
 let initialState = {
     currentSidebarItem: null as null | number // текущий элемент главного бокового меню

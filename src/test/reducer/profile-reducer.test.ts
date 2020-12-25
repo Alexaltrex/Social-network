@@ -1,5 +1,5 @@
-import {PostType, ProfileSidebarItemEnum, ProfileType} from "../types/types";
-import profileReducer, {profileAC} from "../redux/profile-reducer";
+import {PostType, ProfileSidebarItemEnum, ProfileType} from "../../types/types";
+import profileReducer, {profileAC} from "../../redux/reducers/profile-reducer";
 
 const profile0 = {
     userId: 11,

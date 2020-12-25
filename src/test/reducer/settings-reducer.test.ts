@@ -1,4 +1,4 @@
-import settingsReducer, {settingsAC} from "../redux/settings-reducer";
+import settingsReducer, {settingsAC} from "../../redux/reducers/settings-reducer";
 
 const initialState = {
     theme: {

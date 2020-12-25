@@ -10,7 +10,7 @@ import LanguageIcon from '@material-ui/icons/Language';
 import {useDispatch, useSelector} from "react-redux";
 import {getCurrentInfoFormSidebarItem} from "../../../redux/selectors/profile-selectors";
 import indigo from "@material-ui/core/colors/indigo";
-import {profileAC} from "../../../redux/profile-reducer";
+import {profileAC} from "../../../redux/reducers/profile-reducer";
 import {getLang} from "../../../redux/selectors/app-selectors";
 import {translate} from "../../../const/lang";
 
@@ -112,7 +112,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     icon: {
         margin: '0 10px 0',
-
     },
     selected: {
         color: indigo[500],

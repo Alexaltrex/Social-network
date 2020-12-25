@@ -1,6 +1,6 @@
 import {getAuthUserData} from "./auth-reducer";
-import {BaseThunkType, GetActionsType} from "./redux-store";
-import {LangType} from "../types/types";
+import {LangType} from "../../types/types";
+import {BaseThunkType, GetActionsType} from "../redux-store";
 
 export type InitialStateType = typeof initialState;
 export type AppActionsType = GetActionsType<typeof appAC>;
@@ -17,7 +17,6 @@ let initialState = {
 const appReducer = (state = initialState, action: AppActionsType): InitialStateType => {
     switch (action.type) {
         case 'APP/SET_LANG':
-            console.log('APP/SET_LANG')
             return {...state, lang: action.lang}
         case 'APP/SET_IS_INITIALIZED':
             return {...state, isInitialized: action.isInitialized}

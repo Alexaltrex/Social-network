@@ -1,5 +1,5 @@
-import {FriendsValuesType, PhotosType, SearchFriendsParamsType, SearchUsersParamsType, UserType} from "../types/types";
-import usersReducer, {usersAC} from "../redux/users-reduser";
+import {FriendsValuesType, PhotosType, SearchFriendsParamsType, SearchUsersParamsType, UserType} from "../../types/types";
+import usersReducer, {usersAC} from "../../redux/reducers/users-reduser";
 
 const user1 = {
     id: 1,

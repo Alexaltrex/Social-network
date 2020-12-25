@@ -7,9 +7,9 @@ import {makeStyles, Theme} from "@material-ui/core/styles";
 import clsx from "clsx";
 import indigo from "@material-ui/core/colors/indigo";
 import {useDispatch, useSelector} from "react-redux";
-import {profileAC} from "../../redux/profile-reducer";
-import {usersAC} from "../../redux/users-reduser";
-import {sidebarAC} from "../../redux/sidebar-reducer";
+import {profileAC} from "../../redux/reducers/profile-reducer";
+import {usersAC} from "../../redux/reducers/users-reduser";
+import {sidebarAC} from "../../redux/reducers/sidebar-reducer";
 import {getCurrentSidebarItem} from "../../redux/selectors/sidebar-selectors";
 
 //======================== CUSTOM HOOK =========================
@@ -25,6 +25,7 @@ const useSidebarItem = (ownIndex: number) => {
         dispatch(usersAC.setSearchFriendsParams({term: ''})); // обнуления параметров поиска друзей
         dispatch(usersAC.setCurrentFriendsSidebarItem(0)); // переключение на первый элмемент бокового меню
         dispatch(usersAC.setValueFromHeaderSearch('')); // обнуление строки поиска пользователей из заголовка
+        dispatch(usersAC.setSearchUsersParams({term: '', friend: 'all'})); // сброс параметра поиска пользователей
     };
     return {
         classes, currentSidebarItem, onClick

@@ -1,4 +1,4 @@
-import {GetActionsType} from "./redux-store";
+import {GetActionsType} from "../redux-store";
 
 export type InitialStateType = typeof initialState;
 export type SettingsActionsType = GetActionsType<typeof settingsAC>;

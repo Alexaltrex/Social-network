@@ -1,12 +1,12 @@
-import {updateObjectInArray} from "../utilities/objects-helpers";
+import {updateObjectInArray} from "../../utilities/objects-helpers";
 import {
     FriendsValuesType, SearchFriendsParamsType,
-    SearchUsersParamsType,
+    SearchUsersParamsType, ShowUsersFromType,
     UserType
-} from "../types/types";
-import {BaseThunkType, GetActionsType} from "./redux-store";
+} from "../../types/types";
+import {BaseThunkType, GetActionsType} from "../redux-store";
 import {Dispatch} from "redux";
-import {usersAPI} from "../DAL/users-api";
+import {usersAPI} from "../../DAL/users-api";
 import {appAC, AppActionsType} from "./app-reducer";
 
 const initialState = {
@@ -24,7 +24,7 @@ const initialState = {
     searchUsersParams: {term: '', friend: 'all'} as SearchUsersParamsType, // параметры поиска пользователей
     searchFriendsParams: {term: ''} as SearchFriendsParamsType, // параметры поиска друзей
     isFriendsSearching: false, // поиск друзей происходит?
-    showUsersFrom: 'all' as 'all' | 'search', // откуда показывать пользователей - всех или из поиска
+    showUsersFrom: 'all' as ShowUsersFromType, // откуда показывать пользователей - всех или из поиска
     currentFriendsSidebarItem: 0, // номер элемента бокового меню
     needToChangeListOfFriends: false, // список друзей нужно изменить (используется для обновления после удаления)?
     friendIdToRemove: null as null | number, // id друга, которого удаляем
@@ -44,7 +44,8 @@ const usersReducer = (state = initialState, action: UsersActionsType): initialSt
             return {...state, isFriendsSearching: action.isFriendsSearching}
         }
         case 'USERS/SET_NEED_TO_CHANG_LIST_OF_FRIENDS': {
-            return {...state,
+            return {
+                ...state,
                 needToChangeListOfFriends: action.needToChangeListOfFriends,
                 friendIdToRemove: action.friendIdToRemove
             }
@@ -114,8 +115,14 @@ const usersReducer = (state = initialState, action: UsersActionsType): initialSt
 
 export const usersAC = {
     setPortionNumber: (portionNumber: number) => ({type: 'USERS/SET_PORTION_NUMBER', portionNumber} as const),
-    setValueFromHeaderSearch: (valueFromHeaderSearch: string | null) => ({type: 'USERS/SET_VALUE_FROM_HEADER_SEARCH', valueFromHeaderSearch} as const),
-    toggleIsFriendsSearching: (isFriendsSearching: boolean) => ({type: 'USERS/TOGGLE_IS_FRIENDS_SEARCHING', isFriendsSearching} as const),
+    setValueFromHeaderSearch: (valueFromHeaderSearch: string | null) => ({
+        type: 'USERS/SET_VALUE_FROM_HEADER_SEARCH',
+        valueFromHeaderSearch
+    } as const),
+    toggleIsFriendsSearching: (isFriendsSearching: boolean) => ({
+        type: 'USERS/TOGGLE_IS_FRIENDS_SEARCHING',
+        isFriendsSearching
+    } as const),
     setNeedToChangeListOfFriends: (needToChangeListOfFriends: boolean, friendIdToRemove: number | null) => ({
         type: 'USERS/SET_NEED_TO_CHANG_LIST_OF_FRIENDS',
         needToChangeListOfFriends,
@@ -138,7 +145,10 @@ export const usersAC = {
     setUnfollow: (userId: number) => ({type: 'USERS/UNFOLLOW', userId} as const),
     setUsers: (users: Array<UserType>) => ({type: 'USERS/SET_USERS', users} as const),
     setCurrentPage: (currentPage: number) => ({type: 'USERS/SET_CURRENT_PAGE', currentPage} as const),
-    setCurrentFriendsPage: (currentFriendsPage: number) => ({type: 'USERS/SET_CURRENT_FRIENDS_PAGE', currentFriendsPage} as const),
+    setCurrentFriendsPage: (currentFriendsPage: number) => ({
+        type: 'USERS/SET_CURRENT_FRIENDS_PAGE',
+        currentFriendsPage
+    } as const),
     setTotalUsersCount: (totalUsersCount: number) => ({type: 'USERS/SET_TOTAL_USERS_COUNT', totalUsersCount} as const),
     setTotalFriendsCount: (totalFriendsCount: number) => ({
         type: 'USERS/SET_TOTAL_FRIENDS_COUNT',
@@ -151,8 +161,11 @@ export const usersAC = {
         followingInProgress,
         id
     } as const),
-    setShowUsersFrom: (showUsersFrom: 'all' | 'search') => ({type: 'USERS/SET_SHOW_USERS_FROM', showUsersFrom} as const),
-    };
+    setShowUsersFrom: (showUsersFrom: ShowUsersFromType) => ({
+        type: 'USERS/SET_SHOW_USERS_FROM',
+        showUsersFrom
+    } as const),
+};
 
 export const getUsers = (currentPage: number, pageSize: number): ThunkType => async (dispatch) => {
     try {
@@ -171,7 +184,6 @@ export const searchUsers = (currentPage: number, pageSize: number, term: string,
     try {
         dispatch(appAC.toggleLoading(true));
         let data = await usersAPI.searchUsers(currentPage, pageSize, term, friend);
-        console.log('searchUsers')
         dispatch(usersAC.setUsers(data.items));
         dispatch(usersAC.setTotalUsersCount(data.totalCount));
     } catch (e) {
@@ -198,9 +210,9 @@ export const removeAndUpdateFriends = (currentPage: number, pageSize: number, id
     try {
         dispatch(usersAC.toggleFollowing(true));
         dispatch(usersAC.toggleFollowingProgress(true, id));
-        let dataFromUnfollow = await usersAPI.unfollowUser(id);
+        const dataFromUnfollow = await usersAPI.unfollowUser(id);
         if (dataFromUnfollow.resultCode === 0) {
-            let data = await usersAPI.searchUsers(currentPage, pageSize, '', 'true');
+            const data = await usersAPI.searchUsers(currentPage, pageSize, '', 'true');
             dispatch(usersAC.setFriends(data.items));
             dispatch(usersAC.setTotalFriendsCount(data.totalCount));
             dispatch(usersAC.setNeedToChangeListOfFriends(false, null));
@@ -220,11 +232,12 @@ export const getFollow = (id: number): ThunkType => async (dispatch) => {
         const data = await usersAPI.followUser(id);
         if (data.resultCode === 0) {
             dispatch(usersAC.setFollow(id));
-            dispatch(usersAC.toggleFollowingProgress(false, id));
         }
     } catch (e) {
         dispatch(appAC.setLanError(true));
+        console.log(e.message)
     } finally {
+        dispatch(usersAC.toggleFollowingProgress(false, id));
         dispatch(usersAC.toggleFollowing(false));
     }
 };
@@ -236,11 +249,12 @@ export const getUnfollow = (id: number): ThunkType => async (dispatch) => {
         const data = await usersAPI.unfollowUser(id);
         if (data.resultCode === 0) {
             dispatch(usersAC.setUnfollow(id));
-            dispatch(usersAC.toggleFollowingProgress(false, id));
         }
     } catch (e) {
         dispatch(appAC.setLanError(true));
+        console.log(e.message)
     } finally {
+        dispatch(usersAC.toggleFollowingProgress(false, id));
         dispatch(usersAC.toggleFollowing(false));
     }
 };

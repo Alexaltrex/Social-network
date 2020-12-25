@@ -4,27 +4,29 @@ import DialogsList from "./DialogsList";
 import CurrentDialog from "./CurrentDialog";
 import {useDispatch, useSelector} from "react-redux";
 import {getIsLoading} from "../../../redux/selectors/app-selectors";
-import {getDialogsSelector} from "../../../redux/selectors/dialogs-selectors";
-import {dialogsAC, dialogsSagaAC} from "../../../redux/dialogs-reducer";
+import {getCurrentDialogsSidebarItem, getDialogsSelector} from "../../../redux/selectors/dialogs-selectors";
+import {dialogsAC, dialogsSagaAC} from "../../../redux/reducers/dialogs-reducer";
 import {DialogType} from "../../../DAL/dialogs-api";
 import DialogsSidebar from "./DialogsSidebar";
-import { useParams } from "react-router-dom";
+import {useParams} from "react-router-dom";
 import {UseParamsType} from "../../../types/types";
 import useAuthRedirect from "../../../hooks/useAuthRedirect";
+import {NumberParam, useQueryParam} from "use-query-params";
+import useCommonQueryParams from "../../../hooks/useCommonQueryParams";
 
 //================= CUSTOM HOOK =========================
 const useDialogs = () => {
     useAuthRedirect();
+    useCommonQueryParams();
 
     const classes = useStyles();
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
     const isLoading = useSelector(getIsLoading);
     const dialogs = useSelector(getDialogsSelector);
     // если userId === undefined, значит диалог не выбран
     let {userId} = useParams<UseParamsType>();
     const userIdNumber: number | undefined = userId ? +userId : undefined;
     useEffect(() => {
-        //dispatch(getDialogs())
         dispatch(dialogsSagaAC.getDialogs());
     }, [dispatch]);
     useEffect(() => {
@@ -36,7 +38,24 @@ const useDialogs = () => {
         }
     }, [userIdNumber, dispatch]);
     const currentDialog = (dialogs && userIdNumber) ? dialogs.find(el => el.id === userIdNumber) as DialogType : null;
-    return {classes, isLoading, dialogs, userIdNumber, currentDialog}
+
+    const currentDialogsSidebarItem = useSelector(getCurrentDialogsSidebarItem);
+    const [dialogsSidebarItemQuery, setDialogsSidebarItemQuery] = useQueryParam('dialogTab', NumberParam);
+
+    // URL => STATE
+    useEffect(() => {
+        dispatch(dialogsAC.setCurrentDialogsSidebarItem(dialogsSidebarItemQuery ? dialogsSidebarItemQuery : currentDialogsSidebarItem));
+    }, [dispatch])
+    // STATE => URL
+    useEffect(() => {
+        setDialogsSidebarItemQuery(currentDialogsSidebarItem !== 0 ? currentDialogsSidebarItem : undefined);
+    }, [
+        currentDialogsSidebarItem
+    ]);
+
+    return {
+        classes, isLoading, dialogs, userIdNumber, currentDialog
+    }
 };
 
 //======================= COMPONENT ===============================

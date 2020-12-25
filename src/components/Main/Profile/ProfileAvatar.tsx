@@ -1,6 +1,6 @@
 import React, {ChangeEvent, useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {profileAC, savePhoto} from "../../../redux/profile-reducer";
+import {profileAC, savePhoto} from "../../../redux/reducers/profile-reducer";
 import {
     getAvatarIsLoading,
     getEditMode,
@@ -18,7 +18,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import Button from "@material-ui/core/Button";
 import CardActions from "@material-ui/core/CardActions";
 import {getArrayOfUserIdWhichFollowingOrUnfollowing, getIsFollowing} from "../../../redux/selectors/users-selectors";
-import {getFollow, getUnfollow} from "../../../redux/users-reduser";
+import {getFollow, getUnfollow} from "../../../redux/reducers/users-reduser";
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import PersonAddDisabledIcon from '@material-ui/icons/PersonAddDisabled';
 import {ProfileType} from "../../../types/types";
@@ -26,7 +26,7 @@ import CircularPreloader from "../../common/CircularPreloader";
 import SendIcon from '@material-ui/icons/Send';
 import SendMessageForm from "../../common/SendMessageForm";
 import {getDialogsSelector} from "../../../redux/selectors/dialogs-selectors";
-import {dialogsSagaAC} from "../../../redux/dialogs-reducer";
+import {dialogsSagaAC} from "../../../redux/reducers/dialogs-reducer";
 import {translate} from "../../../const/lang";
 import {getLang} from "../../../redux/selectors/app-selectors";
 

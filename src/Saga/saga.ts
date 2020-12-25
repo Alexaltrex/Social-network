@@ -6,16 +6,10 @@ import {
     GET_DIALOGS, GET_MASSAGES, GetMessagesACType, RESTORE_MESSAGES, RestoreMessagesACType,
     SEND_MASSAGE,
     SendMessageACType,
-} from "../redux/dialogs-reducer";
+} from "../redux/reducers/dialogs-reducer";
 import {dialogsAPI, DialogType, GetMessagesType, MessageType, SendMessageType} from "../DAL/dialogs-api";
-import {appAC} from "../redux/app-reducer";
+import {appAC} from "../redux/reducers/app-reducer";
 import {ResultCodesEnum} from "../DAL/api";
-
-// export const GET_DIALOGS = 'DIALOGS/GET_DIALOGS';
-// export const SEND_MASSAGE = 'DIALOGS/SEND_MASSAGE';
-// export const GET_MASSAGE = 'DIALOGS/GET_MASSAGE';
-// export const DELETE_MESSAGES = 'DIALOGS/DELETE_MESSAGES';
-
 
 export function* watcherGetDialogs(): SagaIterator {
     yield takeEvery(GET_DIALOGS, workerGetDialogs);

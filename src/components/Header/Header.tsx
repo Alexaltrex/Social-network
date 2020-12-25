@@ -20,8 +20,8 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import {useDispatch, useSelector} from "react-redux";
 import {getId, getIsAuth, getLogin} from "../../redux/selectors/auth-selectors";
 import {getProfileSelector} from "../../redux/selectors/profile-selectors";
-import {logout} from "../../redux/auth-reducer";
-import {getProfile} from "../../redux/profile-reducer";
+import {logout} from "../../redux/reducers/auth-reducer";
+import {getProfile} from "../../redux/reducers/profile-reducer";
 import HeaderSearch from "./HeaderSearch";
 import {getTheme} from "../../redux/selectors/settings-selectors";
 import HeaderLang from "./HeaderLang";
@@ -189,10 +189,8 @@ const Header: React.FC = () => {
                             {loginLabel}
                         </Button>
                 }
-
             </Toolbar>
         </div>
-
     );
 };
 

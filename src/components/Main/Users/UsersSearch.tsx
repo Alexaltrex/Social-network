@@ -9,9 +9,9 @@ import SearchIcon from '@material-ui/icons/Search';
 import Divider from "@material-ui/core/Divider";
 import {shouldNotBeEmpty} from "../../../utilities/validators/validators";
 import {useDispatch, useSelector} from "react-redux";
-import {usersAC} from "../../../redux/users-reduser";
+import {usersAC} from "../../../redux/reducers/users-reduser";
 import {SearchUsersParamsType} from "../../../types/types";
-import {getValueFromHeaderSearch} from "../../../redux/selectors/users-selectors";
+import {getSearchUsersParams, getValueFromHeaderSearch} from "../../../redux/selectors/users-selectors";
 import {getLang} from "../../../redux/selectors/app-selectors";
 import {translate} from "../../../const/lang";
 
@@ -93,20 +93,23 @@ const SearchUsersForm: React.FC<SearchUsersFormPropsType> = (props): ReactElemen
 //================================== REDUX-FORM ======================================
 const SearchUsersReduxForm = reduxForm<SearchUsersParamsType, SearchUsersFormOwnPropsType>({
     form: 'searchUsers',
+    enableReinitialize: true,
 })(SearchUsersForm);
 
 //======================== CUSTOM HOOK =========================
 const useUsersSearch = () => {
     const classes = useStyles();
     const valueFromHeaderSearch = useSelector(getValueFromHeaderSearch);
+    const searchUsersParams = useSelector(getSearchUsersParams);
     const dispatch = useDispatch();
     const onSubmit = (formValue: SearchUsersParamsType) => {
         dispatch(usersAC.setSearchUsersParams(formValue));
         dispatch(usersAC.setCurrentPage(1));
         dispatch(usersAC.setShowUsersFrom('search'));
     };
-    const term = valueFromHeaderSearch ? valueFromHeaderSearch : '';
-    const initialValues = {term: term, friend: 'all'} as SearchUsersParamsType;
+    const term = valueFromHeaderSearch ? valueFromHeaderSearch : searchUsersParams.term;
+    const friend = valueFromHeaderSearch ? 'all' : searchUsersParams.friend;
+    const initialValues = {term, friend} as SearchUsersParamsType;
     useEffect(() => {
         if (valueFromHeaderSearch) {
             dispatch(submit('searchUsers'));

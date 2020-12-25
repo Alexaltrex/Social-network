@@ -28,7 +28,7 @@
 * Локальное состояние: хук "useState"
 * Побочные эффекты: хук "useEffect"
 * Роутинг: React-router-dom v.5.2.0
-* Асинхронный код: Redux-thunk v.2.3.0
+* Асинхронный код: Redux-thunk v.2.3.0, Redux-Saga v.1.1.3 (страница Dialogs)
 * Сетевые запросы: Axios v.0.19.2
 * Работа с формами: Redux-form v.8.3.6
 * Дизайн: Material-UI v.4.11.0

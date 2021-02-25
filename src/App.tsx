@@ -12,7 +12,7 @@ import {withRouter} from "react-router-dom";
 import {getIsInitialized} from "./redux/reducers/app-reducer";
 import indigo from "@material-ui/core/colors/indigo";
 import {getTheme} from "./redux/selectors/settings-selectors";
-
+// SSH
 //======================== CUSTOM HOOK =========================
 const useApp = () => {
     const classes = useStyles();

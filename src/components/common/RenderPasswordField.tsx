@@ -26,7 +26,7 @@ const useRenderPasswordField = () => {
     };
     return {classes, showPassword, password, handleChange,
         handleClickShowPassword, handleMouseDownPassword}
-}
+};
 
 
 //======================= COMPONENT ===============================
